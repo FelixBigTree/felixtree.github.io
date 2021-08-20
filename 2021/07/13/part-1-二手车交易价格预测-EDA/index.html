@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"felixtree.tech","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="EDA - 数据探索性分析_代码示例部分代码示例1.载入各种数据科学以及可视化库1234567891011import warnings     # 利用过滤器实现忽略警告语句import pandas as pdimport numpy as npimport scipy.stats as stimport pandas_profilingimport seaborn as snsimport">
+<meta property="og:type" content="article">
+<meta property="og:title" content="part-1-二手车交易价格预测-EDA">
+<meta property="og:url" content="https://felixtree.tech/2021/07/13/part-1-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B-EDA/index.html">
+<meta property="og:site_name" content="小书包的知识屋">
+<meta property="og:description" content="EDA - 数据探索性分析_代码示例部分代码示例1.载入各种数据科学以及可视化库1234567891011import warnings     # 利用过滤器实现忽略警告语句import pandas as pdimport numpy as npimport scipy.stats as stimport pandas_profilingimport seaborn as snsimport">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020032415402229.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154141745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154515241.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154600444.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154655402.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154857313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154933259.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155040891.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155108941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155406320.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155611622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324160155922.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324160741429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020032416101646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324161144416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324161301579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-07-13T03:50:14.000Z">
+<meta property="article:modified_time" content="2021-07-13T04:13:51.982Z">
+<meta property="article:author" content="小书包">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2020032415402229.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="https://felixtree.tech/2021/07/13/part-1-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B-EDA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>part-1-二手车交易价格预测-EDA | 小书包的知识屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="小书包的知识屋" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/FelixBigTree"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小书包的知识屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://felixtree.tech/2021/07/13/part-1-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B-EDA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/touxiang.png">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小书包的知识屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          part-1-二手车交易价格预测-EDA
+        </h1>
+
+        <div class="post-meta">
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-13 11:50:14 / 修改时间：12:13:51" itemprop="dateCreated datePublished" datetime="2021-07-13T11:50:14+08:00">2021-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B/" itemprop="url" rel="index"><span itemprop="name">机器学习 - 二手车交易价格预测</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="EDA-数据探索性分析-代码示例部分"><a href="#EDA-数据探索性分析-代码示例部分" class="headerlink" title="EDA - 数据探索性分析_代码示例部分"></a>EDA - 数据探索性分析_代码示例部分</h1><h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="1-载入各种数据科学以及可视化库"><a href="#1-载入各种数据科学以及可视化库" class="headerlink" title="1.载入各种数据科学以及可视化库"></a>1.载入各种数据科学以及可视化库</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> warnings     <span class="comment"># 利用过滤器实现忽略警告语句</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> scipy.stats <span class="keyword">as</span> st</span><br><span class="line"><span class="keyword">import</span> pandas_profiling</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> missingno <span class="keyword">as</span> msno    <span class="comment"># 缺失值可视化的库</span></span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl</span><br><span class="line">mpl.use(<span class="string">&#x27;TkAgg&#x27;</span>)</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">warnings.filterwarnings(<span class="string">&#x27;ignore&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="2-载入数据"><a href="#2-载入数据" class="headerlink" title="2.载入数据"></a>2.载入数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Train_data = pd.read_csv(<span class="string">r&#x27;F:\Users\TreeFei\文档\PyC\used_car\data\used_car_train_20200313.csv&#x27;</span>, sep=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">Test_data = pd.read_csv(<span class="string">r&#x27;F:\Users\TreeFei\文档\PyC\used_car\data\used_car_testA_20200313.csv&#x27;</span>, sep=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line"><span class="comment"># #在kaggle上看一下已知特征的解释</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">SaleID - 交易ID,唯一编码</span></span><br><span class="line"><span class="string">name - 汽车交易名称,已脱敏</span></span><br><span class="line"><span class="string">regDate - 汽车注册日期,例如20160101,2016年01月01日</span></span><br><span class="line"><span class="string">model - 车型编码,已脱敏</span></span><br><span class="line"><span class="string">brand - 汽车品牌,已脱敏</span></span><br><span class="line"><span class="string">bodyType - 车身类型-豪华轿车:0; 微型车:1;  厢型车:2;  大巴车:3;  敞篷车:4;  双门汽车:5; 商务车:6;  搅拌车:7</span></span><br><span class="line"><span class="string">fuelType - 燃油类型-汽油:0;   柴油:1;   液化石油气:2;   天然气:3;   混合动力:4;   其他:5;   电动:6</span></span><br><span class="line"><span class="string">gearbox - 变速箱-手动:0;   自动:1</span></span><br><span class="line"><span class="string">power - 发动机功率:范围 [ 0, 600 ]</span></span><br><span class="line"><span class="string">kilometer - 汽车已行驶公里,单位万km</span></span><br><span class="line"><span class="string">notRepairedDamage - 汽车有尚未修复的损坏-是:0; 否:1</span></span><br><span class="line"><span class="string">regionCode - 地区编码,已脱敏</span></span><br><span class="line"><span class="string">seller - 销售方-个体:0;  非个体:1</span></span><br><span class="line"><span class="string">offerType - 报价类型-提供:0;  请求:1</span></span><br><span class="line"><span class="string">creatDate - 汽车上线时间-即开始售卖时间</span></span><br><span class="line"><span class="string">price - 二手车交易价格(预测目标)</span></span><br><span class="line"><span class="string">v系列特征 - 匿名特征:包含v0-14在内15个匿名特征(根据汽车的评论,标签等大量信息得到的embedding向量)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h3 id="3-简略观察数据"><a href="#3-简略观察数据" class="headerlink" title="3.简略观察数据"></a>3.简略观察数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Train_data.head().append(Train_data.tail())     <span class="comment"># 显示开头5行和最后5行</span></span><br><span class="line">Train_data.shape</span><br><span class="line"></span><br><span class="line">Test_data.head().append(Test_data.tail())</span><br><span class="line">Test_data.shape</span><br></pre></td></tr></table></figure>
+<h3 id="4-数据总览概况"><a href="#4-数据总览概况" class="headerlink" title="4.数据总览概况"></a>4.数据总览概况</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">describe - 包括每列的统计量,个数count,平均值mean,方差std,最小值min,中位数25% 50% 75%及最大值</span></span><br><span class="line"><span class="string">            看这个信息可以瞬间掌握数据的大概范围以及每个值的异常值得判断</span></span><br><span class="line"><span class="string">            有时会发现999, 9999, -1等值,这些其实可能都是nan得另一种表达方式</span></span><br><span class="line"><span class="string">            </span></span><br><span class="line"><span class="string">info - 了解每列数据得type,有助于了解是否存在除了nan以外得特殊符号异常</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">Train_data.describe()</span><br><span class="line">Test_data.describe()</span><br><span class="line"></span><br><span class="line">Train_data.info()   <span class="comment"># 发现model, bodyType, fuelType-缺失的最多, gearbox 这四个特征有缺失值</span></span><br><span class="line">Test_data.info()    <span class="comment"># 发现bodyType, fuelType, gearbox 这三个特征有缺失值</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们看下每列存在nan的情况</span></span><br><span class="line">Train_data.isnull().<span class="built_in">sum</span>()</span><br><span class="line">Test_data.isnull().<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
+<h3 id="5-我们将训练集的缺失数据可视化"><a href="#5-我们将训练集的缺失数据可视化" class="headerlink" title="5.我们将训练集的缺失数据可视化"></a>5.我们将训练集的缺失数据可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">missing = Train_data.isnull().<span class="built_in">sum</span>()</span><br><span class="line">missing = missing[missing &gt; <span class="number">0</span>]  <span class="comment"># 将有缺失值的列选出</span></span><br><span class="line">missing.sort_values(inplace=<span class="literal">True</span>)   <span class="comment"># 升序排序</span></span><br><span class="line">missing.plot.bar()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2020032415402229.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可视化看下缺省值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msno.matrix(Train_data.sample(<span class="number">250</span>))     <span class="comment"># sample(250) - 随机抽取250个样本,再以列表的形式返回</span></span><br><span class="line">msno.bar(Train_data.sample(<span class="number">1000</span>))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324154141745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="6-异常值检测"><a href="#6-异常值检测" class="headerlink" title="6.异常值检测"></a>6.异常值检测</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Train_data.info()   <span class="comment"># 发现除了notRepairedDamage是object类型,其余特征都是数值型数据</span></span><br><span class="line"><span class="comment"># 我们看一下notRepairedDamage里面有什么</span></span><br><span class="line">Train_data[<span class="string">&#x27;notRepairedDamage&#x27;</span>].value_counts()      <span class="comment"># 发现了有&#x27;-&#x27;的数据,明显是缺失值,我们将它统一替换成nan</span></span><br><span class="line">Train_data[<span class="string">&#x27;notRepairedDamage&#x27;</span>].replace(<span class="string">&#x27;-&#x27;</span>, np.nan, inplace=<span class="literal">True</span>)</span><br><span class="line">Train_data[<span class="string">&#x27;notRepairedDamage&#x27;</span>].value_counts()      <span class="comment"># 现在都是数值型数据了</span></span><br></pre></td></tr></table></figure>
+
+<p>重新看一下缺失值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Train_data.isnull().<span class="built_in">sum</span>()      <span class="comment"># 可以发现notRepairedDamage缺失的数据最多,有24324个</span></span><br></pre></td></tr></table></figure>
+<p>把测试集中notRepairedDamage的’-‘值也做一下处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Test_data[<span class="string">&#x27;notRepairedDamage&#x27;</span>].replace(<span class="string">&#x27;-&#x27;</span>, np.nan, inplace=<span class="literal">True</span>)</span><br><span class="line">Test_data[<span class="string">&#x27;notRepairedDamage&#x27;</span>].value_counts()</span><br><span class="line">Test_data.isnull().<span class="built_in">sum</span>()        <span class="comment"># 发现缺失值最多的也是notRepairedDamage</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过这种方法,我们可以发现&#x27;seller-销售方&#x27; 和&#x27;offerType-报价类型&#x27; 这两个特征严重倾斜,一般不会对预测有帮助,可以删掉</span></span><br><span class="line">Train_data[<span class="string">&#x27;seller&#x27;</span>].value_counts()</span><br><span class="line">Train_data[<span class="string">&#x27;offerType&#x27;</span>].value_counts()</span><br><span class="line"></span><br><span class="line"><span class="keyword">del</span> Train_data[<span class="string">&#x27;seller&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> Train_data[<span class="string">&#x27;offerType&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> Test_data[<span class="string">&#x27;seller&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> Test_data[<span class="string">&#x27;offerType&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="7-了解预测值的分布"><a href="#7-了解预测值的分布" class="headerlink" title="7.了解预测值的分布"></a>7.了解预测值的分布</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Train_data[<span class="string">&#x27;price&#x27;</span>]</span><br><span class="line">Train_data[<span class="string">&#x27;price&#x27;</span>].value_counts()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 看一下price和哪一种分布最贴近</span></span><br><span class="line">y = Train_data[<span class="string">&#x27;price&#x27;</span>]</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">1</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Johnson SU&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">st.johnsonsu - 约翰逊分布,是一种经过约翰变换后服从正态分布概率的随机变量的概率分布</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">sns.distplot(y, kde=<span class="literal">False</span>, fit=st.johnsonsu)    <span class="comment"># kde - bool型变量,控制是否绘制核密度估计曲线,默认为True</span></span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">2</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Normal&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">st.norm - 正态分布</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">sns.distplot(y, kde=<span class="literal">False</span>, fit=st.norm)</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">3</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Log Normal&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">st.lognorm - 对数正态分布,从短期来看,与正态分布非常接近;但长期来看,对数正态分布向上分布的数值更多一些</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">sns.distplot(y, kde=<span class="literal">False</span>, fit=st.lognorm)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>约翰逊分布拟合效果:<br><img src="https://img-blog.csdnimg.cn/20200324154515241.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>正态分布拟合效果:<br><img src="https://img-blog.csdnimg.cn/20200324154600444.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>对数正态分布拟合效果:<br><img src="https://img-blog.csdnimg.cn/20200324154655402.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="8-查看skewness和kurtosis"><a href="#8-查看skewness和kurtosis" class="headerlink" title="8.查看skewness和kurtosis"></a>8.查看skewness和kurtosis</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">skewness - 偏度,也称为偏态/偏态系数,是统计数据分布偏斜方向和程度的度量,是统计数据分布非对称程度的数字特征</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">kurtosis - 峰度,与偏度类似,是描述总体中所有取值分布形态陡缓程度的统计量</span></span><br><span class="line"><span class="string">            这个统计量需要与正态分布相比较:</span></span><br><span class="line"><span class="string">            1.峰度为0表示该总体数据分布与正态分布的陡缓程度相同</span></span><br><span class="line"><span class="string">            2.峰度大于0表示该总体数据分布与正态分布相比较为陡峭,为尖顶峰</span></span><br><span class="line"><span class="string">            3.峰度小于0表示该总体数据分布与正态分布相比较为平坦,为平顶峰</span></span><br><span class="line"><span class="string">            4.峰度的绝对值数值越大表示其分布形态的陡缓程度与正态分布的差异程度越大</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">sns.distplot(Train_data[<span class="string">&#x27;price&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Skewness: %f&#x27;</span> % Train_data[<span class="string">&#x27;price&#x27;</span>].skew())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Kurtosis: %f&#x27;</span> % Train_data[<span class="string">&#x27;price&#x27;</span>].kurt())</span><br><span class="line"><span class="comment"># 看一下整个训练集的偏度和峰度</span></span><br><span class="line">Train_data.skew()</span><br><span class="line">Train_data.kurt()</span><br></pre></td></tr></table></figure>
+<p>可视化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sns.distplot(Train_data.skew(), color=<span class="string">&#x27;blue&#x27;</span>, axlabel=<span class="string">&#x27;Skewness&#x27;</span>)</span><br><span class="line">sns.distplot(Train_data.kurt(), color=<span class="string">&#x27;orange&#x27;</span>, axlabel=<span class="string">&#x27;Kurtness&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>偏度:<br><img src="https://img-blog.csdnimg.cn/20200324154857313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>峰度:<br><img src="https://img-blog.csdnimg.cn/20200324154933259.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="9-查看预测值的频数"><a href="#9-查看预测值的频数" class="headerlink" title="9.查看预测值的频数"></a>9.查看预测值的频数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">plt.hist(Train_data[<span class="string">&#x27;price&#x27;</span>], orientation=<span class="string">&#x27;vertical&#x27;</span>, histtype=<span class="string">&#x27;bar&#x27;</span>, color=<span class="string">&#x27;red&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">参数解释</span></span><br><span class="line"><span class="string">orientation - 直方图方向</span></span><br><span class="line"><span class="string">                horizontal - 水平方向</span></span><br><span class="line"><span class="string">                vertical - 垂直方向</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">plt.show()</span><br><span class="line"><span class="comment"># 发现价格大于20000的样本极少(其实可以直接填充或者删掉,当作异常值处理)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 试着log变换,看一下价格分布</span></span><br><span class="line">plt.hist(np.log(Train_data[<span class="string">&#x27;price&#x27;</span>]), orientation=<span class="string">&#x27;vertical&#x27;</span>, histtype=<span class="string">&#x27;bar&#x27;</span>, color=<span class="string">&#x27;red&#x27;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"><span class="comment"># 发现分布显示变均匀了</span></span><br></pre></td></tr></table></figure>
+<p>log变换之前:<br><img src="https://img-blog.csdnimg.cn/20200324155040891.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>log变换之后<br><img src="https://img-blog.csdnimg.cn/20200324155108941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="10-将特征分为类别特征和数字特征-并对类别特征查看unique分布"><a href="#10-将特征分为类别特征和数字特征-并对类别特征查看unique分布" class="headerlink" title="10.将特征分为类别特征和数字特征,并对类别特征查看unique分布"></a>10.将特征分为类别特征和数字特征,并对类别特征查看unique分布</h3><p>本案例需要人为根据实际含义区分</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">numeric_features = Train_data.select_dtypes(include=[np.number])</span></span><br><span class="line"><span class="string">numeric_features.columns</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">numeric_features = [<span class="string">&#x27;power&#x27;</span>, <span class="string">&#x27;kilometer&#x27;</span>, <span class="string">&#x27;v_0&#x27;</span>, <span class="string">&#x27;v_1&#x27;</span>, <span class="string">&#x27;v_2&#x27;</span>, <span class="string">&#x27;v_3&#x27;</span>, <span class="string">&#x27;v_4&#x27;</span>, <span class="string">&#x27;v_5&#x27;</span>, <span class="string">&#x27;v_6&#x27;</span>, <span class="string">&#x27;v_7&#x27;</span>, <span class="string">&#x27;v_8&#x27;</span>,</span><br><span class="line">                    <span class="string">&#x27;v_9&#x27;</span>, <span class="string">&#x27;v_10&#x27;</span>, <span class="string">&#x27;v_11&#x27;</span>, <span class="string">&#x27;v_12&#x27;</span>, <span class="string">&#x27;v_13&#x27;</span>, <span class="string">&#x27;v_14&#x27;</span>]</span><br><span class="line">categorical_features = [<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;model&#x27;</span>, <span class="string">&#x27;brand&#x27;</span>, <span class="string">&#x27;bodyType&#x27;</span>, <span class="string">&#x27;fuelType&#x27;</span>,</span><br><span class="line">                        <span class="string">&#x27;gearbox&#x27;</span>, <span class="string">&#x27;notRepairedDamage&#x27;</span>, <span class="string">&#x27;regionCode&#x27;</span>]</span><br><span class="line"><span class="comment"># 在这里,两个日期没有分类</span></span><br></pre></td></tr></table></figure>
+<h3 id="11-看一下训练集类型特征的特征分布"><a href="#11-看一下训练集类型特征的特征分布" class="headerlink" title="11.看一下训练集类型特征的特征分布"></a>11.看一下训练集类型特征的特征分布</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> cat_fea <span class="keyword">in</span> categorical_features:</span><br><span class="line">    <span class="built_in">print</span>(cat_fea + <span class="string">&#x27;的特征分布如下:&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;&#123;&#125;特征有&#123;&#125;个不同值&#x27;</span>.<span class="built_in">format</span>(cat_fea, Train_data[cat_fea].nunique()))</span><br><span class="line">    <span class="built_in">print</span>(Train_data[cat_fea].value_counts())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 看一下测试集类型特征的特征分布</span></span><br><span class="line"><span class="keyword">for</span> cat_fea <span class="keyword">in</span> categorical_features:</span><br><span class="line">    <span class="built_in">print</span>(cat_fea + <span class="string">&#x27;的特征分布如下:&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;&#123;&#125;特征有&#123;&#125;个不同值&#x27;</span>.<span class="built_in">format</span>(cat_fea, Test_data[cat_fea].nunique()))</span><br><span class="line">    <span class="built_in">print</span>(Test_data[cat_fea].value_counts())</span><br></pre></td></tr></table></figure>
+<h3 id="12-数字特征分析"><a href="#12-数字特征分析" class="headerlink" title="12.数字特征分析"></a>12.数字特征分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># #把price加入数字特征中</span></span><br><span class="line">numeric_features.append(<span class="string">&#x27;price&#x27;</span>)</span><br><span class="line">numeric_features</span><br><span class="line"></span><br><span class="line"><span class="comment"># #相关性分析</span></span><br><span class="line">price_numeric = Train_data[numeric_features]    <span class="comment"># 把训练集中样本的价格和数字型特征提取出来</span></span><br><span class="line">correlation = price_numeric.corr()      <span class="comment"># corr() - 给出任意两个变量之间的相关系数</span></span><br><span class="line"><span class="built_in">print</span>(correlation[<span class="string">&#x27;price&#x27;</span>].sort_values(ascending=<span class="literal">False</span>), <span class="string">&#x27;\n&#x27;</span>)      <span class="comment"># 把其他变量和价格的相关系数降序排列</span></span><br><span class="line"><span class="comment"># #将这个结果可视化</span></span><br><span class="line">f, ax = plt.subplots(figsize=(<span class="number">7</span>, <span class="number">7</span>))</span><br><span class="line">plt.title(<span class="string">&#x27;Correlation of Numeric Feature with Price&#x27;</span>, y=<span class="number">1</span>, size=<span class="number">16</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">sns.heatmap - 热力图</span></span><br><span class="line"><span class="string">            square - 正方形</span></span><br><span class="line"><span class="string">            vmax - 热力图颜色取值的最大值,默认会从data中推导</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">sns.heatmap(correlation, square=<span class="literal">True</span>, vmax=<span class="number">0.8</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324155406320.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>对数字特征数据集进行偏度和峰度分析</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> numeric_features:</span><br><span class="line">    <span class="built_in">print</span>(col)</span><br><span class="line">    <span class="built_in">print</span>(Train_data[col].skew())</span><br><span class="line">    <span class="built_in">print</span>(Train_data[col].kurt())</span><br></pre></td></tr></table></figure>
+
+<p>每个数字特征的分布可视化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每个数字特征的分布可视化</span></span><br><span class="line">f = pd.melt(Train_data, value_vars=numeric_features)    <span class="comment"># melt() - 将列名转化为列数据; value_vars参数 - 需要转换的列名</span></span><br><span class="line">g = sns.FacetGrid(f, col=<span class="string">&#x27;variable&#x27;</span>, col_wrap=<span class="number">2</span>, sharex=<span class="literal">False</span>, sharey=<span class="literal">False</span>)</span><br><span class="line">g = g.<span class="built_in">map</span>(sns.distplot, <span class="string">&#x27;value&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">sns.FaceGrid - 构建结构化多绘图网格</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">参数详解:</span></span><br><span class="line"><span class="string">data - 处理后的dataframe数据,其中每一列都是一个变量（特征),每一行都是一个样本</span></span><br><span class="line"><span class="string">row/col/hue - 定义数据子集的变量,这些变量将在网格的不同方面绘制</span></span><br><span class="line"><span class="string">col_wrap - 图网格列维度限制</span></span><br><span class="line"><span class="string">share&#123;x,y&#125; - 是否共享x轴或者y轴</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment"># 可以看出匿名特征相对分布均匀</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324155611622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="13-数字特征相互之间的关系可视化"><a href="#13-数字特征相互之间的关系可视化" class="headerlink" title="13.数字特征相互之间的关系可视化"></a>13.数字特征相互之间的关系可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sns.<span class="built_in">set</span>()</span><br><span class="line">columns = [<span class="string">&#x27;price&#x27;</span>, <span class="string">&#x27;v_12&#x27;</span>, <span class="string">&#x27;v_8&#x27;</span>, <span class="string">&#x27;v_0&#x27;</span>, <span class="string">&#x27;power&#x27;</span>, <span class="string">&#x27;v_5&#x27;</span>, <span class="string">&#x27;v_2&#x27;</span>, <span class="string">&#x27;v_6&#x27;</span>, <span class="string">&#x27;v_1&#x27;</span>, <span class="string">&#x27;v_14&#x27;</span>]</span><br><span class="line">sns.pairplot(Train_data[columns], size=<span class="number">2</span>, kind=<span class="string">&#x27;scatter&#x27;</span>, diag_kind=<span class="string">&#x27;kde&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">sns.pairplot - 绘制多变量网格图</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">参数详解:</span></span><br><span class="line"><span class="string">size - 图的尺寸大小,默认6</span></span><br><span class="line"><span class="string">kind - 绘图样式    kind=&#x27;scatter&#x27; --&gt; 散点图</span></span><br><span class="line"><span class="string">diag_kind - 对角线子块的绘图方式      diag_kind=&#x27;kde&#x27; --&gt; 显示核密度分布</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324160155922.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="14-多变量互相关系回归可视化"><a href="#14-多变量互相关系回归可视化" class="headerlink" title="14.多变量互相关系回归可视化"></a>14.多变量互相关系回归可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">此处设定画布规格 - 5行2列</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8), (ax9, ax10)) = plt.subplots(nrows=<span class="number">5</span>, ncols=<span class="number">2</span>, figsize=(<span class="number">24</span>, <span class="number">20</span>))</span><br><span class="line"><span class="comment"># [&#x27;v_12&#x27;, &#x27;v_8&#x27; , &#x27;v_0&#x27;, &#x27;power&#x27;, &#x27;v_5&#x27;, &#x27;v_2&#x27;, &#x27;v_6&#x27;, &#x27;v_1&#x27;, &#x27;v_14&#x27;]</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">sns.regplot - 用于线性关系可视化</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">参数详解:</span></span><br><span class="line"><span class="string">x/y - 横纵坐标</span></span><br><span class="line"><span class="string">data - 数据集</span></span><br><span class="line"><span class="string">fig_reg - 回归线 --&gt; True:显示    False:不显示</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">v_12_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_12&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_12&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_12_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax1)</span><br><span class="line"></span><br><span class="line">v_8_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_8&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_8&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_8_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax2)</span><br><span class="line">v_0_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_0&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_0&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_0_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax3)</span><br><span class="line">power_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;power&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;power&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=power_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax4)</span><br><span class="line">v_5_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_5&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_5&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_5_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax5)</span><br><span class="line">v_2_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_2&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_2&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_2_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax6)</span><br><span class="line">v_6_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_6&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_6&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_6_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax7)</span><br><span class="line">v_1_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_1&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_1&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_1_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax8)</span><br><span class="line">v_14_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_14&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_14&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_14_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax9)</span><br><span class="line">v_13_scatter_plot = pd.concat([Y_train, Train_data[<span class="string">&#x27;v_13&#x27;</span>]], axis=<span class="number">1</span>)</span><br><span class="line">sns.regplot(x=<span class="string">&#x27;v_13&#x27;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=v_13_scatter_plot, scatter=<span class="literal">True</span>, fit_reg=<span class="literal">True</span>, ax=ax10)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324160741429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="15-类别特征分析"><a href="#15-类别特征分析" class="headerlink" title="15.类别特征分析"></a>15.类别特征分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># #unique分布</span></span><br><span class="line"><span class="keyword">for</span> fea <span class="keyword">in</span> categorical_features:</span><br><span class="line">    <span class="built_in">print</span>(Train_data[fea].nunique())</span><br><span class="line"></span><br><span class="line"><span class="comment"># #类别特征可视化 - 由于name和regionCode特征过于稀疏，所以选取其他类别特征进行可视化</span></span><br><span class="line">categorical_features_box = [<span class="string">&#x27;model&#x27;</span>, <span class="string">&#x27;brand&#x27;</span>, <span class="string">&#x27;bodyType&#x27;</span>, <span class="string">&#x27;fuelType&#x27;</span>, <span class="string">&#x27;gearbox&#x27;</span>, <span class="string">&#x27;notRepairedDamage&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> categorical_features_box:</span><br><span class="line">    Train_data[c] = Train_data[c].astype(<span class="string">&#x27;category&#x27;</span>)    <span class="comment"># 转化成类型数据的格式</span></span><br><span class="line">    <span class="comment"># any() - 判断给定的可迭代参数iterable:如果全部为 False,则返回 False;如果有一个为 True,则返回 True</span></span><br><span class="line">    <span class="keyword">if</span> Train_data[c].isnull().<span class="built_in">any</span>():</span><br><span class="line">        Train_data[c] = Train_data[c].cat.add_categories([<span class="string">&#x27;MISSING&#x27;</span>])   <span class="comment"># 如果有缺失值,那么添加新类别&#x27;MISSING&#x27;</span></span><br><span class="line">        Train_data[c] = Train_data[c].fillna(<span class="string">&#x27;MISSING&#x27;</span>)     <span class="comment"># 缺失值填充为MISSING</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># #定义箱型图</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">boxplot</span>(<span class="params">x, y, **kwargs</span>):</span></span><br><span class="line">    sns.boxplot(x=x, y=y)</span><br><span class="line">    x = plt.xticks(rotation=<span class="number">90</span>)     <span class="comment"># otation - label显示的旋转角度</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">f = pd.melt(Train_data, id_vars=[<span class="string">&#x27;price&#x27;</span>], value_vars=categorical_features_box)     <span class="comment"># id_vars - 不需要转化的列名</span></span><br><span class="line">g = sns.FacetGrid(f, col=<span class="string">&#x27;variable&#x27;</span>, col_wrap=<span class="number">2</span>, sharex=<span class="literal">False</span>, sharey=<span class="literal">False</span>, size=<span class="number">5</span>)</span><br><span class="line">g = g.<span class="built_in">map</span>(boxplot, <span class="string">&#x27;value&#x27;</span>, <span class="string">&#x27;price&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2020032416101646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="16-类别特征的小提琴图可视化"><a href="#16-类别特征的小提琴图可视化" class="headerlink" title="16.类别特征的小提琴图可视化"></a>16.类别特征的小提琴图可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">catg_list = categorical_features_box</span><br><span class="line">target = <span class="string">&#x27;price&#x27;</span></span><br><span class="line"><span class="keyword">for</span> catg <span class="keyword">in</span> catg_list:</span><br><span class="line">    sns.violinplot(x=catg, y=target, data=Train_data)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324161144416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="17-类别特征的柱形图可视化"><a href="#17-类别特征的柱形图可视化" class="headerlink" title="17.类别特征的柱形图可视化"></a>17.类别特征的柱形图可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bar_plot</span>(<span class="params">x, y, **kwargs</span>):</span></span><br><span class="line">    sns.barplot(x=x, y=y)</span><br><span class="line">    x = plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">f = pd.melt(Train_data, id_vars=[<span class="string">&#x27;price&#x27;</span>], value_vars=categorical_features_box)</span><br><span class="line">g = sns.FacetGrid(f, col=<span class="string">&#x27;variable&#x27;</span>, col_wrap=<span class="number">2</span>, sharey=<span class="literal">False</span>, sharex=<span class="literal">False</span>, size=<span class="number">5</span>)</span><br><span class="line">g = g.<span class="built_in">map</span>(bar_plot, <span class="string">&#x27;value&#x27;</span>, <span class="string">&#x27;price&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200324161301579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+    
+    <div>
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+    </div>
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="小书包 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="小书包 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://felixtree.tech/2021/07/13/part-1-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B-EDA/" title="part-1-二手车交易价格预测-EDA">https://felixtree.tech/2021/07/13/part-1-二手车交易价格预测-EDA/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/numpy-Learning/" rel="prev" title="numpy-Learning">
+      <i class="fa fa-chevron-left"></i> numpy-Learning
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-2-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B-%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="next" title="part-2-二手车交易价格预测-特征工程">
+      part-2-二手车交易价格预测-特征工程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzYxMy8zMDA4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EDA-%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E6%80%A7%E5%88%86%E6%9E%90-%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">EDA - 数据探索性分析_代码示例部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">代码示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BD%BD%E5%85%A5%E5%90%84%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%BB%A5%E5%8F%8A%E5%8F%AF%E8%A7%86%E5%8C%96%E5%BA%93"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.载入各种数据科学以及可视化库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BD%BD%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.载入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AE%80%E7%95%A5%E8%A7%82%E5%AF%9F%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.3.</span> <span class="nav-text">3.简略观察数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%95%B0%E6%8D%AE%E6%80%BB%E8%A7%88%E6%A6%82%E5%86%B5"><span class="nav-number">1.1.4.</span> <span class="nav-text">4.数据总览概况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%88%91%E4%BB%AC%E5%B0%86%E8%AE%AD%E7%BB%83%E9%9B%86%E7%9A%84%E7%BC%BA%E5%A4%B1%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.5.</span> <span class="nav-text">5.我们将训练集的缺失数据可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%BC%82%E5%B8%B8%E5%80%BC%E6%A3%80%E6%B5%8B"><span class="nav-number">1.1.6.</span> <span class="nav-text">6.异常值检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E4%BA%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E5%80%BC%E7%9A%84%E5%88%86%E5%B8%83"><span class="nav-number">1.1.7.</span> <span class="nav-text">7.了解预测值的分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%9F%A5%E7%9C%8Bskewness%E5%92%8Ckurtosis"><span class="nav-number">1.1.8.</span> <span class="nav-text">8.查看skewness和kurtosis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E6%9F%A5%E7%9C%8B%E9%A2%84%E6%B5%8B%E5%80%BC%E7%9A%84%E9%A2%91%E6%95%B0"><span class="nav-number">1.1.9.</span> <span class="nav-text">9.查看预测值的频数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E5%B0%86%E7%89%B9%E5%BE%81%E5%88%86%E4%B8%BA%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E5%92%8C%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81-%E5%B9%B6%E5%AF%B9%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E6%9F%A5%E7%9C%8Bunique%E5%88%86%E5%B8%83"><span class="nav-number">1.1.10.</span> <span class="nav-text">10.将特征分为类别特征和数字特征,并对类别特征查看unique分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E7%9C%8B%E4%B8%80%E4%B8%8B%E8%AE%AD%E7%BB%83%E9%9B%86%E7%B1%BB%E5%9E%8B%E7%89%B9%E5%BE%81%E7%9A%84%E7%89%B9%E5%BE%81%E5%88%86%E5%B8%83"><span class="nav-number">1.1.11.</span> <span class="nav-text">11.看一下训练集类型特征的特征分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90"><span class="nav-number">1.1.12.</span> <span class="nav-text">12.数字特征分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81%E7%9B%B8%E4%BA%92%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.13.</span> <span class="nav-text">13.数字特征相互之间的关系可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-%E5%A4%9A%E5%8F%98%E9%87%8F%E4%BA%92%E7%9B%B8%E5%85%B3%E7%B3%BB%E5%9B%9E%E5%BD%92%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.14.</span> <span class="nav-text">14.多变量互相关系回归可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90"><span class="nav-number">1.1.15.</span> <span class="nav-text">15.类别特征分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E7%9A%84%E5%B0%8F%E6%8F%90%E7%90%B4%E5%9B%BE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.16.</span> <span class="nav-text">16.类别特征的小提琴图可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E7%9A%84%E6%9F%B1%E5%BD%A2%E5%9B%BE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.17.</span> <span class="nav-text">17.类别特征的柱形图可视化</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小书包"
+      src="/uploads/touxiang.png">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/teng-fei-41-43" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;teng-fei-41-43" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/Baby1601tree?spm=1000.2115.3001.5343" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;Baby1601tree?spm&#x3D;1000.2115.3001.5343" rel="noopener" target="_blank"><i class="codiepie fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 202107 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.5k字</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset);
+            clearInterval(int);
+        }
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据
+            clearInterval(int); // 停止检测
+        }
+    }
+
+});
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

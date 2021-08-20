@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"felixtree.tech","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="与传统机器学习不同，深度学习既提供特征提取功能，也可以完成分类的功能。这一TASK主要演示了如何利用深度学习来完成文本表示。本章主要使用FastText来完成深度学习词向量的表示。FastText通过Embedding层将单词映射到稠密空间，然后将句子中的所有单词在Embedding层空间进行平均，进而完成分类工作。所以FastText层是一个三层的神经网络：输入层、隐含层和输出层。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="part-4-NLP之新闻文本分类-深度学习表示分词向量">
+<meta property="og:url" content="https://felixtree.tech/2021/07/13/part-4-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A1%A8%E7%A4%BA%E5%88%86%E8%AF%8D%E5%90%91%E9%87%8F/index.html">
+<meta property="og:site_name" content="小书包的知识屋">
+<meta property="og:description" content="与传统机器学习不同，深度学习既提供特征提取功能，也可以完成分类的功能。这一TASK主要演示了如何利用深度学习来完成文本表示。本章主要使用FastText来完成深度学习词向量的表示。FastText通过Embedding层将单词映射到稠密空间，然后将句子中的所有单词在Embedding层空间进行平均，进而完成分类工作。所以FastText层是一个三层的神经网络：输入层、隐含层和输出层。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200726154028173.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200726154142831.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200726180553348.png">
+<meta property="article:published_time" content="2021-07-13T04:01:44.000Z">
+<meta property="article:modified_time" content="2021-07-13T04:16:49.156Z">
+<meta property="article:author" content="小书包">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200726154028173.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="https://felixtree.tech/2021/07/13/part-4-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A1%A8%E7%A4%BA%E5%88%86%E8%AF%8D%E5%90%91%E9%87%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>part-4-NLP之新闻文本分类-深度学习表示分词向量 | 小书包的知识屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="小书包的知识屋" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/FelixBigTree"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小书包的知识屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://felixtree.tech/2021/07/13/part-4-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A1%A8%E7%A4%BA%E5%88%86%E8%AF%8D%E5%90%91%E9%87%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/touxiang.png">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小书包的知识屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          part-4-NLP之新闻文本分类-深度学习表示分词向量
+        </h1>
+
+        <div class="post-meta">
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-13 12:01:44 / 修改时间：12:16:49" itemprop="dateCreated datePublished" datetime="2021-07-13T12:01:44+08:00">2021-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-NLP-%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/" itemprop="url" rel="index"><span itemprop="name">机器学习_NLP - 新闻文本分类</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>与传统机器学习不同，深度学习既提供特征提取功能，也可以完成分类的功能。这一TASK主要演示了如何利用深度学习来完成文本表示。<br>本章主要使用FastText来完成深度学习词向量的表示。FastText通过Embedding层将单词映射到稠密空间，然后将句子中的所有单词在Embedding层空间进行平均，进而完成分类工作。所以FastText层是一个三层的神经网络：输入层、隐含层和输出层。<br>        <img src="https://img-blog.csdnimg.cn/20200726154028173.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>下图是使用Keras实现的FastText网络结构<br><img src="https://img-blog.csdnimg.cn/20200726154142831.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>以下是通过FastText完成词文本分类的代码和释义，通过代码复现来完成FastText的学习</p>
+<h1 id="导入第三方模块"><a href="#导入第三方模块" class="headerlink" title="导入第三方模块"></a>导入第三方模块</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> f1_score</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> StratifiedKFold  <span class="comment"># 这可以保证每一折分布一致</span></span><br><span class="line"><span class="keyword">import</span> fasttext</span><br></pre></td></tr></table></figure>
+<p>这里使用‘pip install fasttext’报错<br>解决方案是先下载了fasttext的第三方安装包，然后指定本地路径安装的<br>网址导航：<a target="_blank" rel="noopener" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext">https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext</a><br>安装命令：pip install fasttext-0.9.2-cp38-cp38-win_amd64.whl(需要把安装文件放到当前环境的路径下)</p>
+<h1 id="分类模型"><a href="#分类模型" class="headerlink" title="分类模型"></a>分类模型</h1><p>为了减小机器的压力，还是导入15000条训练样本数据</p>
+<span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train_df = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\data\train_set.csv&#x27;</span>,</span><br><span class="line">                       sep=<span class="string">&#x27;\t&#x27;</span>, nrows=<span class="number">15000</span>)</span><br></pre></td></tr></table></figure>
+<p>转换为FastText需要的格式，默认情况下，我们假设标签是以字符串__label__为前缀的词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train_df[<span class="string">&#x27;label_ft&#x27;</span>] = <span class="string">&#x27;__label__&#x27;</span> + train_df[<span class="string">&#x27;label&#x27;</span>].astype(<span class="built_in">str</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>取前10000个训练样本的text和新label，创建一个适合FastText格式的新训练集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train_df[[<span class="string">&#x27;text&#x27;</span>, <span class="string">&#x27;label_ft&#x27;</span>]].iloc[:-<span class="number">5000</span>].to_csv(<span class="string">&#x27;train.csv&#x27;</span>, index=<span class="literal">None</span>, header=<span class="literal">None</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>训练数据，学习率设为1，n-gram个数为2，为每个epoch输出一行记录,词频阈值为1，次数为25，损失函数选择分层softmax</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">model = fasttext.train_supervised(<span class="string">&#x27;train.csv&#x27;</span>, lr=<span class="number">1.0</span>, wordNgrams=<span class="number">2</span>, verbose=<span class="number">2</span>,</span><br><span class="line">                                  minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;hs&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">fasttext.train_supervised() - 训练一个监督模型，返回一个模型对象</span></span><br><span class="line"><span class="string">参数详解：</span></span><br><span class="line"><span class="string">    input - 训练数据文件路径</span></span><br><span class="line"><span class="string">    lr - 学习率</span></span><br><span class="line"><span class="string">    dim - 向量维度</span></span><br><span class="line"><span class="string">    ws - cbow模型时使用</span></span><br><span class="line"><span class="string">    epoch - 次数</span></span><br><span class="line"><span class="string">    minCount - 词频阈值，小于该值在初始化时会被过滤</span></span><br><span class="line"><span class="string">    minCountLabel - 类别阈值，类别小于改值初始化时会被过滤</span></span><br><span class="line"><span class="string">    minn - 构造subword时最小char个数</span></span><br><span class="line"><span class="string">    maxn - 构造subword时最大char个数</span></span><br><span class="line"><span class="string">    neg - 负采样</span></span><br><span class="line"><span class="string">    wordNgrams - n-gram个数，组成词语的长度</span></span><br><span class="line"><span class="string">    loss - 损失函数类型，softmax, ns:负采样， hs：分层softmax</span></span><br><span class="line"><span class="string">    bucket - 词扩充大小，[A, B]：A语料中包含的词向量，B不在语料中的词向量</span></span><br><span class="line"><span class="string">    thread - 线程个数，每个线程处理输入数据的一段，0号线程负责loss输出</span></span><br><span class="line"><span class="string">    lrUpdateRate - 学习率更新</span></span><br><span class="line"><span class="string">    t - 负采样阈值</span></span><br><span class="line"><span class="string">    label - 类别前缀</span></span><br><span class="line"><span class="string">    pretrainedVectors - 预训练的词向量文件路径，如果word出现在文件夹中初始化不再随机</span></span><br><span class="line"><span class="string">    verbose - 日志显示</span></span><br><span class="line"><span class="string">        verbose = 0 为不在标准输出流输出日志信息 </span></span><br><span class="line"><span class="string">        verbose = 1 为输出进度条记录 </span></span><br><span class="line"><span class="string">        verbose = 2 为每个epoch输出一行记录</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h1 id="预测验证集数据并计算精度"><a href="#预测验证集数据并计算精度" class="headerlink" title="预测验证集数据并计算精度"></a>预测验证集数据并计算精度</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">val_pred_fasttext = [model.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> train_df.iloc[-<span class="number">5000</span>:][<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">由于FastText单个预测值返回的是一个元组，元组包括标签列表和概率列表，如：</span></span><br><span class="line"><span class="string">    ((&#x27;__label__4&#x27;,), array([0.99362451]))</span></span><br><span class="line"><span class="string">所以我们在提取预测类别值的时候提前加上切片操作，将词标签的值取出；</span></span><br><span class="line"><span class="string">然后按照&#x27;__&#x27;对词标签进行分割，从而获取实际预测到的类别值</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">模型单例预测函数代码：</span></span><br><span class="line"><span class="string">def model.predict(self, text, k=1, threshold=0.0):</span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line"><span class="string">  模型预测，给定文本预测分类</span></span><br><span class="line"><span class="string">  @param text:       字符串, 需要utf-8</span></span><br><span class="line"><span class="string">  @param k:          返回标签的个数</span></span><br><span class="line"><span class="string">  @param threshold   概率阈值, 大于该值才返回</span></span><br><span class="line"><span class="string">  @return 标签列表, 概率列表</span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line"><span class="string">  pass</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(f1_score(train_df[<span class="string">&#x27;label&#x27;</span>].values[-<span class="number">5000</span>:].astype(<span class="built_in">str</span>), val_pred_fasttext, average=<span class="string">&#x27;macro&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>f1_score为0.82左右。</p>
+<h1 id="尝试增加训练样本的数量以提升其精度"><a href="#尝试增加训练样本的数量以提升其精度" class="headerlink" title="尝试增加训练样本的数量以提升其精度"></a>尝试增加训练样本的数量以提升其精度</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">train_df_big = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\data\train_set.csv&#x27;</span>,</span><br><span class="line">                           sep=<span class="string">&#x27;\t&#x27;</span>, nrows=<span class="number">75000</span>)</span><br><span class="line">train_df_big[<span class="string">&#x27;label_ft&#x27;</span>] = <span class="string">&#x27;__label__&#x27;</span> + train_df_big[<span class="string">&#x27;label&#x27;</span>].astype(<span class="built_in">str</span>)</span><br><span class="line">train_df_big[[<span class="string">&#x27;text&#x27;</span>, <span class="string">&#x27;label_ft&#x27;</span>]].iloc[:<span class="number">50000</span>].to_csv(<span class="string">&#x27;train_big.csv&#x27;</span>, index=<span class="literal">None</span>, header=<span class="literal">None</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_big = fasttext.train_supervised(<span class="string">&#x27;train_big.csv&#x27;</span>, lr=<span class="number">1.0</span>, wordNgrams=<span class="number">2</span>, verbose=<span class="number">2</span>,</span><br><span class="line">                                      minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;hs&#x27;</span>)</span><br><span class="line">val_pred_fasttext_big = [model_big.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> train_df_big.iloc[-<span class="number">50000</span>:][<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(train_df_big[<span class="string">&#x27;label&#x27;</span>].values[-<span class="number">50000</span>:].astype(<span class="built_in">str</span>), val_pred_fasttext_big, average=<span class="string">&#x27;macro&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>分数达到了0.944。</p>
+<h1 id="10折交叉验证"><a href="#10折交叉验证" class="headerlink" title="10折交叉验证"></a>10折交叉验证</h1><p>每折使用9/10的数据进行训练，1/10作为验证；<br>每折的划分必须保证标签的分布与整个数据集的分布一致；<br>        尝试使用StratifiedKFold将训练集分为10折，且分别保存不同折作为验证集时的训练集和验证集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">train_df = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\data\train_set.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">skf = StratifiedKFold(n_splits=<span class="number">10</span>)  <span class="comment"># 确保分出的折与原始集分布相同</span></span><br><span class="line"><span class="keyword">for</span> n_fold, (train_index, val_index) <span class="keyword">in</span> <span class="built_in">enumerate</span>(skf.split(train_df[<span class="string">&#x27;text&#x27;</span>], train_df[<span class="string">&#x27;label&#x27;</span>])):</span><br><span class="line">    <span class="comment"># enumerate()函数用于将一个可遍历的数据对象组合为一个索引序列，同时列出数据和数据下标，一般用在for循环当中</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;the <span class="subst">&#123;n_fold&#125;</span> data split...&#x27;</span>)</span><br><span class="line">    train_X, train_y, val_X, val_y = train_df[<span class="string">&#x27;text&#x27;</span>].iloc[train_index], train_df[<span class="string">&#x27;label&#x27;</span>][train_index], \</span><br><span class="line">                                     train_df[<span class="string">&#x27;text&#x27;</span>].iloc[val_index], train_df[<span class="string">&#x27;label&#x27;</span>][val_index]</span><br><span class="line">    <span class="comment"># 把标签转化成FastText能训练的形式</span></span><br><span class="line">    train_y = <span class="string">&#x27;__label__&#x27;</span> + train_y.astype(<span class="built_in">str</span>)</span><br><span class="line">    train_data = pd.DataFrame(<span class="built_in">list</span>(<span class="built_in">zip</span>(train_X.values, train_y.values)))</span><br><span class="line">    train_data.to_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split<span class="subst">&#123;n_fold&#125;</span>.csv&#x27;</span>,</span><br><span class="line">                      index=<span class="literal">None</span>, header=[<span class="string">&#x27;text&#x27;</span>, <span class="string">&#x27;label_ft&#x27;</span>], sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">    test_data = pd.DataFrame(<span class="built_in">list</span>(<span class="built_in">zip</span>(val_X.values, val_y.values)))</span><br><span class="line">    test_data.to_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split<span class="subst">&#123;n_fold&#125;</span>.csv&#x27;</span>,</span><br><span class="line">                     index=<span class="literal">None</span>, header=[<span class="string">&#x27;text&#x27;</span>, <span class="string">&#x27;label&#x27;</span>], sep=<span class="string">&#x27;\t&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="利用10折交叉验证调参"><a href="#利用10折交叉验证调参" class="headerlink" title="利用10折交叉验证调参"></a>利用10折交叉验证调参</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;starting K10 cross-validation training:&#x27;</span>)</span><br><span class="line"><span class="comment"># val_f1用于存放10次验证集的f1_score</span></span><br><span class="line">val_f1 = []</span><br><span class="line"><span class="keyword">for</span> n_fold <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    model = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split<span class="subst">&#123;n_fold&#125;</span>.csv&#x27;</span>,</span><br><span class="line">                                      lr=<span class="number">1.0</span>, wordNgrams=<span class="number">2</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">    val_df = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split<span class="subst">&#123;n_fold&#125;</span>.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">    val_pred = [model.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_df[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line">    val_f1.append(f1_score(val_df[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;the f1_score of <span class="subst">&#123;n_fold&#125;</span>training is:&#x27;</span>, val_f1[n_fold])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The average f1_score is:&#x27;</span>, <span class="built_in">sum</span>(val_f1) / <span class="built_in">len</span>(val_f1))</span><br></pre></td></tr></table></figure>
+<p>经过漫长的训练和等待……<br><img src="https://img-blog.csdnimg.cn/20200726180553348.png" alt="在这里插入图片描述"><br>十次训练的得分为0.93分，还不错。</p>
+<h1 id="线上验证"><a href="#线上验证" class="headerlink" title="线上验证"></a>线上验证</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test_data = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\data\test_a.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">test_pred = [model.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> test_data[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line">sub = pd.DataFrame(test_pred, columns=[<span class="string">&#x27;label&#x27;</span>])</span><br><span class="line">sub.to_csv(<span class="string">&#x27;sub.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>线上预测结果分数为0.9304，线上线下差别不大，分数还不错，不过参数都没大动，还有提高空间。</p>
+<p>前后尝试手动调了几次参，分数并没有变得更高</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">val_0 = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split0.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_0 = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split0.csv&#x27;</span>,</span><br><span class="line">                                    lr=<span class="number">1.0</span>, wordNgrams=<span class="number">3</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">val_pred_0 = [model_0.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_0[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(val_0[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred_0, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line"></span><br><span class="line">test_pred_0 = [model_0.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> test_data[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line">sub_0 = pd.DataFrame(test_pred_0, columns=[<span class="string">&#x27;label&#x27;</span>])</span><br><span class="line">sub_0.to_csv(<span class="string">&#x27;sub_0.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">val_1 = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split1.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_1 = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split1.csv&#x27;</span>,</span><br><span class="line">                                    lr=<span class="number">1.5</span>, wordNgrams=<span class="number">3</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">val_pred_1 = [model_1.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_1[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(val_1[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred_1, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0.9344292030486819</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">val_2 = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split2.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_2 = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split2.csv&#x27;</span>,</span><br><span class="line">                                    lr=<span class="number">2</span>, wordNgrams=<span class="number">3</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">val_pred_2 = [model_2.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_2[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(val_2[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred_2, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0.934281492108054</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">val_3 = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split3.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_3 = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split3.csv&#x27;</span>,</span><br><span class="line">                                    lr=<span class="number">1.5</span>, wordNgrams=<span class="number">4</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">val_pred_3 = [model_3.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_3[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(val_3[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred_3, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0.9383561689755379</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">val_4 = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split4.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_4 = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split4.csv&#x27;</span>,</span><br><span class="line">                                    lr=<span class="number">2.5</span>, wordNgrams=<span class="number">3</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">25</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">val_pred_4 = [model_4.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_4[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(val_4[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred_4, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0.9353875257235135</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">val_5 = pd.read_csv(<span class="string">f&#x27;data/fasttext_skf10_datasplit/test_split5.csv&#x27;</span>, sep=<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">model_5 = fasttext.train_supervised(<span class="string">f&#x27;data/fasttext_skf10_datasplit/train_split5.csv&#x27;</span>,</span><br><span class="line">                                    lr=<span class="number">2</span>, wordNgrams=<span class="number">4</span>, verbose=<span class="number">2</span>, minCount=<span class="number">1</span>, epoch=<span class="number">30</span>, loss=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line">val_pred_5 = [model_5.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> val_5[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line"><span class="built_in">print</span>(f1_score(val_5[<span class="string">&#x27;label&#x27;</span>].values.astype(<span class="built_in">str</span>), val_pred_5, average=<span class="string">&#x27;macro&#x27;</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0.9354738839095721</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">test_pred_3 = [model_3.predict(x)[<span class="number">0</span>][<span class="number">0</span>].split(<span class="string">&#x27;__&#x27;</span>)[-<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> test_data[<span class="string">&#x27;text&#x27;</span>]]</span><br><span class="line">sub_3 = pd.DataFrame(test_pred_3, columns=[<span class="string">&#x27;label&#x27;</span>])</span><br><span class="line">sub_3.to_csv(<span class="string">&#x27;sub_3.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>分数都在0.935上下徘徊，除了写一个自动调参的脚本，可能需要精度更高的模型加以训练了。</p>
+<p>下一章节会就深度学习的其他模型，继续尝试文本分类任务。</p>
+
+    </div>
+
+    
+    
+    
+
+    
+    <div>
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+    </div>
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="小书包 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="小书包 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://felixtree.tech/2021/07/13/part-4-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A1%A8%E7%A4%BA%E5%88%86%E8%AF%8D%E5%90%91%E9%87%8F/" title="part-4-NLP之新闻文本分类-深度学习表示分词向量">https://felixtree.tech/2021/07/13/part-4-NLP之新闻文本分类-深度学习表示分词向量/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-3-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-%E5%BB%BA%E6%A8%A1%E5%88%86%E8%AF%8D%E8%AE%AD%E7%BB%83%E6%96%B9%E6%B3%95/" rel="prev" title="part-3-NLP之新闻文本分类-建模分词训练方法">
+      <i class="fa fa-chevron-left"></i> part-3-NLP之新闻文本分类-建模分词训练方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-5-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-Word2Vec%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/" rel="next" title="part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理">
+      part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzYxMy8zMDA4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">导入第三方模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">分类模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E9%AA%8C%E8%AF%81%E9%9B%86%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%AE%A1%E7%AE%97%E7%B2%BE%E5%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">预测验证集数据并计算精度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E5%A2%9E%E5%8A%A0%E8%AE%AD%E7%BB%83%E6%A0%B7%E6%9C%AC%E7%9A%84%E6%95%B0%E9%87%8F%E4%BB%A5%E6%8F%90%E5%8D%87%E5%85%B6%E7%B2%BE%E5%BA%A6"><span class="nav-number">4.</span> <span class="nav-text">尝试增加训练样本的数量以提升其精度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10%E6%8A%98%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">5.</span> <span class="nav-text">10折交叉验证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A9%E7%94%A810%E6%8A%98%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E8%B0%83%E5%8F%82"><span class="nav-number">6.</span> <span class="nav-text">利用10折交叉验证调参</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8A%E9%AA%8C%E8%AF%81"><span class="nav-number">7.</span> <span class="nav-text">线上验证</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小书包"
+      src="/uploads/touxiang.png">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/teng-fei-41-43" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;teng-fei-41-43" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/Baby1601tree?spm=1000.2115.3001.5343" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;Baby1601tree?spm&#x3D;1000.2115.3001.5343" rel="noopener" target="_blank"><i class="codiepie fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 202107 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.5k字</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset);
+            clearInterval(int);
+        }
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据
+            clearInterval(int); // 停止检测
+        }
+    }
+
+});
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

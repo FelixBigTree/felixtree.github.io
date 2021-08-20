@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"felixtree.tech","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="4.1 MySQL 实战#学习内容#数据导入导出将之前创建的任意一张MySQL表导出,且是CSV&#x2F;XLS格式再将CSV&#x2F;XLS表导入数据库 –导出表(email表,xls格式)右键单击-导出向导-选择Excel数据表(.xls)-设置导出路径和文件名称-一直下一步-导出成功* –结果 –导入上一步导出的email(*.xls)表右键目标数据库下的表,选择导入向导 选择Excel文件(*.xls)-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="part_3 mysql实战演练">
+<meta property="og:url" content="https://felixtree.tech/2021/07/13/part-3-mysql%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83/index.html">
+<meta property="og:site_name" content="小书包的知识屋">
+<meta property="og:description" content="4.1 MySQL 实战#学习内容#数据导入导出将之前创建的任意一张MySQL表导出,且是CSV&#x2F;XLS格式再将CSV&#x2F;XLS表导入数据库 –导出表(email表,xls格式)右键单击-导出向导-选择Excel数据表(.xls)-设置导出路径和文件名称-一直下一步-导出成功* –结果 –导入上一步导出的email(*.xls)表右键目标数据库下的表,选择导入向导 选择Excel文件(*.xls)-">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406174251611.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406174625713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406174820519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406175203271.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406180149662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406180645321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019040618262161.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406182805156.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190406183854441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190410131333622.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190410131456815.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190410234708852.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190411131649126.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190411231127616.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-07-13T03:46:59.000Z">
+<meta property="article:modified_time" content="2021-07-13T04:16:09.190Z">
+<meta property="article:author" content="小书包">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190406174251611.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="https://felixtree.tech/2021/07/13/part-3-mysql%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>part_3 mysql实战演练 | 小书包的知识屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="小书包的知识屋" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/FelixBigTree"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小书包的知识屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://felixtree.tech/2021/07/13/part-3-mysql%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/touxiang.png">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小书包的知识屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          part_3 mysql实战演练
+        </h1>
+
+        <div class="post-meta">
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-13 11:46:59 / 修改时间：12:16:09" itemprop="dateCreated datePublished" datetime="2021-07-13T11:46:59+08:00">2021-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9E%B6%E6%9E%84%E5%B8%88%E4%B9%8B%E8%B7%AF/" itemprop="url" rel="index"><span itemprop="name">架构师之路</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="4-1-MySQL-实战"><a href="#4-1-MySQL-实战" class="headerlink" title="4.1 MySQL 实战"></a>4.1 MySQL 实战</h2><p>#学习内容#<br>数据导入导出<br>将之前创建的任意一张MySQL表导出,且是CSV/XLS格式<br>再将CSV/XLS表导入数据库</p>
+<p>–导出表(email表,xls格式)<br><img src="https://img-blog.csdnimg.cn/20190406174251611.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><em>右键单击-导出向导-选择Excel数据表(</em>.xls)-设置导出路径和文件名称-一直下一步-导出成功*</p>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190406174625713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>–导入上一步导出的email(*.xls)表<br>右键目标数据库下的表,选择导入向导<br><img src="https://img-blog.csdnimg.cn/20190406174820519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>选择Excel文件(*.xls)-选择要导入的文件(email.xls)-勾选表名(可更改表名,为了不与原来的表名字重复,这表默认使用表名:sheet1)</p>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190406175203271.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<span id="more"></span>
+
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><p>项目七: 各部门工资最高的员工（难度：中等）<br>创建 Employee 表，包含所有员工信息，每个员工有其对应的 Id, salary 和 department Id。<br>+—-+——-+——–+————–+<br>| Id | Name  | Salary | DepartmentId |<br>+—-+——-+——–+————–+<br>| 1  | Joe   | 70000  | 1            |<br>| 2  | Henry | 80000  | 2            |<br>| 3  | Sam   | 60000  | 2            |<br>| 4  | Max   | 90000  | 1            |<br>+—-+——-+——–+————–+<br>创建 Department 表，包含公司所有部门的信息。<br>+—-+———-+<br>| Id | Name     |<br>+—-+———-+<br>| 1  | IT       |<br>| 2  | Sales    |<br>+—-+———-+<br>编写一个 SQL 查询，找出每个部门工资最高的员工。例如，根据上述给定的表格，Max 在 IT 部门有最高工资，Henry 在 Sales 部门有最高工资。<br>+————+———-+——–+<br>| Department | Employee | Salary |<br>+————+———-+——–+<br>| IT         | Max      | 90000  |<br>| Sales      | Henry    | 80000  |<br>+————+———-+——–+</p>
+<p>–创建表(Employee)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE Employee</span><br><span class="line">(Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> name VARCHAR(255) NOT NULL,</span><br><span class="line"> salary INT NOT NULL,</span><br><span class="line"> department INT NOT NULL);</span><br></pre></td></tr></table></figure>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190406180149662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70"></p>
+<p>–插入数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO Employee VALUES(1, &#x27;Joe&#x27;, 70000, 1);</span><br><span class="line">INSERT INTO Employee VALUES(2, &#x27;Henry&#x27;, 80000, 2);</span><br><span class="line">INSERT INTO Employee VALUES(3, &#x27;Sam&#x27;, 60000, 2);</span><br><span class="line">INSERT INTO Employee VALUES(4, &#x27;Max&#x27;, 90000, 1);</span><br></pre></td></tr></table></figure>
+
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190406180645321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>–创建表(Department)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE Department</span><br><span class="line">(Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> Name VARCHAR(255) NOT NULL);</span><br></pre></td></tr></table></figure>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/2019040618262161.png" alt="在这里插入图片描述"></p>
+<p>–插入数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO Department VALUES(1, &#x27;IT&#x27;);</span><br><span class="line">INSERT INTO Department VALUES(2, &#x27;Sales&#x27;);</span><br></pre></td></tr></table></figure>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190406182805156.png" alt="在这里插入图片描述"></p>
+<p>–代码(编写一个 SQL 查询，找出每个部门工资最高的员工。例如，根据上述给定的表格，Max 在 IT 部门有最高工资，Henry 在 Sales 部门有最高工资)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT E.name, D.Name</span><br><span class="line">FROM Employee AS E</span><br><span class="line">JOIN Department AS D</span><br><span class="line">ON E.department = D.id</span><br><span class="line">GROUP BY D.Name;</span><br><span class="line">HAVING E.salary = max(E.salary)</span><br></pre></td></tr></table></figure>
+
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190406183854441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="项目八-换座位（难度：中等）"><a href="#项目八-换座位（难度：中等）" class="headerlink" title="项目八: 换座位（难度：中等）"></a>项目八: 换座位（难度：中等）</h2><p>小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。<br>其中纵列的 id 是连续递增的<br>小美想改变相邻俩学生的座位。<br>你能不能帮她写一个 SQL query 来输出小美想要的结果呢？<br> 请创建如下所示 seat 表：<br>示例：<br>+———+———+<br>|    id   | student |<br>+———+———+<br>|    1    | Abbot   |<br>|    2    | Doris   |<br>|    3    | Emerson |<br>|    4    | Green   |<br>|    5    | Jeames  |<br>+———+———+<br>假如数据输入的是上表，则输出结果如下：<br>+———+———+<br>|    id   | student |<br>+———+———+<br>|    1    | Doris   |<br>|    2    | Abbot   |<br>|    3    | Green   |<br>|    4    | Emerson |<br>|    5    | Jeames  |<br>+———+———+<br>注意：<br>如果学生人数是奇数，则不需要改变最后一个同学的座位。</p>
+<p>–创建表(seat)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE seat</span><br><span class="line">(id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> student VARCHAR(255) NOT NULL);</span><br></pre></td></tr></table></figure>
+<p>–插入数据</p>
+<pre><code>INSERT INTO seat VALUES (1, &#39;Abbot&#39;);
+INSERT INTO seat VALUES (2, &#39;Doris&#39;);
+INSERT INTO seat VALUES (3, &#39;Emerson&#39;);
+INSERT INTO seat VALUES (4, &#39;Green&#39;);
+INSERT INTO seat VALUES (5, &#39;Jeames&#39;);
+</code></pre>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190410131333622.png" alt="在这里插入图片描述"></p>
+<p>–代码(想改变相邻俩学生的座位,如果学生人数是奇数，则不需要改变最后一个同学的座位)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SELECT id, student FROM</span><br><span class="line">(SELECT id - 1 AS id, student FROM seat </span><br><span class="line"> WHERE MOD(id,2) = 0 </span><br><span class="line"> UNION </span><br><span class="line"> SELECT id + 1 AS id, student FROM seat</span><br><span class="line"> WHERE MOD(id,2) = 1 AND id &lt;&gt; (SELECT COUNT(*) FROM seat)</span><br><span class="line"> UNION</span><br><span class="line"> SELECT id, student FROM seat</span><br><span class="line"> WHERE MOD(id,2) = 1 AND id = (SELECT COUNT(*) FROM seat)) s </span><br><span class="line">ORDER BY id;</span><br></pre></td></tr></table></figure>
+
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190410131456815.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="项目九-分数排名（难度：中等）"><a href="#项目九-分数排名（难度：中等）" class="headerlink" title="项目九: 分数排名（难度：中等）"></a>项目九: 分数排名（难度：中等）</h2><p>编写一个 SQL 查询来实现分数排名。如果两个分数相同，则两个分数排名（Rank）相同。请注意，平分后的下一个名次应该是下一个连续的整数值。换句话说，名次之间不应该有“间隔”。<br>创建以下 score 表：<br>+—-+——-+<br>| Id | Score |<br>+—-+——-+<br>| 1 | 3.50 |<br>| 2 | 3.65 |<br>| 3 | 4.00 |<br>| 4 | 3.85 |<br>| 5 | 4.00<br>| 6 | 3.65 |<br>+—-+——-+<br>例如，根据上述给定的 scores 表，你的查询应该返回（按分数从高到低排列）：<br>+——-+——+<br>| Score | Rank |<br>+——-+——+<br>| 4.00 | 1 |<br>| 4.00 | 1 |<br>| 3.85 | 2 |<br>| 3.65 | 3 |<br>| 3.65 | 3 |<br>| 3.50 | 4 |<br>+——-+——+</p>
+<p>–创建表(Score)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE score</span><br><span class="line">(Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> Score DECIMAL(5,2) NOT NULL);</span><br></pre></td></tr></table></figure>
+<p>–插入数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO score VALUES (1, 3.50);</span><br><span class="line">INSERT INTO score VALUES (2, 3.65);</span><br><span class="line">INSERT INTO score VALUES (3, 4.00);</span><br><span class="line">INSERT INTO score VALUES (4, 3.85);</span><br><span class="line">INSERT INTO score VALUES (5, 4.00);</span><br><span class="line">INSERT INTO score VALUES (6, 3.65);</span><br></pre></td></tr></table></figure>
+<p>–代码(编写一个 SQL 查询来实现分数排名。如果两个分数相同，则两个分数排名（Rank）相同)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT s1.Score, COUNT(DISTINCT s2.Score) AS Rank</span><br><span class="line">FROM score AS s1</span><br><span class="line">JOIN score AS s2 </span><br><span class="line">ON s1.Score &lt;= s2.Score</span><br><span class="line">GROUP BY s1.Id</span><br><span class="line">ORDER BY s1.Score DESC;</span><br></pre></td></tr></table></figure>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190410234708852.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="4-2-MySQL-实战-复杂项目"><a href="#4-2-MySQL-实战-复杂项目" class="headerlink" title="4.2 MySQL 实战 - 复杂项目"></a>4.2 MySQL 实战 - 复杂项目</h2><p>#作业#</p>
+<h2 id="项目十：行程和用户（难度：困难）"><a href="#项目十：行程和用户（难度：困难）" class="headerlink" title="项目十：行程和用户（难度：困难）"></a>项目十：行程和用户（难度：困难）</h2><p>Trips 表中存所有出租车的行程信息。每段行程有唯一键 Id，Client_Id 和 Driver_Id 是 Users 表中 Users_Id 的外键。Status 是枚举类型，枚举成员为 (‘completed’, ‘cancelled_by_driver’, ‘cancelled_by_client’)。<br>+—-+———–+———–+———+——————–+———-+<br>| Id | Client_Id | Driver_Id | City_Id |        Status      |Request_at|<br>+—-+———–+———–+———+——————–+———-+<br>| 1  |     1     |    10     |    1    |     completed      |2013-10-01|<br>| 2  |     2     |    11     |    1    | cancelled_by_driver|2013-10-01|<br>| 3  |     3     |    12     |    6    |     completed      |2013-10-01|<br>| 4  |     4     |    13     |    6    | cancelled_by_client|2013-10-01|<br>| 5  |     1     |    10     |    1    |     completed      |2013-10-02|<br>| 6  |     2     |    11     |    6    |     completed      |2013-10-02|<br>| 7  |     3     |    12     |    6    |     completed      |2013-10-02|<br>| 8  |     2     |    12     |    12   |     completed      |2013-10-03|<br>| 9  |     3     |    10     |    12   |     completed      |2013-10-03|<br>| 10 |     4     |    13     |    12   | cancelled_by_driver|2013-10-03|<br>+—-+———–+———–+———+——————–+———+<br>Users 表存所有用户。每个用户有唯一键 Users_Id。Banned 表示这个用户是否被禁止，Role 则是一个表示（‘client’, ‘driver’, ‘partner’）的枚举类型。<br>+———-+——–+——–+<br>| Users_Id | Banned |  Role  |<br>+———-+——–+——–+<br>|    1     |   No   | client |<br>|    2     |   Yes  | client |<br>|    3     |   No   | client |<br>|    4     |   No   | client |<br>|    10    |   No   | driver |<br>|    11    |   No   | driver |<br>|    12    |   No   | driver |<br>|    13    |   No   | driver |<br>+———-+——–+——–+<br>写一段 SQL 语句查出 2013年10月1日 至 2013年10月3日 期间非禁止用户的取消率。基于上表，你的 SQL 语句应返回如下结果，取消率（Cancellation Rate）保留两位小数。<br>+————+——————-+<br>|     Day    | Cancellation Rate |<br>+————+——————-+<br>| 2013-10-01 |       0.33        |<br>| 2013-10-02 |       0.00        |<br>| 2013-10-03 |       0.50        |<br>+————+——————-+</p>
+<p>–创建表(Trips)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE Trips</span><br><span class="line">(Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> Client_Id INT NOT NULL,</span><br><span class="line"> Driver_Id INT NOT NULL,</span><br><span class="line"> City_Id INT NOT NULL,</span><br><span class="line"> Status enum(&#x27;completed&#x27;, &#x27;cancelled_by_driver&#x27;, &#x27;cancelled_by_client&#x27;),</span><br><span class="line"> Request_at DATE);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>–插入数据(Trips)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO Trips VALUES (1, 1, 10, 1, &#x27;completed&#x27;, &#x27;2013-10-01&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (2, 2, 11, 1, &#x27;cancelled_by_driver&#x27;, &#x27;2013-10-01&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (3, 3, 12, 6, &#x27;completed&#x27;, &#x27;2013-10-01&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (4, 4, 13, 6, &#x27;cancelled_by_client&#x27;, &#x27;2013-10-01&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (5, 1, 10, 1, &#x27;completed&#x27;, &#x27;2013-10-02&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (6, 2, 11, 6, &#x27;completed&#x27;, &#x27;2013-10-02&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (7, 3, 12, 6, &#x27;completed&#x27;, &#x27;2013-10-02&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (8, 2, 12, 12, &#x27;completed&#x27;, &#x27;2013-10-03&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (9, 3, 10, 12, &#x27;completed&#x27;, &#x27;2013-10-03&#x27;);</span><br><span class="line">INSERT INTO Trips VALUES (10, 4, 13, 12, &#x27;cancelled_by_driver&#x27;, &#x27;2013-10-03&#x27;);</span><br></pre></td></tr></table></figure>
+<p>–创建表(Users)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE Users</span><br><span class="line">(Users_Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> Banned enum(&#x27;Yes&#x27;, &#x27;No&#x27;),</span><br><span class="line"> Role enum(&#x27;client&#x27;, &#x27;driver&#x27;, &#x27;partner&#x27;));</span><br></pre></td></tr></table></figure>
+<p>–插入数据(Users)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO Users VALUES(1, &#x27;No&#x27;, &#x27;client&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(2, &#x27;Yes&#x27;, &#x27;client&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(3, &#x27;No&#x27;, &#x27;client&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(4, &#x27;No&#x27;, &#x27;client&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(10, &#x27;No&#x27;, &#x27;driver&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(11, &#x27;No&#x27;, &#x27;driver&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(12, &#x27;No&#x27;, &#x27;driver&#x27;);</span><br><span class="line">INSERT INTO Users VALUES(13, &#x27;No&#x27;, &#x27;driver&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>–代码(查出 2013年10月1日 至 2013年10月3日 期间非禁止用户的取消率,取消率（Cancellation Rate）保留两位小数)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SELECT a.request_at AS Day,</span><br><span class="line">ROUND(</span><br><span class="line">SUM(CASE WHEN a.status = &#x27;completed&#x27; THEN 0 ELSE 1 END)/COUNT(*),2) </span><br><span class="line">AS &#x27;Cancellation Rate&#x27;</span><br><span class="line">FROM trips a</span><br><span class="line">JOIN users b</span><br><span class="line">ON a.Client_Id = b.Users_Id AND b.Banned = &#x27;No&#x27;</span><br><span class="line">WHERE a.Request_at BETWEEN &#x27;2013-10-01&#x27;AND &#x27;2013-10-03&#x27;</span><br><span class="line">GROUP BY a.Request_at;</span><br></pre></td></tr></table></figure>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190411131649126.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><a target="_blank" rel="noopener" href="http://www.mamicode.com/info-detail-2651451.html">http://www.mamicode.com/info-detail-2651451.html</a></p>
+<h2 id="项目十一：各部门前3高工资的员工（难度：中等）"><a href="#项目十一：各部门前3高工资的员工（难度：中等）" class="headerlink" title="项目十一：各部门前3高工资的员工（难度：中等）"></a>项目十一：各部门前3高工资的员工（难度：中等）</h2><p>将项目7中的 employee 表清空，重新插入以下数据（其实是多插入5,6两行）：<br>+—-+——-+——–+————–+<br>| Id | Name  | Salary | DepartmentId |<br>+—-+——-+——–+————–+<br>| 1  | Joe   | 70000  | 1            |<br>| 2  | Henry | 80000  | 2            |<br>| 3  | Sam   | 60000  | 2            |<br>| 4  | Max   | 90000  | 1            |<br>| 5  | Janet | 69000  | 1            |<br>| 6  | Randy | 85000  | 1            |<br>+—-+——-+——–+————–+<br>编写一个 SQL 查询，找出每个部门工资前三高的员工。例如，根据上述给定的表格，查询结果应返回：<br>+————+———-+——–+<br>| Department | Employee | Salary |<br>+————+———-+——–+<br>| IT         | Max      | 90000  |<br>| IT         | Randy    | 85000  |<br>| IT         | Joe      | 70000  |<br>| Sales      | Henry    | 80000  |<br>| Sales      | Sam      | 60000  |<br>+————+———-+——–+</p>
+<p>此外，请考虑实现各部门前N高工资的员工功能。</p>
+<p>–创建表(Employee)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE Employee</span><br><span class="line">(Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> Name VARCHAR(255) NOT NULL,</span><br><span class="line"> Salary INT NOT NULL,</span><br><span class="line"> Departmentld INT NOT NULL);</span><br></pre></td></tr></table></figure>
+<p>–插入数据(Employee)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO Employee VALUES(1, &#x27;Joe&#x27;, 70000, 1);</span><br><span class="line">INSERT INTO Employee VALUES(2, &#x27;Henry&#x27;, 80000, 2);</span><br><span class="line">INSERT INTO Employee VALUES(3, &#x27;Sam&#x27;, 60000, 2);</span><br><span class="line">INSERT INTO Employee VALUES(4, &#x27;Max&#x27;, 90000, 1);</span><br><span class="line">INSERT INTO Employee VALUES(5, &#x27;Janet&#x27;, 69000, 1);</span><br><span class="line">INSERT INTO Employee VALUES(6, &#x27;Randy&#x27;, 85000, 1);</span><br></pre></td></tr></table></figure>
+<p>–创建表(Department)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE Department</span><br><span class="line">(Id INT NOT NULL PRIMARY KEY,</span><br><span class="line"> Name VARCHAR(255) NOT NULL);</span><br></pre></td></tr></table></figure>
+<p>–插入数据(Department)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO Department VALUES(1, &#x27;IT&#x27;);</span><br><span class="line">INSERT INTO Department VALUES(2, &#x27;Sales&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>–代码(编写一个 SQL 查询，找出每个部门工资前三高的员工)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SELECT d.Name AS Department, e1.Name AS Employee, e1.Salary</span><br><span class="line">FROM Employee AS e1</span><br><span class="line">JOIN Employee AS e2</span><br><span class="line">ON e1.Departmentld = e2.Departmentld </span><br><span class="line">AND E2.Salary &gt;= E1.Salary </span><br><span class="line">JOIN Department AS d</span><br><span class="line">ON e1.Departmentld = d.Id</span><br><span class="line">GROUP BY e1.Name</span><br><span class="line">HAVING COUNT(DISTINCT e2.Salary) &lt;=3</span><br><span class="line">ORDER BY d.name, e1.Salary DESC;</span><br></pre></td></tr></table></figure>
+<p>–结果<br><img src="https://img-blog.csdnimg.cn/20190411231127616.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="项目十二-分数排名-（难度：中等）"><a href="#项目十二-分数排名-（难度：中等）" class="headerlink" title="项目十二 分数排名 - （难度：中等）"></a>项目十二 分数排名 - （难度：中等）</h2><p>依然是昨天的分数表，实现排名功能，但是排名是非连续的，如下：<br>+——-+——+<br>| Score | Rank |<br>+——-+——+<br>| 4.00  | 1    |<br>| 4.00  | 1    |<br>| 3.85  | 3    |<br>| 3.65  | 4    |<br>| 3.65  | 4    |<br>| 3.50  | 6    |<br>+——-+——</p>
+<p>–代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT Score,</span><br><span class="line">(SELECT COUNT(*) FROM score AS s2 </span><br><span class="line">WHERE s2.Score &gt; s1.Score)+1 AS &#x27;Rank&#x27;</span><br><span class="line">FROM score AS s1</span><br><span class="line">ORDER BY Score DESC;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    
+    <div>
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+    </div>
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="小书包 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="小书包 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://felixtree.tech/2021/07/13/part-3-mysql%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83/" title="part_3 mysql实战演练">https://felixtree.tech/2021/07/13/part-3-mysql实战演练/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-2-mysql%E8%A1%A8%E6%93%8D%E4%BD%9C%E5%8F%8A%E8%A1%A8%E8%81%94%E7%BB%93/" rel="prev" title="part_2 mysql表操作及表联结">
+      <i class="fa fa-chevron-left"></i> part_2 mysql表操作及表联结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/13/numpy-Learning/" rel="next" title="numpy-Learning">
+      numpy-Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzYxMy8zMDA4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-MySQL-%E5%AE%9E%E6%88%98"><span class="nav-number">1.</span> <span class="nav-text">4.1 MySQL 实战</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">2.</span> <span class="nav-text">作业</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%85%AB-%E6%8D%A2%E5%BA%A7%E4%BD%8D%EF%BC%88%E9%9A%BE%E5%BA%A6%EF%BC%9A%E4%B8%AD%E7%AD%89%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">项目八: 换座位（难度：中等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%B9%9D-%E5%88%86%E6%95%B0%E6%8E%92%E5%90%8D%EF%BC%88%E9%9A%BE%E5%BA%A6%EF%BC%9A%E4%B8%AD%E7%AD%89%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">项目九: 分数排名（难度：中等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-MySQL-%E5%AE%9E%E6%88%98-%E5%A4%8D%E6%9D%82%E9%A1%B9%E7%9B%AE"><span class="nav-number">5.</span> <span class="nav-text">4.2 MySQL 实战 - 复杂项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%8D%81%EF%BC%9A%E8%A1%8C%E7%A8%8B%E5%92%8C%E7%94%A8%E6%88%B7%EF%BC%88%E9%9A%BE%E5%BA%A6%EF%BC%9A%E5%9B%B0%E9%9A%BE%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">项目十：行程和用户（难度：困难）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%8D%81%E4%B8%80%EF%BC%9A%E5%90%84%E9%83%A8%E9%97%A8%E5%89%8D3%E9%AB%98%E5%B7%A5%E8%B5%84%E7%9A%84%E5%91%98%E5%B7%A5%EF%BC%88%E9%9A%BE%E5%BA%A6%EF%BC%9A%E4%B8%AD%E7%AD%89%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">项目十一：各部门前3高工资的员工（难度：中等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%8D%81%E4%BA%8C-%E5%88%86%E6%95%B0%E6%8E%92%E5%90%8D-%EF%BC%88%E9%9A%BE%E5%BA%A6%EF%BC%9A%E4%B8%AD%E7%AD%89%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">项目十二 分数排名 - （难度：中等）</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小书包"
+      src="/uploads/touxiang.png">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/teng-fei-41-43" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;teng-fei-41-43" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/Baby1601tree?spm=1000.2115.3001.5343" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;Baby1601tree?spm&#x3D;1000.2115.3001.5343" rel="noopener" target="_blank"><i class="codiepie fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 202107 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.5k字</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset);
+            clearInterval(int);
+        }
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据
+            clearInterval(int); // 停止检测
+        }
+    }
+
+});
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

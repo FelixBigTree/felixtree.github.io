@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"felixtree.tech","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ndarray nadrray就是N维数组对象,是一个快速灵活的大数据集容器 可以用这种数组(ndarray)对整块数据执行数学运算   导入Nump库的代码 1import numpy as np   生成一些随机数据 1data &#x3D; np.random.randn(2, 3) –numpy.random.randn()  randn函数返回一个或一组样本,具有标准正态分布 标准正态分布又称为u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="numpy-Learning">
+<meta property="og:url" content="https://felixtree.tech/2021/07/13/numpy-Learning/index.html">
+<meta property="og:site_name" content="小书包的知识屋">
+<meta property="og:description" content="ndarray nadrray就是N维数组对象,是一个快速灵活的大数据集容器 可以用这种数组(ndarray)对整块数据执行数学运算   导入Nump库的代码 1import numpy as np   生成一些随机数据 1data &#x3D; np.random.randn(2, 3) –numpy.random.randn()  randn函数返回一个或一组样本,具有标准正态分布 标准正态分布又称为u">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722115320572.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722115619260.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722115800181.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019072212025788.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722120347488.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722120904117.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722121222711.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019072212143346.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190722121501621.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723163937118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723164734466.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723165212364.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723165423621.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723165825124.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019072317035293.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723170452868.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723173355375.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190723173808876.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724102418114.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724102556493.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724102830256.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724103001819.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724103250903.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724105502162.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724111805354.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724112549182.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724113008204.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724113715328.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724113857801.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724113950500.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724114141889.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724114420710.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724114519752.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724115548573.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019072413384917.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724134142225.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724134618221.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724135006176.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724135218117.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724135427394.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724140137110.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724173139303.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019072417331173.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724173838191.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724173922749.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724174413352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724174630460.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190724175157370.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019072417533170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725104530447.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725104936228.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725105413691.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725105640692.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725110113454.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725113034950.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725113256475.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725113602758.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725113933447.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725114756649.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725114933275.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725115232636.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725115342567.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725115719122.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725115749952.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725142024477.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725142219204.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725145152841.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725145411636.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725145542701.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/201907251645546.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725164644525.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725165443547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725165535128.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725170109988.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725170704105.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190725171355947.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-07-13T03:48:19.000Z">
+<meta property="article:modified_time" content="2021-07-13T04:13:29.060Z">
+<meta property="article:author" content="小书包">
+<meta property="article:tag" content="numpy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190722115320572.png">
+
+<link rel="canonical" href="https://felixtree.tech/2021/07/13/numpy-Learning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>numpy-Learning | 小书包的知识屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="小书包的知识屋" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/FelixBigTree"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小书包的知识屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://felixtree.tech/2021/07/13/numpy-Learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/touxiang.png">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小书包的知识屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          numpy-Learning
+        </h1>
+
+        <div class="post-meta">
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-13 11:48:19 / 修改时间：12:13:29" itemprop="dateCreated datePublished" datetime="2021-07-13T11:48:19+08:00">2021-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">python基础</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="ndarray"><a href="#ndarray" class="headerlink" title="ndarray"></a>ndarray</h1><ul>
+<li>nadrray就是N维数组对象,是一个快速灵活的大数据集容器</li>
+<li>可以用这种数组(ndarray)对整块数据执行数学运算</li>
+</ul>
+<p> 导入Nump库的代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br></pre></td></tr></table></figure>
+
+<p> 生成一些随机数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data = np.random.randn(2, 3)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190722115320572.png" alt="在这里插入图片描述"><br>–numpy.random.randn()</p>
+<ul>
+<li>randn函数返回一个或一组样本,具有标准正态分布</li>
+<li>标准正态分布又称为u分布,是以0为均值,以1为标准差的正态分布,记为N(0, 1)</li>
+</ul>
+<p>–dn表示每个维度,randn(2, 3)表示返回一个2行3列的数组</p>
+<span id="more"></span>
+
+<p>数组可以进行数学运算</p>
+<ul>
+<li>把数组中的每个元素都乘以10</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data * 10</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190722115619260.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>两个数组相加,数组中各个元素对应相加</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data + data</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190722115800181.png" alt="在这里插入图片描述"><br>numpy是一个通用的同构数据多维容器,其中所有的元素必须是相同类型的<br>每个数组都有</p>
+<ul>
+<li>shape(一个表示各维度大小的元组)</li>
+<li>dtype(一个用于说明数组数据类型的对象)</li>
+</ul>
+<p>看一下data数组的shape和dtype</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.shape</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019072212025788.png" alt="在这里插入图片描述"><br>可以看出data是一个2行3列的数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.dtype</span><br></pre></td></tr></table></figure>
+
+<p> <img src="https://img-blog.csdnimg.cn/20190722120347488.png" alt="在这里插入图片描述"><br> 可以看出data的数组数据类型为’float64’</p>
+<h2 id="创建ndarray"><a href="#创建ndarray" class="headerlink" title="创建ndarray"></a>创建ndarray</h2><p>array函数可以用来创建ndarray数组,它接受一切序列型的对象(包括其它数组)<br>以一个列表的转换为例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">data1 = [6, 7.5, 8, 0, 1]</span><br><span class="line">arr1 = np.array(data1)</span><br><span class="line">arr1</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190722120904117.png" alt="在这里插入图片描述"><br> 可以看到列表data1转换成了数组arr1</p>
+<p>如果列表是由一组等长列表组成,array函数会将其转换为一个多维数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">data2 = [[1, 2, 3, 4], [5, 6, 7, 8]]</span><br><span class="line">arr2 = np.array(data2)</span><br><span class="line">arr2</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190722121222711.png" alt="在这里插入图片描述"><br>可以看出由两个列表组成的列表被转换成了一个2维数组</p>
+<p>我们可以用属性ndim和shape验证</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2.ndim</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019072212143346.png" alt="在这里插入图片描述"><br>-ndim返回的是数组的维度，返回的只有一个数，该数即表示数组的维度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2.shape</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190722121501621.png" alt="在这里插入图片描述"><br>–若无特殊说明,np.array会为待创建的数据选择最匹配的数据类型<br>–如上例的arr1,arr2,我们看一下创建的数据类型<br><img src="https://img-blog.csdnimg.cn/20190723163937118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可以看到,列表中有小数的话,array建立的数组数据类型为浮点型 –&gt; ‘float64’<br>列表中如果都是整数,那么array建立的数组数据类型就为整数型 –&gt;’int32’</p>
+<p>–np.zeros()方法可以创建指定长度或形状的全0数组<br>若传入一个数字10,那么默认创建一个一维的10个’0’的数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.zeros(10)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190723164734466.png" alt="在这里插入图片描述"><br>创建的数组数据类型为浮点型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.zeros(10).dtype</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190723165212364.png" alt="在这里插入图片描述"></p>
+<p>传入一个表示形状的元组,可以创建多维数组<br>比如创建一个3行6列的二维全’0’数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.zeros((3, 6))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190723165423621.png" alt="在这里插入图片描述"></p>
+<p>–np.empty()方法指定长度或形状的未初始化数组,也可以传入元组创建多维数组<br>比如创建一个三维的未初始化数组(2 * 3行2列)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.empty((2, 3, 2))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190723165825124.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>注意:np.empty返回全0数组的想法是不安全的,很多情况下返回的都是一些未初始化的垃圾值</p>
+<h2 id="np-arange"><a href="#np-arange" class="headerlink" title="np.arange()"></a>np.arange()</h2><p>–numpy中的arange是于python内置函数’range’的数组版<br>传入参数N,表示生成一个0到(N-1)的整数数组</p>
+<p>例如创建一个0-14的整数数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.arange(15)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019072317035293.png" alt="在这里插入图片描述"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.arange(15).dtype</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190723170452868.png" alt="在这里插入图片描述"><br>注意:Numpy关注的是数值计算,如果没有特别指定,数据类型基本都是’float64’(浮点数)</p>
+<h3 id="下面是常用的一些数组创建函数-使用频率很高"><a href="#下面是常用的一些数组创建函数-使用频率很高" class="headerlink" title="下面是常用的一些数组创建函数,使用频率很高"></a>下面是常用的一些数组创建函数,使用频率很高</h3><ul>
+<li>array: 将数据转换成ndarray(多维数组),dtype若不指定,默认匹配最适合源数据的数据类型</li>
+<li>asarry: 将数据转换未ndarray(多维数组),它和array的区别在于 –&gt; 当源数据是ndarray时,array会<br>拷贝出一个ndarray副本,而asarray不会</li>
+<li>arange: 类似于python内置函数range,但是arange返回的是一个ndarry,而内置的range返回的是一个list</li>
+<li>ones: 根据指定的形状和dtype创建一个全’1’数组,默认为’float64’浮点型</li>
+<li>ones_like: 以另一个数组为参数(获取该数组的形状),根据该参数的形状创建一个全’1’数组</li>
+<li>zeros, zeros_like: 类似ones和ones_like,不过创建的是全’0’数组</li>
+<li>empty, empty_like: 类似ones和ones_like,不过它只分配内存空间,但是不填充任何值(创建的都是未初始化的垃圾值)</li>
+<li>full: 使用fill value中的所有值,根据指定的形状和dtype创建一个数组(此处模拟一组fill_value)<img src="https://img-blog.csdnimg.cn/20190723173355375.png" alt="在这里插入图片描述"></li>
+<li>full_like: 以另一个数组的形状创建一个相同形状的数组,数组值为fill_value</li>
+<li>eye: 输入参数N,创建一个正方的N * N单位矩阵(对角线为1,其余为0),数组类型为浮点型<img src="https://img-blog.csdnimg.cn/20190723173808876.png" alt="在这里插入图片描述"></li>
+<li>identity: 和np.eye()作用一致</li>
+</ul>
+<h2 id="dtype"><a href="#dtype" class="headerlink" title="dtype"></a>dtype</h2><p>–dtype含有将ndarry的一块内存解释为特定数据类型所需的信息</p>
+<h3 id="常见的Numpy数据类型"><a href="#常见的Numpy数据类型" class="headerlink" title="常见的Numpy数据类型"></a>常见的Numpy数据类型</h3><ul>
+<li>int8: 类型代码:i1    –&gt;有符号的8位(1个字节)整型</li>
+<li>uint8: 类型代码:u1    –&gt;无符号的8位(1个字节)整型</li>
+<li>int16: 类型代码:i2    –&gt;有符号的16位(2个字节)整型</li>
+<li>uint16: 类型代码:u2    –&gt;无符号的16位(2个字节)整型</li>
+<li>int32: 类型代码:i4    –&gt;有符号的32位(4个字节)整型</li>
+<li>uint32: 类型代码:u4    –&gt;无符号的32位(4个字节)整型</li>
+<li>int64: 类型代码:i8    –&gt;有符号的64位(8个字节)整型</li>
+<li>uint64: 类型代码:u8    –&gt;无符号的64位(8个字节)整型</li>
+<li>float16: 类型代码:f2    –&gt;半精度浮点数</li>
+<li>float32: 类型代码:f4或f    –&gt;标准的单精度浮点数(与C的float兼容)</li>
+<li>float64: 类型代码:f8或d  –&gt;标准的双精度浮点数(与C的double和Python的float对象兼容)</li>
+<li>float128: 类型代码:f16或g    –&gt;扩展精度浮点数</li>
+<li>complex64: 类型代码:c8    –&gt;用两个32位浮点数表示的复数</li>
+<li>complex128: 类型代码:c16    –&gt;用两个64位浮点数表示的复数</li>
+<li>complex256: 类型代码:c32    –&gt;用两个128位浮点数表示的复数</li>
+<li>bool: 类型代码:?    –&gt;存储True和False的布尔类型</li>
+<li>object: 类型代码:O    –&gt;Python对象类型</li>
+<li>string_: 类型代码:S    –&gt;固定长度的字符串类型(每个字符1个字节),例如要创建一个长度为10的字符串,应使用S10</li>
+<li>unicode_: 类型代码:U    –&gt;固定长度的unicode类型(字节数由平台决定)</li>
+</ul>
+<p>– 可以通过ndarray的astype方法明确地将一个数组从一个dtype转换成另一个dtype<br>假设有一个整数型数组arr</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = np.array([1, 2, 3, 4, 5])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724102418114.png" alt="在这里插入图片描述"><br>将arr转换成浮点数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float_arr = arr.astype(np.float64)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724102556493.png" alt="在这里插入图片描述"></p>
+<p>假如将浮点数转换为整数,那么小数部分会被截取删除<br>例如有个浮点型数组arr2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2 = np.array([3.7, -1.2, -2.6, 0.5, 12.9, 10.1])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724102830256.png" alt="在这里插入图片描述"><br>转换成整数型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int_arr2 = arr2.astype(np.int32)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724103001819.png" alt="在这里插入图片描述"><br>可以看到新数组int_arr2将原数组的小数部分截取删除了<br><img src="https://img-blog.csdnimg.cn/20190724103250903.png" alt="在这里插入图片描述"></p>
+<p>也可以用astype将字符串数组转换为数值的形式<br>假设有一个字符串数组numeric_strings</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">numeric_strings = np.array([&#x27;1.25&#x27;, &#x27;-9.6&#x27;, &#x27;42&#x27;], dtype = np.string_)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724105502162.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>注意:使用np.string_类型时,要注意字符串长度,因为numpy的字符串数据大小是固定的,发生截取的时候不会报错</li>
+<li>如果转换过程中,字符串 –&gt; 数值的转换失败(如”一”无法转换成数值1,会引发一个ValueError</li>
+</ul>
+<p>–我们也可以将一个数组的dtype当作参数传入astype方法中<br>假设有一个整数型数组int_array和一个浮点型数组calibers</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int_array = np.arange(10)</span><br><span class="line">calibers = np.array([.22, .270, .357, .380, .44, .50], dtype = np.float64)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724111805354.png" alt="在这里插入图片描述"><br>如果想把int_array转换成和calibers一样的浮点型数组,可以将calibers的dtype传入astype方法的参数中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int_float = int_array.astype(calibers.dtype)</span><br><span class="line">int_float.dtype</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724112549182.png" alt="在这里插入图片描述"></p>
+<p>–也可以用数据类型的类型代码来表示dtype</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">empty_unit32 = np.empty(8, dtype = &#x27;u4&#x27;)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724113008204.png" alt="在这里插入图片描述"></p>
+<h1 id="Numpy数组的运算"><a href="#Numpy数组的运算" class="headerlink" title="Numpy数组的运算"></a>Numpy数组的运算</h1><ul>
+<li>大小相等的数组之间的任何算术运算都会将运算应用到元素级</li>
+</ul>
+<p>创建一个2行3列的二维数组arr</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr = np.array([[1., 2., 3.], [4., 5., 6.]])</span><br><span class="line">arr.shape</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724113715328.png" alt="在这里插入图片描述"><br>大小相等的数组之间做乘法,元素对应相乘</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr * arr</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724113857801.png" alt="在这里插入图片描述"></p>
+<p>大小相等的数组之间做减法,元素对应相减</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr - arr</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724113950500.png" alt="在这里插入图片描述"></p>
+<p>数组和标量之间的算术运算,会将标量值运算传播到各个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 / arr</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724114141889.png" alt="在这里插入图片描述"></p>
+<p>大小相同的数组之间比较,会产生布尔值数组<br>我们再创建一个大小和arr相同的二维数组arr</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2 = np.array([[0., 4., 1.], [7., 2., 12.]])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724114420710.png" alt="在这里插入图片描述"></p>
+<p>– 将arr和arr2作比较</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2 &gt; arr</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724114519752.png" alt="在这里插入图片描述"><br>可以看到产生了一个大小相同的布尔型数组,数组中每个元素都是arr和arr2相对应的比较</p>
+<h1 id="基本的索引和切片"><a href="#基本的索引和切片" class="headerlink" title="基本的索引和切片"></a>基本的索引和切片</h1><h2 id="一维数组切片"><a href="#一维数组切片" class="headerlink" title="一维数组切片"></a>一维数组切片</h2><ul>
+<li>从表面上来看,一维数组的切片和Python的list切片功能差不多</li>
+</ul>
+<p>创建一个0-9的整数型数组arr</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = np.arange(10)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724115548573.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>取arr中的第六个元素</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr[5]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019072413384917.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>取arr中的第6个到第8个元素,切片前闭后开</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr[5: 8]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724134142225.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>可以对切片的部分进行赋值,源数组原地修改<br>假如我将arr的第6到第8个数用’12’赋值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr[5: 8] = 12</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724134618221.png" alt="在这里插入图片描述"><br>可以看到,arr数组被原地修改<br>– 所以,数组切片和python列表切片最重要的区别就是:数组切片是原始数据的视图,这意味着数据不会被复制,视图上的任何修改都会直接反应到源数组上</p>
+<p>举个例子,创建一个arr的切片arr_slice</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr_slice = arr[5: 8]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724135006176.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>注意:如果我们修改了arr_slice的值,变动会体现在原始数组arr中</li>
+</ul>
+<p>比方把arr_slice的第二个数用’12345’赋值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr_slice[1] = 12345</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724135218117.png" alt="在这里插入图片描述"><br>可以看到,源数组的数据也被修改</p>
+<p>– 切片[:] 意思是切下数组中的所有值<br>比如我们给arr_slice中的每一个元组赋值’64’</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr_slice[:] = 64</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724135427394.png" alt="在这里插入图片描述"><br>可以看出,arr_slice中每个元素都被’64’赋值</p>
+<ul>
+<li>以上操作不同于python原生切片的原因在于,Numpy设计目的是处理大数据,如果将数据复制来复制去的,会给性能和内存带来非常大的压力</li>
+<li> 当然,如果想得到ndarray(数组)的切片副本而非视图的话,可以在切片之后增加一个copy()方法</li>
+</ul>
+<p>例如,我们想得到arr第6个到第8个元素的切片副本,并用’6’赋值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr3 = arr[5: 8].copy()</span><br><span class="line">arr3[:] = 6</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724140137110.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可以看到,对数组切片的副本进行操作并不会影响到源数组</p>
+<h2 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h2><p>– 在一个二维数组中,它的各个索引位置上的元素不再是一维数组那样的标量,而是一个个一维数组</p>
+<p>比如创建一个二维数组arr2d</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724173139303.png" alt="在这里插入图片描述"><br>取arr2d的第三个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2d[2]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019072417331173.png" alt="在这里插入图片描述"><br>得到的是一个一维数组</p>
+<p>– 想要得到单个标量元素,可以对高维度的各个元素进行递归访问<br>比如我想取到二维数组第一个一维数组的第三个标量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2d[0, 2]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724173838191.png" alt="在这里插入图片描述"><br>这里就用到了分层递归的思想<br><img src="https://img-blog.csdnimg.cn/20190724173922749.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h2><p>– 多维数组道理和二维数组相似</p>
+<p>我们创建一个2 * 2 * 3的三维数组arr3d</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr3d = np.array([[[1, 2, 3], [4, 5, 6]],</span><br><span class="line">                 [[7, 8, 9], [10, 11, 12]]])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724174413352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>如果对arr3d切片,传入一个标量参数,那么返回的是降了一维的二维数组</li>
+</ul>
+<p>比方我想获得arr3d的第一个二维数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr3d[0]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724174630460.png" alt="在这里插入图片描述"><br>可以看到,返回的是一个2 * 3的二维数组<br>随着切片参数的增加,返回的数组维度也随之降低,直至返回一个标量值</p>
+<p>– 标量值和数组都可以被赋值给arr3d[0]</p>
+<p>在展示赋值之前,我们先创建一个arr3d[0]的副本old_values以便恢复源数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">old_values = arr3d[0].copy()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190724175157370.png" alt="在这里插入图片描述"><br>然后,我们将arr3d这个三维数组的第一个二维数组赋值为42</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr3d[0] = 42</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019072417533170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可以看到,切片得到的第一个二维数组中每个元素都被赋值为42</p>
+<p>我们利用原先拷贝的副本恢复源数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr3d[0] = old_values</span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意,没有特殊处理的情况下,切片所返回的都是源数组的视图,修改切片会影响到源数组的值</li>
+</ul>
+<h2 id="切片索引"><a href="#切片索引" class="headerlink" title="切片索引"></a>切片索引</h2><p>– ndarray的切片语法跟Python列表这样的一维对象差不多<br>看一下之前的一维数组arr,我们取arr的第二个到第六个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr[1:6]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725104530447.png" alt="在这里插入图片描述"></p>
+<p>对于3 * 3的二维数组arr2d,切片是沿着一个轴向选取元素的,第0轴为行,第1轴为列<br>我们选取二维数组的前两行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2d[:2]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725104936228.png" alt="在这里插入图片描述"><br>这边可以看出,arr2d[ : 2]是arr2d[0: 2]的简便写法,表示选取arr2d的前两行(前闭后开)</p>
+<p>– 也可以一次性传入多个切片<br>比方我们要选取arr2d前两行数组中,第二列以后的所有数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2d[ :2, 1: ]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725105413691.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>通过将整数索引和切片混合,可以得到低维度的切片<br>例如我要选取第二行的前两列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr2d[1,  :2]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725105640692.png" alt="在这里插入图片描述"><br>我们得到了更低维度的一维数组</p>
+<ul>
+<li>注意: 单个冒号,表示选取整个轴</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20190725110113454.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>当然,对切片的赋值操作也会被扩散到整个选取,因为切片是源数组处理后的视图,源数组会因切片的改变而收到影响</li>
+</ul>
+<h2 id="布尔型索引"><a href="#布尔型索引" class="headerlink" title="布尔型索引"></a>布尔型索引</h2><p>– 假如,我们有一个用于存储数据的数组data和一个存储姓名的数组names(含有重复项)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names = np.array([&#x27;Bob&#x27;, &#x27;Joe&#x27;, &#x27;Will&#x27;, &#x27;Bob&#x27;, &#x27;Will&#x27;, &#x27;Joe&#x27;, &#x27;Joe&#x27;])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725113034950.png" alt="在这里插入图片描述"><br>我们用numpy.random中的randn函数生成一个标准正态分布的7行4列随机数组data</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data = np.random.randn(7, 4)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725113256475.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>假设,names数组中的每个名字都对应着data数值中的每一行<br>我们想要选出对应’Bob’名字的所有行</li>
+</ul>
+<p>– 我们先看下names中哪些名字是’Bob’</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names == &#x27;Bob&#x27;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725113602758.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>此处一定要用’==’号而不是’=’号,不然就把’Bob’赋值给names中每一个元素了</li>
+<li>可以看出,产生了一个一维的布尔型数组,元素为’Bob’的返回了True,反之为False</li>
+</ul>
+<p>– 接下来,我们把返回的布尔值数组作为索引传入data中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[names == &#x27;Bob&#x27;]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725113933447.png" alt="在这里插入图片描述"><br>不难发现,data中对应’Bob’的行都被选取到了</p>
+<ul>
+<li>注意:布尔型数组的长度必须跟被索引的轴的长度是一致的,如果长度不一致就会出错</li>
+</ul>
+<p>– 当然也可以索引更多轴,比方加一个列索引,我想得到data中对应’Bob’的行的第二列以后的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[names == &#x27;Bob&#x27;, 2: ]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725114756649.png" alt="在这里插入图片描述"></p>
+<p>– 如果要选择除了’Bob’以外的其它值,可以使用不等号’! = ‘ 或者’~’进行否定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[names != &#x27;Bob&#x27;]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725114933275.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>结果选出了除了Bob对应的行外的其余行</p>
+<p>– 我们往往用’~’操作符来进行一些条件反转<br>比如我们先把’Bob’的布尔型数组传递给一个对象cond</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cond = names == &#x27;Bob&#x27;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725115232636.png" alt="在这里插入图片描述"></p>
+<p>然后将该对象用~操作符进行反转传入data的索引中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[~cond]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725115342567.png" alt="在这里插入图片描述"></p>
+<p>结果同样选出了除了Bob对应的行外的其余行</p>
+<p>– 如果,我们想要增加判断条件,我们可以使用&amp;(和), |(或),之类的布尔算术运算符(不能使用Python中的关键字and和or)<br>比如我想同时选出’Bob’和’Will’两个名字在data中对应的行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mask = (names == &#x27;Bob&#x27;) | (names == &#x27;Will&#x27;)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725115719122.png" alt="在这里插入图片描述"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[mask]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725115749952.png" alt="在这里插入图片描述"><br>结果选出了Bob和Will对应的行</p>
+<ul>
+<li>注意: 通过布尔值索引选取数组中的数据,将总是创建数据的视图</li>
+</ul>
+<p>– 我们常常通过布尔型数组设置值<br>比如,把data中所有的负值都设置为0</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[data &lt; 0] = 0</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725142024477.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>– 也可以通过一维布尔数组设置整行或者整列的值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[names != &#x27;Joe&#x27;] = 7</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725142219204.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可以看到,data对应names为’Joe’的行中元素全部被赋值为7</p>
+<h2 id="花式索引"><a href="#花式索引" class="headerlink" title="花式索引"></a>花式索引</h2><ul>
+<li>花式索引指的是:利用整数数组进行索引</li>
+</ul>
+<p>– 假设有一个8 * 4的数组arr</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = np.empty((8, 4))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725145152841.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这个数组仅仅为了创建空间,里面都是未初始化的垃圾值</p>
+<p>– 现在我们用一个for循环填充这个数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for i in range(8):</span><br><span class="line">    arr[i] = i</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725145411636.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>我们可以传入一个指定顺序的整数列表或者数组选取子集</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr[[4, 3, 0, 6]]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725145542701.png" alt="在这里插入图片描述"></p>
+<h2 id="数组转置和轴兑换"><a href="#数组转置和轴兑换" class="headerlink" title="数组转置和轴兑换"></a>数组转置和轴兑换</h2><ul>
+<li>转置类似于数组的重塑</li>
+<li>转置不会进行任何复制操作,返回的是源数据的视图</li>
+<li>数组有一个特殊的属性T用于转置</li>
+</ul>
+<p>创建一个3行5列的二维数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = np.arange(15).reshape((3, 5))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/201907251645546.png" alt="在这里插入图片描述"><br>用属性T进行转置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.T</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725164644525.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>在进行矩阵计算时(如计算矩阵内积),往往需要用到转置</li>
+<li>计算矩阵内积,我们可以用numpy中的dot函数</li>
+<li>实际上,dot()返回的是两个数组的点积</li>
+</ul>
+<p>– 我们创建一个二维数组尝试计算它和它的转置数组的内积</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = np.random.randn(6, 3)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725165443547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>计算内积</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.dot(arr, arr.T)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725165535128.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>– 至于三位数组的转置,这边得引入一个概念:transpose(转置)需要得到一个由轴编号组成的元组<br>举个例子,创建一个2 * 2 * 4的三维数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = np.arange(16).reshape((2, 2, 4))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725170109988.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>把三维数组的三个轴编号:0, 1, 2  我是想象成长方体的长(0),宽(1),高(2)</li>
+<li>转置的时候,相当于长方体水平旋转90度,长和宽的值主观上理解为互换:原先的长变成了宽,而宽变成了长,所以转置后的长方体长宽高对应原先长方体的轴编号就是1(宽), 0(长), 2(高)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.transpose((1, 0, 2))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725170704105.png" alt="在这里插入图片描述"></p>
+<p>– 这边说一下numpy中的transpose函数,transpose中的参数可以理解为数组的轴标签</p>
+<ul>
+<li>对于一维数组而言，numpy.transpose()是不起作用的,因为只有一个轴</li>
+<li>对二维数组的transpose操作就是对原数组的转置操作,轴标签由(0, 1)转换成(1, 0)</li>
+<li> 对于三维数组,transpose会转换三个轴中的两个轴(看你怎么去定义这个转置了)</li>
+</ul>
+<p>– ndarray中还有一个swapaxes方法,它可以进行轴交换<br>比方,我想交换三维数组的第二和第三个轴</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.swapaxes(1, 2)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190725171355947.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>swapaxes方法其实为转置另辟蹊径,很方便</li>
+<li>同样要注意的是,swapaxes方法不会进行复制操作,返回的是源数据的视图</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    
+    <div>
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+    </div>
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="小书包 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="小书包 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://felixtree.tech/2021/07/13/numpy-Learning/" title="numpy-Learning">https://felixtree.tech/2021/07/13/numpy-Learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/numpy/" rel="tag"># numpy</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-3-mysql%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83/" rel="prev" title="part_3 mysql实战演练">
+      <i class="fa fa-chevron-left"></i> part_3 mysql实战演练
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-1-%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B-EDA/" rel="next" title="part-1-二手车交易价格预测-EDA">
+      part-1-二手车交易价格预测-EDA <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzYxMy8zMDA4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ndarray"><span class="nav-number">1.</span> <span class="nav-text">ndarray</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAndarray"><span class="nav-number">1.1.</span> <span class="nav-text">创建ndarray</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-arange"><span class="nav-number">1.2.</span> <span class="nav-text">np.arange()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E9%9D%A2%E6%98%AF%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%95%B0%E7%BB%84%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0-%E4%BD%BF%E7%94%A8%E9%A2%91%E7%8E%87%E5%BE%88%E9%AB%98"><span class="nav-number">1.2.1.</span> <span class="nav-text">下面是常用的一些数组创建函数,使用频率很高</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dtype"><span class="nav-number">1.3.</span> <span class="nav-text">dtype</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84Numpy%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">常见的Numpy数据类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Numpy%E6%95%B0%E7%BB%84%E7%9A%84%E8%BF%90%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">Numpy数组的运算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8C%E5%88%87%E7%89%87"><span class="nav-number">3.</span> <span class="nav-text">基本的索引和切片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84%E5%88%87%E7%89%87"><span class="nav-number">3.1.</span> <span class="nav-text">一维数组切片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="nav-number">3.2.</span> <span class="nav-text">二维数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="nav-number">3.3.</span> <span class="nav-text">多维数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%87%E7%89%87%E7%B4%A2%E5%BC%95"><span class="nav-number">3.4.</span> <span class="nav-text">切片索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E5%9E%8B%E7%B4%A2%E5%BC%95"><span class="nav-number">3.5.</span> <span class="nav-text">布尔型索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%B1%E5%BC%8F%E7%B4%A2%E5%BC%95"><span class="nav-number">3.6.</span> <span class="nav-text">花式索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E8%BD%AC%E7%BD%AE%E5%92%8C%E8%BD%B4%E5%85%91%E6%8D%A2"><span class="nav-number">3.7.</span> <span class="nav-text">数组转置和轴兑换</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小书包"
+      src="/uploads/touxiang.png">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/teng-fei-41-43" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;teng-fei-41-43" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/Baby1601tree?spm=1000.2115.3001.5343" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;Baby1601tree?spm&#x3D;1000.2115.3001.5343" rel="noopener" target="_blank"><i class="codiepie fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 202107 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.5k字</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset);
+            clearInterval(int);
+        }
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据
+            clearInterval(int); // 停止检测
+        }
+    }
+
+});
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

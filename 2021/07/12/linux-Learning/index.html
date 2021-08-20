@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"felixtree.tech","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1 task1（基本为摘录）主要讲述了linux的发展历程和优势  网址导航：https:&#x2F;&#x2F;github.com&#x2F;datawhalechina&#x2F;team-learning-program&#x2F;blob&#x2F;master&#x2F;Linux&#x2F;1.什么是Linux.md  1.1 什么是linuxLinux，全称为GNU&#x2F;Linux，是一种免费使用和自由传播的类UNIX操作系统我们常说的Linux，指的是Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux入门">
+<meta property="og:url" content="https://felixtree.tech/2021/07/12/linux-Learning/index.html">
+<meta property="og:site_name" content="小书包的知识屋">
+<meta property="og:description" content="1 task1（基本为摘录）主要讲述了linux的发展历程和优势  网址导航：https:&#x2F;&#x2F;github.com&#x2F;datawhalechina&#x2F;team-learning-program&#x2F;blob&#x2F;master&#x2F;Linux&#x2F;1.什么是Linux.md  1.1 什么是linuxLinux，全称为GNU&#x2F;Linux，是一种免费使用和自由传播的类UNIX操作系统我们常说的Linux，指的是Linux">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/121765145-750af380-cb7b-11eb-8849-b01d9aa1fbf5.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/121765206-cf0bb900-cb7b-11eb-8f4b-2b579cef7d58.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/121765676-37a86500-cb7f-11eb-9ebe-e85d119ee61e.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/121766225-295c4800-cb83-11eb-8bc4-25d86b846a1b.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122026604-f45b2a00-cdfc-11eb-953c-02a36ec06b63.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122245403-46cd4100-cef8-11eb-8505-a8e61e9bd859.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122246817-76307d80-cef9-11eb-9c8d-bcf379506935.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122247441-eb03b780-cef9-11eb-8a83-4e47864ab6cc.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122247805-361dca80-cefa-11eb-9fb0-8bc925293c7e.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122248523-b3493f80-cefa-11eb-951e-8901ffe49d9f.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122248711-d83db280-cefa-11eb-9070-f45cd9212749.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122248875-f99e9e80-cefa-11eb-9ca0-808b83f66e20.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122249549-89dce380-cefb-11eb-86a2-1ede7ad18f29.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122250335-2901db00-cefc-11eb-9e87-a35c92d93133.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122250611-61a1b480-cefc-11eb-808e-e4ee19371e3c.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122250877-a0376f00-cefc-11eb-8d24-c4444b02156c.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122492023-9f473000-d017-11eb-8e9d-f5eee8dd40a6.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122641249-a6b12b00-d136-11eb-95a3-7dd3897482ce.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122642959-9b163200-d13f-11eb-95aa-38a9a6b7e351.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122643265-7458fb00-d141-11eb-93d6-d8b5fe8b952d.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122643275-85097100-d141-11eb-8ac8-c1ee80eee550.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122643284-8fc40600-d141-11eb-8e3e-6b387cecbbdd.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122643508-bafb2500-d142-11eb-8f6e-31316ec9ba3f.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/122643724-05c96c80-d144-11eb-9b9d-b15f41881385.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123051416-5b4b9500-d434-11eb-82f1-bf38fd9893f1.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123051519-761e0980-d434-11eb-88c2-cd31875c13ad.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123051610-8f26ba80-d434-11eb-9915-e2816247f19f.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123362220-ed71ab80-d5a2-11eb-9f6a-dcf25c4766c5.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123362393-2d389300-d5a3-11eb-865f-6ea46725190f.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123362498-6113b880-d5a3-11eb-9a9e-915d3a973942.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123366961-bbb11280-d5ab-11eb-8398-0e0013c74989.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123367061-e56a3980-d5ab-11eb-999f-349e9474eb58.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123367140-0763bc00-d5ac-11eb-85b4-107e2d4ddd48.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123367171-15b1d800-d5ac-11eb-91bc-c25c46e89d5b.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123367442-83f69a80-d5ac-11eb-92e0-f76fe794f885.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123367985-84436580-d5ad-11eb-8e6a-6df42e9abf61.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/48283877/123368117-c5d41080-d5ad-11eb-942a-f9674f28e41a.png">
+<meta property="article:published_time" content="2021-07-12T02:34:43.000Z">
+<meta property="article:modified_time" content="2021-07-12T08:26:42.143Z">
+<meta property="article:author" content="小书包">
+<meta property="article:tag" content="liunx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/48283877/121765145-750af380-cb7b-11eb-8849-b01d9aa1fbf5.png">
+
+<link rel="canonical" href="https://felixtree.tech/2021/07/12/linux-Learning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>linux入门 | 小书包的知识屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="小书包的知识屋" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/FelixBigTree"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小书包的知识屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://felixtree.tech/2021/07/12/linux-Learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/touxiang.png">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小书包的知识屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux入门
+        </h1>
+
+        <div class="post-meta">
+        
+          <i class="fa fa-thumb-tack"></i>
+          <font color=7D26CD>置顶</font>
+          <span class="post-meta-divider">|</span>
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-12 10:34:43 / 修改时间：16:26:42" itemprop="dateCreated datePublished" datetime="2021-07-12T10:34:43+08:00">2021-07-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9E%B6%E6%9E%84%E5%B8%88%E4%B9%8B%E8%B7%AF/" itemprop="url" rel="index"><span itemprop="name">架构师之路</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-task1（基本为摘录）"><a href="#1-task1（基本为摘录）" class="headerlink" title="1 task1（基本为摘录）"></a>1 task1（基本为摘录）</h1><p>主要讲述了linux的发展历程和优势</p>
+<ul>
+<li>网址导航：<a target="_blank" rel="noopener" href="https://github.com/datawhalechina/team-learning-program/blob/master/Linux/1.%E4%BB%80%E4%B9%88%E6%98%AFLinux.md">https://github.com/datawhalechina/team-learning-program/blob/master/Linux/1.什么是Linux.md</a></li>
+</ul>
+<h2 id="1-1-什么是linux"><a href="#1-1-什么是linux" class="headerlink" title="1.1 什么是linux"></a>1.1 什么是linux</h2><p>Linux，全称为GNU/Linux，是一种免费使用和自由传播的类UNIX操作系统<br>我们常说的Linux，指的是Linux内核，一个基于POSIX的多用户、多任务、支持多线程和多CPU的操作系统</p>
+<h2 id="1-2-linux的优点"><a href="#1-2-linux的优点" class="headerlink" title="1.2 linux的优点"></a>1.2 linux的优点</h2><ul>
+<li>开源免费：完全免费的操作系统，且源代码开放，任何人都可以随意修改</li>
+<li>多任务：可以使多个程序同时独立运行</li>
+<li>多用户：每个用户对于自己的文件设备有特殊的权利，用户之间使用互不影响</li>
+<li>安全可靠：代码开源，所有用户都可以参与漏洞修复，同时用户管理权限使得安全风险降低</li>
+<li>稳定：可以持续运行很久而不易崩溃</li>
+<li>多平台：可以运行在多种硬件平台上</li>
+<li>方便：在线安装软件包十分方便，一行命令即可，同时配置环境也很快捷</li>
+<li>开源软件多：大多数开源软件的首要适配平台都是linux</li>
+</ul>
+<h2 id="1-3-发展历程"><a href="#1-3-发展历程" class="headerlink" title="1.3 发展历程"></a>1.3 发展历程</h2><p>20世纪80年代，计算机硬件的性能不断提高，PC的市场不断扩大，当时可供计算机选用的操作系统主要有Unix、DOS和macOC这几种。</p>
+<p>Unix价格昂贵，不能运行于PC；DOS显得简陋，且源代码被软件厂商严格保密；MacOS是一种专门用于苹果计算机的操作系统。此时，计算机科学领域迫切需要一个更加完善、强大、廉价和完全开放的操作系统。由于供教学使用的典型操作系统很少，因此当时在荷兰当教授的美国人AndrewS.Tanenbaum编写了一个操作系统，名为MINIX，为了向学生讲述操作系统内部工作原理。</p>
+<p>MINIX虽然很好，但只是一个用于教学目的的简单操作系统，而不是一个强有力的实用操作系统，然而最大的好处就是公开源代码。全世界学计算机的学生都通过钻研MINIX源代码来了解电脑里运行的MINIX操作系统，芬兰赫尔辛基大学大学二年级的学生Linus Torvalds就是其中一个。</p>
+<p>在吸收了MINIX精华的基础上，Linus于1991年写出了属于自己的Linux操作系统，版本为Linux0.01，是Linux时代开始的标志。他利用Unix的核心，去除繁杂的核心程序，改写成适用于一般计算机的x86系统，并放在网络上供大家下载，1994年推出完整的核心Version1.0，至此，Linux逐渐成为功能完善、稳定的操作系统，并被广泛用</p>
+<span id="more"></span>
+
+<h2 id="1-4-常用发行版"><a href="#1-4-常用发行版" class="headerlink" title="1.4 常用发行版"></a>1.4 常用发行版</h2><ul>
+<li><p>Debian：老牌发行版，非常稳定，适合用于服务器。</p>
+</li>
+<li><p>Ubuntu：是Debian的一款衍生版，侧重于它在这个市场的应用，在服务器、云计算、甚至一些运行Ubuntu Linux的移动设备上很常见。于2004年9月首次公布的。属于热门发行版之一，因其图形界面开发较完善以及良好的社区支持，很受初接触Linux的人群青睐。</p>
+</li>
+<li><p>CentOS：一种对 RHEL（Red Hat Enterprise Linux）源代码再编译的产物，由于 Linux 是开发源代码的操作系统，并不排斥样基于源代码的再分发，CentOS 就是将商业的 Linux 操作系统 RHEL 进行源代码再编译后分发，并在 RHEL 的基础上修正了不少已知的漏洞。</p>
+</li>
+<li><p>Fedora：Linux（第七版以前为Fedora Core）是由Fedora项目社区开发、红帽公司赞助，目标是创建一套新颖、多功能并且自由（开放源代码）的操作系统。Fedora是商业化的Red Hat Enterprise Linux发行版的上游源码。</p>
+</li>
+<li><p>Kali：Linux是Debian的一款衍生版。旨在渗透测试和数字取证。它预先构建了用于渗透测试的多种工具。</p>
+</li>
+<li><p>Arch：一款采用滚动发行方式的操作系统，只要安装一次就够了，每当发行了某个新版本，就可以升级发行版，无需重新安装。Pacman是Arch Linux的软件包管理器。Arch Linux既支持X86处理器架构，又支持X86_64架构，安装程序可以从光盘或U盘来运行。</p>
+</li>
+</ul>
+<h1 id="2-task2"><a href="#2-task2" class="headerlink" title="2 task2"></a>2 task2</h1><p>虚拟机的安装以及linux环境的配置</p>
+<h2 id="2-1-安装虚拟机以及linux系统"><a href="#2-1-安装虚拟机以及linux系统" class="headerlink" title="2.1 安装虚拟机以及linux系统"></a>2.1 安装虚拟机以及linux系统</h2><p>1.使用Oracle VM VirtualBox，由于我用的是mac，所以选择OS X hosts 安装，网址导航：<a target="_blank" rel="noopener" href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a><br><img width="1189" alt="image" src="https://user-images.githubusercontent.com/48283877/121765145-750af380-cb7b-11eb-8849-b01d9aa1fbf5.png"><br>2.准备Ubuntu ISO镜像文件，网址导航：<a target="_blank" rel="noopener" href="https://ubuntu.com/download/desktop#download">https://ubuntu.com/download/desktop#download</a><br><img width="1221" alt="image" src="https://user-images.githubusercontent.com/48283877/121765206-cf0bb900-cb7b-11eb-8f4b-2b579cef7d58.png"><br>3.按照教程安装即可，教程导航：<a target="_blank" rel="noopener" href="https://github.com/datawhalechina/team-learning-program/blob/master/Linux/2.Linux%E5%AE%89%E8%A3%85.md">https://github.com/datawhalechina/team-learning-program/blob/master/Linux/2.Linux安装.md</a></p>
+<p>如果是在mac上下载安装了virtualbox，然后正常设置了iso镜像，启动时报错Kernel driver not installed (rc=-1908)，解决方法如下</p>
+<ul>
+<li>1、重启mac</li>
+<li>2、打开系统偏好设置&gt;&gt;安全性与隐私</li>
+<li>3、会有一行Oracle的权限授权，点击允许<img width="860" alt="image" src="https://user-images.githubusercontent.com/48283877/121765676-37a86500-cb7f-11eb-9ebe-e85d119ee61e.png"></li>
+</ul>
+<h2 id="2-2-全屏设置"><a href="#2-2-全屏设置" class="headerlink" title="2.2 全屏设置"></a>2.2 全屏设置</h2><ul>
+<li>安装完成后，发现virtual box 窗口最大化了，可是里面的窗口并没有最大化，看着很累<br>我的做法是设置scale to 150%，然后把窗口分辨率调整到1600 x 1200 （4:3），看着舒服多了<br>设置完了以后是这样的<img width="1200" alt="image" src="https://user-images.githubusercontent.com/48283877/121766225-295c4800-cb83-11eb-8bc4-25d86b846a1b.png"></li>
+</ul>
+<h2 id="2-3-软件安装"><a href="#2-3-软件安装" class="headerlink" title="2.3 软件安装"></a>2.3 软件安装</h2><ul>
+<li>Linux下常见的两种软件安装方式，分别是软件包安装和源码编译安装</li>
+</ul>
+<h3 id="2-3-1-软件包安装"><a href="#2-3-1-软件包安装" class="headerlink" title="2.3.1 软件包安装"></a>2.3.1 软件包安装</h3><ul>
+<li>Linux下配置开发环境较便利，其中一个原因是Linux有很好的包管理工具。包管理工具可以在操作系统中提供安装、升级，卸载软件的方法</li>
+<li>在Linux下，DPT和RPM是最为常见的两种包管理工具，分别应用于基于deb软件包的Linux发行版和基于rpm软件包的Linux发行版</li>
+<li>另外还有arch linux系列的Pacman包管理工具</li>
+</ul>
+<h4 id="2-3-1-1-deb"><a href="#2-3-1-1-deb" class="headerlink" title="2.3.1.1 deb"></a>2.3.1.1 deb</h4><ul>
+<li><p>基于 Debian 操作系统 (UBUNTU) 的 DEB 软件包管理工具－ Dpkg，全称为 Debian Package</p>
+</li>
+<li><p>是一个可以安装、构建、删除及管理 Debian 软件包的命令行工具，用来制作 Debian 包的工具，同时也可以查看、解压 Debian 包<br>下面是一些dpkg的普通用法</p>
+</li>
+<li><p>安装一个Debian安装包（其中-i等价于–install）</p>
+<p><code>dpkg -i &lt;package.deb&gt;</code></p>
+</li>
+<li><p>列出&lt;package.deb&gt;的内容中包含的文件结果（其中-c等价于–contents）</p>
+<p><code>dpkg -c &lt;package.deb&gt;</code></p>
+</li>
+<li><p>从&lt;package.deb&gt;中提取包裹信息的详细信息，包括软件名称、版本以及大小等（其中-l等价于–info）</p>
+<p><code>dpkg -l &lt;package.deb&gt;</code></p>
+</li>
+<li><p>移除一个已安装的包裹（软件名称可通过dpkg -I命令查看，其中-r等价于–remove）</p>
+<p><code>dpkg -r &lt;package.deb&gt;</code></p>
+</li>
+<li><p>完全清除一个已安装的包裹。和 remove 不同的是，remove 只是删掉数据和可执行文件，purge 另外还删除所有的配制文件</p>
+<p><code>dpkg -P &lt;package.deb&gt;</code></p>
+</li>
+<li><p>列出<package>安装的软件包安装的所有文件（软件名称可通过dpkg -I命令查看，其中-L等价于–listfiles）</p>
+<p><code>dpkg -L &lt;package.deb&gt;</code></p>
+</li>
+<li><p>查看<package>软件包的信息（软件名称可通过dpkg -I命令查看，其中-l等价于–list）</p>
+<p><code>dpkg -l &lt;package.deb&gt;</code></p>
+</li>
+<li><p>显示已安装包裹的详细信息。同时请看 apt-cache 显示 Debian 存档中的包裹信息，以及 dpkg -I 来显示从一个 .deb 文件中提取的包裹信息。（软件名称可通过dpkg -I命令查看，其中-s等价于–status）</p>
+<p><code>dpkg -s &lt;package.deb&gt;</code></p>
+</li>
+<li><p>重新配制一个已经安装的包裹，如果它使用的是 debconf (debconf 为包裹安装提供了一个统一的配制界面)</p>
+<p><code>dpkg -reconfigure &lt;package.deb&gt;</code></p>
+</li>
+</ul>
+<h4 id="rpm"><a href="#rpm" class="headerlink" title="rpm"></a>rpm</h4><ul>
+<li>rpm是 redhat 、fedora、suse 的格式，全称为Redhat PackageManager ，是由Redhat公司提出的用于管理Linux下软件包的软件</li>
+<li>Linux安装时，除了几个核心模块以外，其余几乎所有的模块均通过RPM完成安装<br>下面是一些rmp的使用指令</li>
+<li>安装需要的包文件，-iv 在安装过程中显示正在安装的文件信息，-ivh 在安装过程中显示正在安装的文件信息及安装进度</li>
+</ul>
+<p>  <code>rpm -i &lt;package.rpm&gt;</code></p>
+<p> 查询指令：</p>
+<ul>
+<li>a 查询所有已经安装的包以下两个附加命令用于查询安装包的信息</li>
+<li>i 显示安装包的信息</li>
+<li>l 显示安装包中的所有文件被安装到哪些目录下</li>
+<li>s 显示安装包中的所有文件状态及被安装到哪些目录下</li>
+<li>p 查询的是安装包的信息</li>
+<li>f 查询的是已安装的某文件信息</li>
+</ul>
+<p>列出需要升级的包</p>
+<p>  <code>rpm -U</code></p>
+<p>升级 example.rpm 软件包</p>
+<p>  <code>rpm -Uvh example.rpm</code></p>
+<p>列出需要验证的包</p>
+<p>  <code>rpm -V</code></p>
+<h2 id="2-4-编译源码安装"><a href="#2-4-编译源码安装" class="headerlink" title="2.4 编译源码安装"></a>2.4 编译源码安装</h2><p>源代码安装软件的优点如下</p>
+<ul>
+<li>可以获得最新的软件，及时修复bug</li>
+<li>根据用户的需求，灵活定制软件功能</li>
+</ul>
+<ol>
+<li>tar -xzvf soft.tar.gz #解压一般会生成一个soft目录</li>
+<li>./configure #检查环境变量及配置编译选项</li>
+<li>make #源代码编译成二进制文件</li>
+<li>make install #将make编译出来的文件安装到指定位置(或默认位置) 卸载：make uninstall 或 手动删除，由于软件可能将文件分散地安装在系统的多个目录中，往往很难把它删除干净， 最好在编译前进行配置，指定软件将要安装到目标路径：./configure –prefix=目录名，这样可以使用“rm -rf 软件目录名”命令来进行干净彻底的卸载</li>
+</ol>
+<h2 id="2-5-在线安装"><a href="#2-5-在线安装" class="headerlink" title="2.5 在线安装"></a>2.5 在线安装</h2><h2 id="2-5-1-apt包管理"><a href="#2-5-1-apt包管理" class="headerlink" title="2.5.1 apt包管理"></a>2.5.1 apt包管理</h2><p>由于操作系统中软件包存在复杂的依赖关系，为了解决软件包的依赖性问题和获取问题，APT顺势出现了。 APT 是 Ubuntu Linux 中的命令行软件包管理工具，用于获取、安装、编译、卸载和查询 Deb 软件包，以及检查软件包的依赖关系<br>apt常用命令如下：</p>
+<ul>
+<li>更新本地索引，即更新/var/lib/apt/lists 里边的内容<code>sudo apt-get update</code></li>
+<li>更新所有软件包<code>sudo apt-get upgrade </code></li>
+<li>安装软件<code>sudo apt-get install xx</code></li>
+<li>卸载包<code>sudo apt-get remove xx</code></li>
+<li>卸载并彻底清除<code>sudo apt-get remove --purge name</code></li>
+<li>清理下载文件的存档<code>sudo apt-get clean</code></li>
+</ul>
+<h2 id="2-5-2-换源"><a href="#2-5-2-换源" class="headerlink" title="2.5.2 换源"></a>2.5.2 换源</h2><ul>
+<li>在线安装，如apt包管理的软件仓库地址可能在国外，国内连接速度较慢。所以可以将软件仓库地址改为国内源码库</li>
+<li>Ubuntu 的软件源配置文件是 /etc/apt/sources.list。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用 TUNA 的软件源镜像。</li>
+</ul>
+<p>用gedit命令打开sources.list文件<br>  <code>sudo gedit /etc/apt/sources.list</code></p>
+<p>将内容改为下面：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse</span><br><span class="line"></span><br><span class="line"># 预发布软件源，不建议启用</span><br><span class="line"># deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse</span><br></pre></td></tr></table></figure>
+<h2 id="2-6-开源软件"><a href="#2-6-开源软件" class="headerlink" title="2.6 开源软件"></a>2.6 开源软件</h2><h3 id="2-6-1-效率工具"><a href="#2-6-1-效率工具" class="headerlink" title="2.6.1 效率工具"></a>2.6.1 效率工具</h3><h4 id="2-6-1-1-搜狗输入法"><a href="#2-6-1-1-搜狗输入法" class="headerlink" title="2.6.1.1 搜狗输入法"></a>2.6.1.1 搜狗输入法</h4><ul>
+<li>安装fcitx<code>sudo apt-get install fcitx</code></li>
+<li>进入搜狗输入法官网，选择linux版下载deb文件(ubuntu系统)，网址导航：<a target="_blank" rel="noopener" href="https://pinyin.sogou.com/linux/?r=pinyin">https://pinyin.sogou.com/linux/?r=pinyin</a><br>按照教程来即可，注意在安装搜狗的时候，终端要先切换到安装包所在路径，输入命令：<code>sudo dpkg -i sogoupinyin_版本号_amd64.deb</code></li>
+<li>如果提醒缺少依赖，输入如下命令：<code>sudo apt -f install</code></li>
+</ul>
+<h4 id="2-6-1-1-Terminator"><a href="#2-6-1-1-Terminator" class="headerlink" title="2.6.1.1 Terminator"></a>2.6.1.1 Terminator</h4><ul>
+<li>terminator可以在同一个窗口分割出多个终端，每个终端都是独立的，适合大屏使用<code>sudo apt-get install terminator</code></li>
+<li>设置默认Terminal为Terminator<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gsettings set org.gnome.desktop.default-applications.terminal exec   /usr/bin/terminator</span><br><span class="line">gsettings set org.gnome.desktop.default-applications.terminal exec-arg &quot;-x&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>常用快捷键如下</p>
+<ul>
+<li>Ctrl+Alt+T 打开终端</li>
+<li>Ctrl+l 相当于clear，即清屏</li>
+<li>Shift+Ctrl+T 打开新的标签页</li>
+<li>Shift+Ctrl+W 关闭标签页</li>
+<li>Shift+Ctrl+C 复制</li>
+<li>Shift+Ctrl+V 粘贴</li>
+<li>Shift+Ctrl+N 打开新的终端窗口</li>
+<li>Shift+Ctrl+o 上下拆分屏幕</li>
+<li>Shift+Ctrl+e 左右拆分屏幕</li>
+<li>Shift+Ctrl+w 关闭当前窗口</li>
+<li>Shift+Ctrl+q 关闭整个终端</li>
+<li>F11 全屏切换</li>
+<li>Ctrl + Page Down/ Page Up 切换标签页</li>
+</ul>
+<h3 id="2-6-2-开发工具"><a href="#2-6-2-开发工具" class="headerlink" title="2.6.2 开发工具"></a>2.6.2 开发工具</h3><h4 id="2-6-2-1-git"><a href="#2-6-2-1-git" class="headerlink" title="2.6.2.1 git"></a>2.6.2.1 git</h4><p>Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目</p>
+<ul>
+<li>命令行安装<code>sudo apt-get install git</code></li>
+</ul>
+<h4 id="2-6-2-2-vim"><a href="#2-6-2-2-vim" class="headerlink" title="2.6.2.2 vim"></a>2.6.2.2 vim</h4><p>Vim是从 vi 发展出来的一个文本编辑器。代码补完、编译及错误跳转等方便编程的功能特别丰富，在程序员中被广泛使用。和Emacs并列成为类Unix系统用户最喜欢的编辑器</p>
+<ul>
+<li>首先将vim的源码克隆下来，这里因为github可能很慢，使用码云的镜像<code>git clone https://gitee.com/mirrors/vim.git</code></li>
+<li>安装gcc和各依赖库<code>sudo apt-get install gcc</code><code>sudo apt-get install libncurses5-dev python-dev python3-dev libatk1.0-dev libbonoboui2-dev libcairo2-dev libx11-dev libxpm-dev libxt-dev</code></li>
+</ul>
+<p>其中libbonoboui2-dev提示无法找到位置，考虑增加镜像源，文件路径为/etc/apt/sources.list，一般情况下，该文件是只读的，直接使用vi或getit打开，无法修改，所以需要先获得root权限</p>
+<p>  <code>sudo getit /etc/apt/sources.list</code></p>
+<p>添加镜像源并保存</p>
+<p>  <code>deb http://archive.ubuntu.com/ubuntu/trusty main universe restricted multiverse</code></p>
+<p>更新镜像源头</p>
+<p>  <code>sudo apt-get update</code></p>
+<p>然后重新安装libbonoboui2-dev，成功</p>
+<ul>
+<li>配置与安装</li>
+</ul>
+<p>注意，这个命令要进入vim路径下执行</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./configure --with-features=huge --enable-multibyte --enable-rubyinterp --enable-pythoninterp --enable-python3interp --enable-luainterp --enable-    cscope --enable-gui=gtk3 --enable-perlinterp --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu/ --with-python3-config-dir=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/ --prefix=/usr/local/vim8</span><br></pre></td></tr></table></figure>
+<ul>
+<li>–with-features=huge：支持最大特性</li>
+<li>–enable-rubyinterp：打开对 ruby 编写的插件的支持 </li>
+<li>–enable-pythoninterp：打开对 python 编写的插件的支持 </li>
+<li>–enable-python3interp：打开对 python3 编写的插件的支持 </li>
+<li>–enable-luainterp：打开对 lua 编写的插件的支持 </li>
+<li>–enable-perlinterp：打开对 perl 编写的插件的支持 </li>
+<li>–enable-multibyte：打开多字节支持，可以在 Vim 中输入中文 </li>
+<li>–enable-cscope：打开对cscope的支持 </li>
+<li>–enable-gui=gtk3 表示生成采用 GNOME3 风格的 gvim </li>
+<li>–with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu/ 指定 python 路径 </li>
+<li>–with-python3-config-dir=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/ 指定 python3路径(这里可以根据自己的版本做更改) </li>
+<li>–prefix=/usr/local/vim8：指定将要安装到的路径</li>
+</ul>
+<h2 id="2-7-常用终端快捷键"><a href="#2-7-常用终端快捷键" class="headerlink" title="2.7 常用终端快捷键"></a>2.7 常用终端快捷键</h2><img width="508" alt="image" src="https://user-images.githubusercontent.com/48283877/122026604-f45b2a00-cdfc-11eb-953c-02a36ec06b63.png">
+
+
+<h1 id="linux-用户及组管理"><a href="#linux-用户及组管理" class="headerlink" title="linux 用户及组管理"></a>linux 用户及组管理</h1><h2 id="1-用户与用户组"><a href="#1-用户与用户组" class="headerlink" title="1. 用户与用户组"></a>1. 用户与用户组</h2><h3 id="1-1-什么是用户"><a href="#1-1-什么是用户" class="headerlink" title="1.1 什么是用户"></a>1.1 什么是用户</h3><ul>
+<li>Linux是多用户多任务的操作系统，多个用户可以同时登陆执行不同任务</li>
+<li>用户需要使用系统资源则需向系统管理员申请账户进入系统</li>
+<li>不同的用户则拥有不同的权限</li>
+<li>用户又分超级用户和普通用户，超级用户即系统管理员root</li>
+</ul>
+<h3 id="1-2-什么是用户组"><a href="#1-2-什么是用户组" class="headerlink" title="1.2 什么是用户组"></a>1.2 什么是用户组</h3><p>当我们需要让多个用户都拥有某一个权限，就可以把他们放进同一个用户组里，方便集中管理<br>其中用户组分两种：</p>
+<ul>
+<li>一种是主用户组（primary group），主用户组的信息保存在/etc/passwd 文件中</li>
+<li>一种是次用户组（secondary group），次用户组的信息保存在/etc/group 中。</li>
+</ul>
+<p>当用户被创建之后默认属于同名用户组，即主用户组，后来再将该用户加入其他用户组的话，加入的用户组为该用户的次用户组。</p>
+<ul>
+<li><p>为了后续演示，将’datawhale’创建为次用户组，并且创建用户datawhale1，加入组datawhale</p>
+<p>  <code>sudo groupadd -g 888 datawhale</code></p>
+<p>  <code>sudo useradd datawhale</code></p>
+<p>  <code>sudo gpasswd -a datawhale1 datawhale</code></p>
+<p>  <code>grep datawhale /etc/group</code></p>
+</li>
+</ul>
+<img width="464" alt="image" src="https://user-images.githubusercontent.com/48283877/122245403-46cd4100-cef8-11eb-8505-a8e61e9bd859.png">
+
+<h3 id="1-3-用户与用户组的关系"><a href="#1-3-用户与用户组的关系" class="headerlink" title="1.3 用户与用户组的关系"></a>1.3 用户与用户组的关系</h3><p>每个用户在创建时都会自动属于一个用户组，此外用户与用户组之间的关系又可以分为以下四种:</p>
+<ul>
+<li>一对一：一个用户可以存在一个组中，是组中的唯一成员</li>
+<li>一对多：一个用户可以存在多个用户组中，此用户具有这多个组的共同权限</li>
+<li>多对一：多个用户可以存在一个组中，这些用户具有和组相同的权限</li>
+<li>多对多：多个用户可以存在多个组中，也就是以上 3 种关系的扩展</li>
+</ul>
+<h2 id="2-用户ID与组ID"><a href="#2-用户ID与组ID" class="headerlink" title="2. 用户ID与组ID"></a>2. 用户ID与组ID</h2><p>在Linux系统中，并不是通过用户名来识别用户的，而是通过用户ID来判断是哪个用户的，用户 datawhale 会被赋予一个名为Datawhale 的用户组，且成为该新建用户组的唯一成员，同时UID和GID会被分别写入/etc/passwd和/etc/group中</p>
+<h3 id="2-1-用户的增删修改"><a href="#2-1-用户的增删修改" class="headerlink" title="2.1 用户的增删修改"></a>2.1 用户的增删修改</h3><ul>
+<li><p>为了演示，删除datawhale组</p>
+<p><code>sudo groupdel datawhale</code></p>
+<p><code>sudo useradd datawhale</code></p>
+<p><code>grep datawhale /etc/group</code></p>
+</li>
+</ul>
+<img width="399" alt="image" src="https://user-images.githubusercontent.com/48283877/122246817-76307d80-cef9-11eb-9c8d-bcf379506935.png">
+
+
+<ul>
+<li><p>主目录：用户的起始工作目录，用户登录后有操作权限的访问目录</p>
+</li>
+<li><p>注释性描述：这个字段并没有什么实际的用途。在不同的Linux 系统中，这个字段的格式并没有统一。在许多Linux系统中，这个字段存放的是一段任意的注释性描述文字，用做finger命令的输出</p>
+</li>
+<li><p>登陆shell：用户登录后，要启动一个进程，负责将用户的操作传给内核，这个进程是用户登录到系统后运行的命令解释器或某个特定的程序，即Shell</p>
+</li>
+<li><p>通常情况下，UID是递增的，上一个是1000，下一个则是1001   </p>
+<p>比如新增一个用户</p>
+<p>  <code>sudo useradd datawhale1</code></p>
+</li>
+</ul>
+<img width="416" alt="image" src="https://user-images.githubusercontent.com/48283877/122247441-eb03b780-cef9-11eb-8a83-4e47864ab6cc.png">
+
+
+<p>可以发现，uid递增了1</p>
+<p>另外，系统管理员的UID为0</p>
+<pre><code>`grep root /etc/passwd`
+</code></pre>
+<img width="544" alt="image" src="https://user-images.githubusercontent.com/48283877/122247805-361dca80-cefa-11eb-9fb0-8bc925293c7e.png">
+
+
+<ul>
+<li><p>删除用户</p>
+<p>  <code>userdel 选项 用户名</code></p>
+</li>
+</ul>
+<p>例如，删除用户datawhale1</p>
+<pre><code>`sudo userdel datawhale1`
+</code></pre>
+<img width="410" alt="image" src="https://user-images.githubusercontent.com/48283877/122248523-b3493f80-cefa-11eb-951e-8901ffe49d9f.png">
+
+
+<ul>
+<li><p>修改用户</p>
+<p>  <code>usermod 选项 用户名</code></p>
+</li>
+</ul>
+<img width="989" alt="image" src="https://user-images.githubusercontent.com/48283877/122248711-d83db280-cefa-11eb-9070-f45cd9212749.png">
+
+
+<ul>
+<li><p>修改用户密码</p>
+<p>  <code>passwd 选项 用户名</code></p>
+</li>
+</ul>
+<img width="941" alt="image" src="https://user-images.githubusercontent.com/48283877/122248875-f99e9e80-cefa-11eb-9ca0-808b83f66e20.png">
+
+
+<h3 id="2-2-用户组管理"><a href="#2-2-用户组管理" class="headerlink" title="2.2 用户组管理"></a>2.2 用户组管理</h3><ul>
+<li><p>添加用户组</p>
+<p>  <code>groupadd 选项 用户组</code></p>
+<p>  例如，新增一个data用户组</p>
+<pre><code>  `sudo groupadd data`
+</code></pre>
+</li>
+</ul>
+<img width="379" alt="image" src="https://user-images.githubusercontent.com/48283877/122249549-89dce380-cefb-11eb-86a2-1ede7ad18f29.png">
+
+<ul>
+<li><p>删除用户组</p>
+<p>  <code>groupdel 组名</code></p>
+</li>
+</ul>
+<p>不能使用 groupdel 命令随意删除群组。此命令仅适用于删除那些 “不是任何用户初始组” 的群组，换句话说，如果有群组还是某用户的初始群组，则无法使用 groupdel 命令成功删除。倘若该群组中仍包括某些用户，则必须先删除这些用户后，方能删除群组</p>
+<p>打个比方，往组data添加两个用户</p>
+<pre><code><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd data1</span><br><span class="line">sudo useradd data2</span><br><span class="line">sudo gpasswd -a data1 data</span><br><span class="line">sudo gpasswd -a data2 data</span><br></pre></td></tr></table></figure>
+</code></pre>
+<img width="505" alt="image" src="https://user-images.githubusercontent.com/48283877/122250335-2901db00-cefc-11eb-9e87-a35c92d93133.png">
+
+
+<p>此时，如果删除data组</p>
+<pre><code>`sudo groupdel data`
+</code></pre>
+<img width="520" alt="image" src="https://user-images.githubusercontent.com/48283877/122250611-61a1b480-cefc-11eb-808e-e4ee19371e3c.png">
+
+<p>尴尬，好吧，组是可以删除的，只是在使用删除组的时候要养成好的习惯。先删除用户后再删除组！！！</p>
+<ul>
+<li><p>修改用户组属性</p>
+<p>  <code>groupmod 选项 用户组</code></p>
+</li>
+</ul>
+<img width="276" alt="image" src="https://user-images.githubusercontent.com/48283877/122250877-a0376f00-cefc-11eb-8d24-c4444b02156c.png">
+
+<ul>
+<li><p>切换用户组</p>
+<p>  <code>newgrp 目标用户组</code></p>
+</li>
+</ul>
+<p>newgrp 指令类似 login 指令:**newgrp 命令可以从用户的附加组中选择一个群组，作为用户新的初始组。<br>**欲使用 newgrp 指令切换群组，用户必须是该群组的用户，否则将无法登入指定的群组。<br>单一用户要同时隶属多个群组，需利用交替用户的设置。<br>若不指定群组名称，则 newgrp 指令会登入该用户名称的预设群组</p>
+<h1 id="linux文件和目录管理"><a href="#linux文件和目录管理" class="headerlink" title="linux文件和目录管理"></a>linux文件和目录管理</h1><h2 id="1-1-linux-目录"><a href="#1-1-linux-目录" class="headerlink" title="1.1 linux 目录"></a>1.1 linux 目录</h2><p>Linux中，目录为树状结构。树状目录以 / 为起始，也称为根目录，是Linux文件系统的入口，每一个文件和目录都从这里开始</p>
+<p>因为目录繁多，各类软件安装，配置都可能存在混乱的情况，所以产生了FHS（Filesystem Hierarchy Standard）组织</p>
+<p>FHS制定了目录规范，什么文件应该放在什么目录，根据FHS标准，Linux目录一般可分为以下四种交互状态：</p>
+<img width="581" alt="image" src="https://user-images.githubusercontent.com/48283877/122492023-9f473000-d017-11eb-8e9d-f5eee8dd40a6.png">
+
+<ul>
+<li><p>static:不可变的</p>
+</li>
+<li><p>variable:可变的</p>
+</li>
+<li><p>shareable:可分享的，“可共享”文件是指可以存储在一台主机上并在其他主机上使用的文件，例如，用户主目录中的文件是可共享的</p>
+</li>
+<li><p>unshareable:不可分享的“，不可共享”文件是指那些不可共享的文件，例如设备锁文件。</p>
+</li>
+</ul>
+<h2 id="1-2-目录详解"><a href="#1-2-目录详解" class="headerlink" title="1.2 目录详解"></a>1.2 目录详解</h2><p>在Linux中，常使用 ls 命令来查看目录结构，例如查看根目录下的目录0结构</p>
+<p>  <code>ls /</code></p>
+<img width="495" alt="image" src="https://user-images.githubusercontent.com/48283877/122641249-a6b12b00-d136-11eb-95a3-7dd3897482ce.png">
+
+<p>这些目录中：</p>
+<ul>
+<li>/ - 根目录，是linux文件系统的入口，每个文件和目录都从这里开始</li>
+<li>/bin - 基本用户命令二进制文件目录，包含系统管理员和用户都可以使用的命令</li>
+<li>/etc - 配置文件目录，包含所有程序所需的配置文件，配置文件用于控制程序操作的本地文件，它必须是静态的，不能是可执行的二进制文件</li>
+<li>/boot - 引导文件，目录包含系统启动过程中所需的所有内容，但不包括启动时不需要的配置文件和映射安装程序</li>
+<li>/dev - 设备文件，（device的缩写），该目录下存放的是linux的外部设备，包括终端设备、usb、连接到系统的任何设备。linux中访问设备的方式和访问文件的方式是相同的</li>
+<li>/lib - 库文件，包含引导系统的运行根文件系统中命令所需的共享库映像，即位于/bin和/sbin中的二进制文件，这些文件可以被很多程序共享</li>
+<li>/sbin - 系统二进制文件，包含由系统管理员使用的二进制可执行文件</li>
+<li>/proc - 进程信息文件，包含系统进程的相关信息，是系统内存的映射</li>
+<li>/opt - 可选择文件，用于安装附加应用程序软件包</li>
+<li>/lost+found - 次目录通常为空，当系统非法关机后，才会存放一些文件</li>
+<li>/srv - 服务器数据文件，包含服务器特定服务相关的数据</li>
+<li>/var - 变量文件，这个目录下可以找到内容可能增长的文件，包括<ul>
+<li>/var/log - 系统日志文件</li>
+<li>/var/lib - 数据库文件</li>
+<li>/var/mail - 电子邮件</li>
+<li>/var/spool - 打印队列</li>
+<li>/var/lock - 锁文件</li>
+<li>/var/tmp - 多次重新启动需要的临时文件</li>
+</ul>
+</li>
+<li>/tmp - 包含系统和用户创建的临时文件，当系统重新启动时，这个目录下的文件都将被删除</li>
+<li>/home - 用户目录，所有用户都用home来存储个人文件</li>
+<li>/usr - 用户程序目录，包含二进制文件、库文件、文档、二级程序的源代码</li>
+<li>/mnt - 挂载目录，此目录主要作为挂载点使用，通常包括系统引导后被挂载的文件系统的挂载点</li>
+<li>/media - 可移动媒体设备，用于挂载可移动设备的临时目录</li>
+</ul>
+<h2 id="1-3-linux文件"><a href="#1-3-linux文件" class="headerlink" title="1.3 linux文件"></a>1.3 linux文件</h2><h3 id="1-3-1-linux文件类型"><a href="#1-3-1-linux文件类型" class="headerlink" title="1.3.1 linux文件类型"></a>1.3.1 linux文件类型</h3><p>linux中一共有六种文件类型，分别是普通文件、目录文件、链接文件、设备文件、套接字文件、管道文件；</p>
+<ul>
+<li>1.普通文件：包括纯文本文件（ASCII）、二进制文件（binary）、数据格式的文件(data)；</li>
+<li>2.目录文件：其实就是linux中的目录，目录也是文件；</li>
+<li>3.链接文件：符号链接是指向系统上其它文件的引用，类似windows下的快捷方式；</li>
+<li>4.设备文件：linux中的硬件设备（硬盘、鼠标等）也都被表示为文件（设备文件），一般存放在/dev目录下；</li>
+<li>5.管道文件：管道是一种最基本的IPC机制，作用于有血缘关系的进程之间；一般的管道都是单向通信的，无法实现双向通信的功能；</li>
+<li>6.套接字文件：提供进程间通信方法的文件，套接字可以实现两端通信</li>
+</ul>
+<p>六种文件中，普通文件、目录文件、链接文件占用存储空间；而设备文件、管道文件、套接字文件是伪文件，不占用磁盘空间</p>
+<h3 id="1-3-2-文件权限"><a href="#1-3-2-文件权限" class="headerlink" title="1.3.2 文件权限"></a>1.3.2 文件权限</h3><p>以普通文件为例，我进的是/usr/bin目录，，使用 ls -l 命令：</p>
+<p>  <code> ls -l</code></p>
+<p>可以看到文件信息的第一列是 -rwx 形式，其中第一个字符’-‘表示这个文件为普通文件，后面的字符表示文件权限。第一个字符也可以是其他格式，不同字符代表不同的文件类型<br><img width="1023" alt="image" src="https://user-images.githubusercontent.com/48283877/122642959-9b163200-d13f-11eb-95aa-38a9a6b7e351.png"></p>
+<h2 id="1-4-命令"><a href="#1-4-命令" class="headerlink" title="1.4 命令"></a>1.4 命令</h2><ul>
+<li><p>ls</p>
+<p><code>ls 选项 地址</code></p>
+<p>其中，选项参数如下</p>
+<ul>
+<li><p>-a： 全部文件，连同隐藏文件（开头为.的文件）一起列出</p>
+<img width="512" alt="image" src="https://user-images.githubusercontent.com/48283877/122643265-7458fb00-d141-11eb-93d6-d8b5fe8b952d.png"></li>
+<li><p>-d： 仅仅列出目录本身，而不是列出目录内的文件数据</p>
+<img width="293" alt="image" src="https://user-images.githubusercontent.com/48283877/122643275-85097100-d141-11eb-8ac8-c1ee80eee550.png"></li>
+<li><p>-l： 长数据串列出，包含文件的属性与权限等等</p>
+<img width="462" alt="image" src="https://user-images.githubusercontent.com/48283877/122643284-8fc40600-d141-11eb-8e3e-6b387cecbbdd.png"></li>
+</ul>
+</li>
+<li><p>cd</p>
+<p><code>cd 地址</code></p>
+<p>切换路径</p>
+</li>
+<li><p>pwd</p>
+<p>查看当前路径</p>
+<p>其中，选项参数如下</p>
+<ul>
+<li><p>-P ：显示出确实的路径，而非使用连结 (link) 路径</p>
+<p><code>pwd -P</code></p>
+</li>
+</ul>
+</li>
+<li><p>mkdir</p>
+<p>创建一个新目录</p>
+<p><code>mkdir 选项 目录名称</code></p>
+<p>其中，选项参数如下</p>
+<ul>
+<li>-m：配置文件权限</li>
+<li>-p：直接将所需要的目录（包含上一级目录递归创建）</li>
+</ul>
+<p>例如，在桌面创建一个新目录bag</p>
+<p><code>cd /home/felix/桌面</code><br><code>mkdir -p bag</code></p>
+</li>
+</ul>
+<img width="358" alt="image" src="https://user-images.githubusercontent.com/48283877/122643508-bafb2500-d142-11eb-8f6e-31316ec9ba3f.png">
+
+<ul>
+<li><p>rmdir</p>
+<p>删除目录</p>
+<p><code>rmdir 选项 目录名称</code></p>
+<p>其中，选项参数如下</p>
+<ul>
+<li><strong>-p ：</strong>连同上一级『空的』目录也一起删除</li>
+</ul>
+<p>例如，删除在桌面的bag目录</p>
+<p><code>rmdir bag</code></p>
+</li>
+<li><p>cp</p>
+<p>复制文件</p>
+<p><code>cp 选项  源文件 目标地址/文件</code></p>
+<p>其中，选项参数如下</p>
+<img width="666" alt="image" src="https://user-images.githubusercontent.com/48283877/122643724-05c96c80-d144-11eb-9b9d-b15f41881385.png"></li>
+</ul>
+<ul>
+<li><p>rm</p>
+<p>删除文件</p>
+<p><code>rm 选项 文件或目录</code></p>
+<p>其中，选项参数如下</p>
+<img width="504" alt="image" src="https://user-images.githubusercontent.com/48283877/123051416-5b4b9500-d434-11eb-82f1-bf38fd9893f1.png"></li>
+<li><p>mv</p>
+<p>移动文件</p>
+<p><code>mv 源地址/文件 目标地址/文件</code></p>
+<p>其中，选项参数如下</p>
+<img width="553" alt="image" src="https://user-images.githubusercontent.com/48283877/123051519-761e0980-d434-11eb-88c2-cd31875c13ad.png"></li>
+<li><p>cat</p>
+<p>阅览文件</p>
+<p><code>cat 选项 目标文件地址</code></p>
+<p>其中，选项参数如下</p>
+<img width="559" alt="image" src="https://user-images.githubusercontent.com/48283877/123051610-8f26ba80-d434-11eb-9915-e2816247f19f.png"></li>
+<li><p>ln</p>
+<p>1.软链接(windows下的快捷方式创建)，如果删除原文件，则对应的软链接文件也会消失</p>
+<p><code>ln -s test.txt test_softlink</code></p>
+<p>2.硬链接，相当于给原文件取了个别名，其实两者是同一个文件，删除二者中任何一个，另一个不会消失；对其中任何一个进行更改，另一个的内容也会随之改变，因为这两个本质上是同一个文件，只是名字不同</p>
+<p><code>ln test.txt test_hardlink</code></p>
+</li>
+</ul>
+<h1 id="linux磁盘管理"><a href="#linux磁盘管理" class="headerlink" title="linux磁盘管理"></a>linux磁盘管理</h1><h2 id="1-1-什么是磁盘"><a href="#1-1-什么是磁盘" class="headerlink" title="1.1 什么是磁盘"></a>1.1 什么是磁盘</h2><p>磁盘（disk）是指利用磁记录技术存储数据的存储器。磁盘是计算机主要的存储介质，可以存储大量的二进制数据，并且断电后也能保持数据不丢失。早期计算机使用的磁盘是软磁盘（Floppy Disk，简称软盘），如今常用的磁盘是硬磁盘（Hard disk，简称硬盘）</p>
+<p>磁盘运行原理：</p>
+<p>简单来说就是多个盘片之间靠主轴连接，电机带动主轴做旋转运动，通过多个磁头臂的摇摆和磁盘的旋转，磁头就可以在磁盘旋转的过程中就读取到磁盘中存储的各种数据<br><img width="689" alt="image" src="https://user-images.githubusercontent.com/48283877/123362220-ed71ab80-d5a2-11eb-9f6a-dcf25c4766c5.png"></p>
+<h3 id="1-1-1-磁盘的扇区、磁道、柱面"><a href="#1-1-1-磁盘的扇区、磁道、柱面" class="headerlink" title="1.1.1 磁盘的扇区、磁道、柱面"></a>1.1.1 磁盘的扇区、磁道、柱面</h3><ul>
+<li>扇区：硬盘的盘片被磁道划分成多个扇区，硬盘的读写以扇区为基本单位</li>
+<li>磁道：磁盘的每个盘片被划分为许多同心圆，划分圆的线条叫做磁道</li>
+</ul>
+<img width="558" alt="image" src="https://user-images.githubusercontent.com/48283877/123362393-2d389300-d5a3-11eb-865f-6ea46725190f.png">
+
+<ul>
+<li>柱面：每一个盘片同一大小的同心圆可以看成连在一起的柱面，磁盘在分区的时候最小单位是柱面，每一个盘片的上下面都可以读取数据，每一个磁头，不可以跨盘面读取数据</li>
+</ul>
+<img width="567" alt="image" src="https://user-images.githubusercontent.com/48283877/123362498-6113b880-d5a3-11eb-9a9e-915d3a973942.png">
+
+<h2 id="1-2-磁盘管理"><a href="#1-2-磁盘管理" class="headerlink" title="1.2 磁盘管理"></a>1.2 磁盘管理</h2><p>Linux磁盘管理通常分成五个步骤：添加硬盘、做RAID或逻辑卷LVM、分区、对分区进行格式化、挂载到文件系统</p>
+<h3 id="1-2-1-添加硬盘以及做RAID或逻辑卷LVM"><a href="#1-2-1-添加硬盘以及做RAID或逻辑卷LVM" class="headerlink" title="1.2.1 添加硬盘以及做RAID或逻辑卷LVM"></a>1.2.1 添加硬盘以及做RAID或逻辑卷LVM</h3><ul>
+<li><p>RAID：磁盘阵列（Redundant Arrays of Independent Disks，RAID），磁盘阵列是由很多块独立的磁盘，组合成一个容量巨大的磁盘组，利用个别磁盘提供数据所产生加成效果提升整个磁盘系统效能。利用这项技术，将数据切割成许多区段，分别存放在各个硬盘上</p>
+<p>  常见的几种RAID模式</p>
+<ul>
+<li>RAID0：将数据分散在n个磁盘中，以独立的方式并行读取n个磁盘的数据，理论上，一个由n块磁盘组成的RAID0是单个磁盘性能的n倍</li>
+<li>RAID1：将数据分别写到两组磁盘中，分别为工作磁盘和镜像磁盘，相当于做了一次冗余，安全性高，但是成本也高</li>
+<li>RAID10：RAID10兼备了RAID1和RAID0的优点。首先基于RAID1模式将磁盘分为2份，当要写入数据的时候，将所有的数据在两份磁盘上同时写入，相当于写了双份数据，起到了数据保障的作用。且在每一份磁盘上又会基于RAID0技术讲数据分为N份并发的读写，这样也保障了数据的效率</li>
+</ul>
+</li>
+<li><p>LVM：Logical Volume Manager（逻辑卷管理）的简写，它是Linux环境下对磁盘分区进行管理的一种机制</p>
+</li>
+</ul>
+<p>Linux的用户经常会遇到一个问题，就是当磁盘分区空间不足了，调整分区大小非常麻烦。而LVM最大的作用就是解决这个问题。LVM将一个或多个硬盘的分区在逻辑上集合，相当于一个大硬盘来使用，当硬盘的空间不够使用的时候，可以继续将其它的硬盘的分区加入其中，这样可以实现磁盘空间的动态管理，相对于普通的磁盘分区有很大的灵活性</p>
+<h3 id="1-2-2-分区"><a href="#1-2-2-分区" class="headerlink" title="1.2.2 分区"></a>1.2.2 分区</h3><p>当硬盘添加成功后，便可以对硬盘进行分区了</p>
+<h4 id="1-2-2-1-为什么要分区"><a href="#1-2-2-1-为什么要分区" class="headerlink" title="1.2.2.1 为什么要分区"></a>1.2.2.1 为什么要分区</h4><ul>
+<li>方便管理：文件种类繁多的时候不容易混乱</li>
+<li>安全：硬盘出现问题的时候，减少数据损失</li>
+</ul>
+<h4 id="1-2-2-2-分区常用命令"><a href="#1-2-2-2-分区常用命令" class="headerlink" title="1.2.2.2 分区常用命令"></a>1.2.2.2 分区常用命令</h4><p>fdisk是创建和维护分区表的程序，兼容DOS类型的分区表、BSO或者SUN类型的磁盘列表</p>
+<ul>
+<li>更改分区表</li>
+</ul>
+<p>  `fdisk [选项] &lt;磁盘&gt;</p>
+<ul>
+<li>列出分区表</li>
+</ul>
+<p>  <code>fdisk [选项] -l [&lt;磁盘&gt;]</code></p>
+<img width="435" alt="image" src="https://user-images.githubusercontent.com/48283877/123366961-bbb11280-d5ab-11eb-8398-0e0013c74989.png">
+
+<p>常用选项如下</p>
+<img width="445" alt="image" src="https://user-images.githubusercontent.com/48283877/123367061-e56a3980-d5ab-11eb-999f-349e9474eb58.png">
+
+
+<p>对某个磁盘分区，如 fdisk /dev/sda，则会出现以下菜单进行选择</p>
+<img width="438" alt="image" src="https://user-images.githubusercontent.com/48283877/123367140-0763bc00-d5ac-11eb-85b4-107e2d4ddd48.png">
+
+<p>其中，常用操作如下</p>
+<img width="236" alt="image" src="https://user-images.githubusercontent.com/48283877/123367171-15b1d800-d5ac-11eb-91bc-c25c46e89d5b.png">
+
+
+<h3 id="1-2-3-格式化"><a href="#1-2-3-格式化" class="headerlink" title="1.2.3 格式化"></a>1.2.3 格式化</h3><h4 id="1-2-3-1-什么是格式化"><a href="#1-2-3-1-什么是格式化" class="headerlink" title="1.2.3.1 什么是格式化"></a>1.2.3.1 什么是格式化</h4><p>格式化一般是指逻辑格式化，它是指根据用户选定的文件系统，在磁盘的特定区域写入特定数据，以达到初始化磁盘或磁盘分区、清除原磁盘或磁盘分区中所有文件的一个操作。</p>
+<p>文件系统指操作系统用于明确存储设备或分区上的文件的方法和数据结构：即在存储设备上组织文件的方法</p>
+<h4 id="1-2-3-2-格式化常用命令"><a href="#1-2-3-2-格式化常用命令" class="headerlink" title="1.2.3.2 格式化常用命令"></a>1.2.3.2 格式化常用命令</h4><p><code>mkfs [选项] [-t &lt;类型&gt;] [文件系统选项] &lt;设备&gt; [&lt;大小&gt;]</code></p>
+<p>创建一个Linux 文件系统</p>
+<img width="381" alt="image" src="https://user-images.githubusercontent.com/48283877/123367442-83f69a80-d5ac-11eb-92e0-f76fe794f885.png">
+
+<h3 id="1-2-4-挂载"><a href="#1-2-4-挂载" class="headerlink" title="1.2.4 挂载"></a>1.2.4 挂载</h3><h4 id="1-2-4-1-什么是挂载"><a href="#1-2-4-1-什么是挂载" class="headerlink" title="1.2.4.1 什么是挂载"></a>1.2.4.1 什么是挂载</h4><p>Linux 系统中一切皆文件，所有文件都放置在以根目录为树根的树形目录结构中。在 Linux 看来，任何硬件设备也都是文件，它们各有自己的一套文件系统（文件目录结构）。挂载，指的就是将设备文件中的顶级目录连接到 Linux 根目录下的某一目录，访问此目录就等同于访问设备文件</p>
+<h4 id="1-2-4-2-mount命令"><a href="#1-2-4-2-mount命令" class="headerlink" title="1.2.4.2 mount命令"></a>1.2.4.2 mount命令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mount [-lhV]</span><br><span class="line">mount -a [选项]</span><br><span class="line">mount [选项] [--source] &lt;源&gt; | [--target] &lt;目录&gt;</span><br><span class="line">mount [选项] &lt;源&gt; &lt;目录&gt;</span><br><span class="line">mount &lt;操作&gt; &lt;挂载点&gt; [&lt;目标&gt;]</span><br></pre></td></tr></table></figure>
+
+<p>用默认方法将/dev/usb 挂载到 /mnt/usb</p>
+<p><code>mount /dev/usb /mnt/usb</code></p>
+<img width="436" alt="image" src="https://user-images.githubusercontent.com/48283877/123367985-84436580-d5ad-11eb-8e6a-6df42e9abf61.png">
+
+<p>提示挂载点不存在，先创建一个再重新挂载</p>
+<p><code>mkdir -p /mnt/usb</code></p>
+<img width="460" alt="image" src="https://user-images.githubusercontent.com/48283877/123368117-c5d41080-d5ad-11eb-942a-f9674f28e41a.png">
+
+<p>提示特殊设备不存在</p>
+
+    </div>
+
+    
+    
+    
+
+    
+    <div>
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+    </div>
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="小书包 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="小书包 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://felixtree.tech/2021/07/12/linux-Learning/" title="linux入门">https://felixtree.tech/2021/07/12/linux-Learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/liunx/" rel="tag"># liunx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-1-matplotlib%E5%88%9D%E7%9B%B8%E8%AF%86/" rel="next" title="part_1 matplotlib初相识">
+      part_1 matplotlib初相识 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzYxMy8zMDA4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-task1%EF%BC%88%E5%9F%BA%E6%9C%AC%E4%B8%BA%E6%91%98%E5%BD%95%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">1 task1（基本为摘录）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AFlinux"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 什么是linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-linux%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 linux的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 发展历程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E5%B8%B8%E7%94%A8%E5%8F%91%E8%A1%8C%E7%89%88"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 常用发行版</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-task2"><span class="nav-number">2.</span> <span class="nav-text">2 task2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%AE%89%E8%A3%85%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A5%E5%8F%8Alinux%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 安装虚拟机以及linux系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E5%85%A8%E5%B1%8F%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 全屏设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 软件安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-%E8%BD%AF%E4%BB%B6%E5%8C%85%E5%AE%89%E8%A3%85"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 软件包安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-1-deb"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">2.3.1.1 deb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rpm"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">rpm</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 编译源码安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-%E5%9C%A8%E7%BA%BF%E5%AE%89%E8%A3%85"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 在线安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-1-apt%E5%8C%85%E7%AE%A1%E7%90%86"><span class="nav-number">2.6.</span> <span class="nav-text">2.5.1 apt包管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-2-%E6%8D%A2%E6%BA%90"><span class="nav-number">2.7.</span> <span class="nav-text">2.5.2 换源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-%E5%BC%80%E6%BA%90%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.8.</span> <span class="nav-text">2.6 开源软件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-1-%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7"><span class="nav-number">2.8.1.</span> <span class="nav-text">2.6.1 效率工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-1-1-%E6%90%9C%E7%8B%97%E8%BE%93%E5%85%A5%E6%B3%95"><span class="nav-number">2.8.1.1.</span> <span class="nav-text">2.6.1.1 搜狗输入法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-1-1-Terminator"><span class="nav-number">2.8.1.2.</span> <span class="nav-text">2.6.1.1 Terminator</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-2-%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7"><span class="nav-number">2.8.2.</span> <span class="nav-text">2.6.2 开发工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-2-1-git"><span class="nav-number">2.8.2.1.</span> <span class="nav-text">2.6.2.1 git</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-2-2-vim"><span class="nav-number">2.8.2.2.</span> <span class="nav-text">2.6.2.2 vim</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-%E5%B8%B8%E7%94%A8%E7%BB%88%E7%AB%AF%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">2.9.</span> <span class="nav-text">2.7 常用终端快捷键</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux-%E7%94%A8%E6%88%B7%E5%8F%8A%E7%BB%84%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">linux 用户及组管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%94%A8%E6%88%B7%E4%B8%8E%E7%94%A8%E6%88%B7%E7%BB%84"><span class="nav-number">3.1.</span> <span class="nav-text">1. 用户与用户组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E7%94%A8%E6%88%B7"><span class="nav-number">3.1.1.</span> <span class="nav-text">1.1 什么是用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%94%A8%E6%88%B7%E7%BB%84"><span class="nav-number">3.1.2.</span> <span class="nav-text">1.2 什么是用户组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E7%94%A8%E6%88%B7%E4%B8%8E%E7%94%A8%E6%88%B7%E7%BB%84%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">3.1.3.</span> <span class="nav-text">1.3 用户与用户组的关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%A8%E6%88%B7ID%E4%B8%8E%E7%BB%84ID"><span class="nav-number">3.2.</span> <span class="nav-text">2. 用户ID与组ID</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%94%A8%E6%88%B7%E7%9A%84%E5%A2%9E%E5%88%A0%E4%BF%AE%E6%94%B9"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.1 用户的增删修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%94%A8%E6%88%B7%E7%BB%84%E7%AE%A1%E7%90%86"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2 用户组管理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux%E6%96%87%E4%BB%B6%E5%92%8C%E7%9B%AE%E5%BD%95%E7%AE%A1%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">linux文件和目录管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-linux-%E7%9B%AE%E5%BD%95"><span class="nav-number">4.1.</span> <span class="nav-text">1.1 linux 目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E7%9B%AE%E5%BD%95%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">1.2 目录详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-linux%E6%96%87%E4%BB%B6"><span class="nav-number">4.3.</span> <span class="nav-text">1.3 linux文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-linux%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.3.1.</span> <span class="nav-text">1.3.1 linux文件类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90"><span class="nav-number">4.3.2.</span> <span class="nav-text">1.3.2 文件权限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E5%91%BD%E4%BB%A4"><span class="nav-number">4.4.</span> <span class="nav-text">1.4 命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">linux磁盘管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A3%81%E7%9B%98"><span class="nav-number">5.1.</span> <span class="nav-text">1.1 什么是磁盘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-%E7%A3%81%E7%9B%98%E7%9A%84%E6%89%87%E5%8C%BA%E3%80%81%E7%A3%81%E9%81%93%E3%80%81%E6%9F%B1%E9%9D%A2"><span class="nav-number">5.1.1.</span> <span class="nav-text">1.1.1 磁盘的扇区、磁道、柱面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86"><span class="nav-number">5.2.</span> <span class="nav-text">1.2 磁盘管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-%E6%B7%BB%E5%8A%A0%E7%A1%AC%E7%9B%98%E4%BB%A5%E5%8F%8A%E5%81%9ARAID%E6%88%96%E9%80%BB%E8%BE%91%E5%8D%B7LVM"><span class="nav-number">5.2.1.</span> <span class="nav-text">1.2.1 添加硬盘以及做RAID或逻辑卷LVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-%E5%88%86%E5%8C%BA"><span class="nav-number">5.2.2.</span> <span class="nav-text">1.2.2 分区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%86%E5%8C%BA"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">1.2.2.1 为什么要分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-2-%E5%88%86%E5%8C%BA%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">1.2.2.2 分区常用命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-3-%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-number">5.2.3.</span> <span class="nav-text">1.2.3 格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-3-1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-number">5.2.3.1.</span> <span class="nav-text">1.2.3.1 什么是格式化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-3-2-%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">5.2.3.2.</span> <span class="nav-text">1.2.3.2 格式化常用命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-4-%E6%8C%82%E8%BD%BD"><span class="nav-number">5.2.4.</span> <span class="nav-text">1.2.4 挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-4-1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8C%82%E8%BD%BD"><span class="nav-number">5.2.4.1.</span> <span class="nav-text">1.2.4.1 什么是挂载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-4-2-mount%E5%91%BD%E4%BB%A4"><span class="nav-number">5.2.4.2.</span> <span class="nav-text">1.2.4.2 mount命令</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小书包"
+      src="/uploads/touxiang.png">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/teng-fei-41-43" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;teng-fei-41-43" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/Baby1601tree?spm=1000.2115.3001.5343" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;Baby1601tree?spm&#x3D;1000.2115.3001.5343" rel="noopener" target="_blank"><i class="codiepie fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 202107 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.5k字</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset);
+            clearInterval(int);
+        }
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据
+            clearInterval(int); // 停止检测
+        }
+    }
+
+});
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"felixtree.tech","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Word2Vec的使用和基础原理Word2Vec模型背后的基本思想是对出现在上下文环境里的词进行预测。对于每一条输入文本，我们选取一个上下文窗口和一个中心词，并基于这个中心词去预测窗口里其他词出现的概率。因此，Word2Vec模型可以方便地从新增预料中学习到新增词的向量表达，是一种高效地在线学习方法。 本文主要通过代码的形式，介绍Word2Vec的使用和原理。 导入第三方模块123456from">
+<meta property="og:type" content="article">
+<meta property="og:title" content="part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理">
+<meta property="og:url" content="https://felixtree.tech/2021/07/13/part-5-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-Word2Vec%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="小书包的知识屋">
+<meta property="og:description" content="Word2Vec的使用和基础原理Word2Vec模型背后的基本思想是对出现在上下文环境里的词进行预测。对于每一条输入文本，我们选取一个上下文窗口和一个中心词，并基于这个中心词去预测窗口里其他词出现的概率。因此，Word2Vec模型可以方便地从新增预料中学习到新增词的向量表达，是一种高效地在线学习方法。 本文主要通过代码的形式，介绍Word2Vec的使用和原理。 导入第三方模块123456from">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-13T04:02:44.000Z">
+<meta property="article:modified_time" content="2021-07-13T04:17:17.365Z">
+<meta property="article:author" content="小书包">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://felixtree.tech/2021/07/13/part-5-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-Word2Vec%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理 | 小书包的知识屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="小书包的知识屋" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/FelixBigTree"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小书包的知识屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://felixtree.tech/2021/07/13/part-5-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-Word2Vec%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/touxiang.png">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小书包的知识屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理
+        </h1>
+
+        <div class="post-meta">
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-13 12:02:44 / 修改时间：12:17:17" itemprop="dateCreated datePublished" datetime="2021-07-13T12:02:44+08:00">2021-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-NLP-%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/" itemprop="url" rel="index"><span itemprop="name">机器学习_NLP - 新闻文本分类</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Word2Vec的使用和基础原理"><a href="#Word2Vec的使用和基础原理" class="headerlink" title="Word2Vec的使用和基础原理"></a>Word2Vec的使用和基础原理</h1><p>Word2Vec模型背后的基本思想是对出现在上下文环境里的词进行预测。对于每一条输入文本，我们选取一个上下文窗口和一个中心词，并基于这个中心词去预测窗口里其他词出现的概率。因此，Word2Vec模型可以方便地从新增预料中学习到新增词的向量表达，是一种高效地在线学习方法。</p>
+<p>本文主要通过代码的形式，介绍Word2Vec的使用和原理。</p>
+<h1 id="导入第三方模块"><a href="#导入第三方模块" class="headerlink" title="导入第三方模块"></a>导入第三方模块</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gensim.models.word2vec <span class="keyword">import</span> Word2Vec</span><br><span class="line"><span class="keyword">import</span> logging  <span class="comment"># 提供日志打印功能</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> torch</span><br></pre></td></tr></table></figure>
+<p>这里安装torch费了点时间，一直报错无法安装，最后在官网输入机器配置及环境得到安装代码，然后在终端执行安装，代码如下：</p>
+<span id="more"></span>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install torch==<span class="number">1.5</span><span class="number">.1</span>+cpu torchvision==<span class="number">0.6</span><span class="number">.1</span>+cpu -f https://download.pytorch.org/whl/torch_stable.html</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Word2Vec的主要思路"><a href="#Word2Vec的主要思路" class="headerlink" title="Word2Vec的主要思路"></a>Word2Vec的主要思路</h1><p>通过单词和上下文彼此预测，对应的两个算法为：</p>
+<ol>
+<li>Skip-grams(SG)：预测上下文</li>
+<li>Continuous Bag Of Words(CBOW)：预测目标单词</li>
+</ol>
+<p>Word2vec模型实际上分了两个部分，第一部分是建模，第二部分是通过模型获取嵌入词向量：</p>
+<ol>
+<li>建模过程：基于训练数据构建神经网络</li>
+<li>获取嵌入词向量：模型训练好以后，获取通过训练数据所学得的参数，如隐层的权重矩阵等</li>
+</ol>
+<h1 id="Skip-grams-SG-过程"><a href="#Skip-grams-SG-过程" class="headerlink" title="Skip-grams(SG)过程"></a>Skip-grams(SG)过程</h1><p>神经网络基于训练数据，将会输出一个概率分布，这些概率代表着词典中每个词作为input word的output word的可能性<br>模型的输出概率代表着我们词典中的每个词有多大可能性和input word同时出现</p>
+<p>input word和out word都会进行one-hot编码，形成一个稀疏向量（实际上仅有一个位置是1）<br>为了节约计算资源，它会仅仅选择矩阵对应向量中维度值为1的索引行计算</p>
+<h1 id="Skip-grams训练"><a href="#Skip-grams训练" class="headerlink" title="Skip-grams训练"></a>Skip-grams训练</h1><p>Word2Vec模型是一个超级大的神经网络（权重矩阵规模非常大）。<br>百万数量级的权重矩阵和亿万数量级的训练样本意味着训练灾难。</p>
+<p>问题解决：</p>
+<ol>
+<li>将常见的组合单词或词组作为单个’words’来处理</li>
+<li>对高频词抽样来减少样本个数</li>
+<li>对优化目标采用’negative sampling’方法，这样每个训练样本的训练只会更新一小部分模型权重，从而降低计算负担</li>
+<li>1  负采样时，随机选择一小部分negative words来更新对应权重，同时对positive words更新权重</li>
+<li>2 使用’一元模型分布’来选择’negative words’，个单词被选作negative sample的概率和它出现频次有关，频次越高越容易被选中</li>
+<li>3 负采样代码中，有一个包含了一亿个元素的数组’unigram table’，数组由词汇表中每个单词的索引号填充。单次负采样的概率*1亿=单次在表中出现的次数；也就是说，进行负采样时，只需要在0-1亿范围内生成一个随机数，然后选择表中索引号为这个随机数的单次作为negative word即可；一个单词负采样概率越大，它在表中出现的次数越多，被选择的概率就越大</li>
+<li>霍夫曼树：输入权值为(w1,w2…wn)的n个节点；输出对应的霍夫曼树，一般得到霍夫曼树后会对叶子节点进行霍夫曼编码，由于权重高的叶子节点靠近根节点，而权重低的叶子节点会远离根节点。 所以高权重节点编码值较短，而低权重值编码值较长，这保证了树的带权路径最短，也符合信息论：常用词拥有更短的编码</li>
+<li>1.将(w1,w2…wn)看做是有n棵树的森林，每个数仅有一个节点<pre><code>  4.2.在森林中选择根节点权值最小的两个数合并，得到一棵新树，这两棵树分布作为新树的左右子树，新树根节点权重为左右子树根节点权重和
+  4.3.删除森林中权值最小的两棵树，并把合并后的新树加入森林
+  4.4.重复4.2与4.3，直到森林中只剩一棵树
+  4.5.在Word2Vec中，约定左子树编码为1，右子树编码为0，同时约定左子树的权重不小于右子树的权重
+</code></pre>
+</li>
+<li>Hierarchical Softmax过程：为了避免计算所有词的softmax概率，Word2Vec采用了霍夫曼树代替从隐藏层到输出softmax层的映射。霍夫曼树的建立：</li>
+<li>1.根据标签(label)和频率建立霍夫曼树（label出现的频率越高，Huffman树的路径越短）<pre><code>     5.2.Huffman树中每一叶子节点代表一个label
+         5.2.1. p - 从根节点出发到达w对应叶子节点的路径
+         5.2.2. l - 路径p中包含节点的个数
+         5.2.3. p1,p2,...pl - 路径p中的l个节点，其中p1表示根节点，p2表示词w对应的第二个节点
+         5.2.4. d2,d3,...dl∈&#123;0，1&#125; - 词w的Huffman编码，它有l-1位编码构成，dl表示路径p中第l个节点对应的编码（根节点无）
+         5.2.5. θ1,θ2,...θ(l-1)∈R - 路径p中非叶子节点对应的向量，θj表示路径p中第j个非叶子节点对应的向量
+     5.3.一棵Huffman树，是一个二分类树（二叉树）。再Word2Vec中，1表示负类，0表示正类，通过Sigmoid函数分类
+</code></pre>
+</li>
+</ol>
+<h1 id="尝试通过Word2Vec训练词向量"><a href="#尝试通过Word2Vec训练词向量" class="headerlink" title="尝试通过Word2Vec训练词向量"></a>尝试通过Word2Vec训练词向量</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">model = Word2Vec(sentences, workers=num_workers, size=num_features)</span></span><br><span class="line"><span class="string">参数详解：</span></span><br><span class="line"><span class="string">    sentences - 语料集，可以是一个list，对于大语料集，建议使用BrownCorpus,Text8Corpus,lineSentence构建</span></span><br><span class="line"><span class="string">    sg - 用于设置训练算法，默认为0，即CBOW算法；sg=1则采用skip-gram算法</span></span><br><span class="line"><span class="string">    size - 指定特征向量的维度，默认为100。大的size需要更多的训练数据，但是效果会更好</span></span><br><span class="line"><span class="string">    window - 指当前词与预测词在一个句子中的最大距离</span></span><br><span class="line"><span class="string">    alpha - 学习速率</span></span><br><span class="line"><span class="string">    seed - 随机种子</span></span><br><span class="line"><span class="string">    min_count - 可以对字典做截断，词频数少于min_count则被丢弃，默认为5</span></span><br><span class="line"><span class="string">    max_vocab_size - 设置词向量构建期间的RAM限制。</span></span><br><span class="line"><span class="string">                        如果所有独立单词个数超过限制，则丢弃其中最不频繁的一个。每一千万个单词大约需要1GB的RAM</span></span><br><span class="line"><span class="string">    sample - 高频词汇的随机降采样的配置阈值，默认1乘e的-3次方，范围是0到1乘e的-5次方</span></span><br><span class="line"><span class="string">    workers - 参加控制训练的并行数</span></span><br><span class="line"><span class="string">    hs - hs=1采用Hierarchica_softmax技巧，hs=0采用negative_sampling(下采样）</span></span><br><span class="line"><span class="string">    iter - 迭代次数，默认5次</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h1 id="定义输出日志参数"><a href="#定义输出日志参数" class="headerlink" title="定义输出日志参数"></a>定义输出日志参数</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">logging.basicConfig(level=logging.INFO, <span class="built_in">format</span>=<span class="string">&#x27;%(asctime)-15s %(levelname)s: %(message)s&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">level - 设置日志级别</span></span><br><span class="line"><span class="string">format - 指定输出格式</span></span><br><span class="line"><span class="string">    %(asctime) - 打印日志的时间</span></span><br><span class="line"><span class="string">    %(levelname)s - 打印日志级别名称</span></span><br><span class="line"><span class="string">    %(levelno)s - 打印日志级别的数值</span></span><br><span class="line"><span class="string">    %(message)s - 打印日志信息</span></span><br><span class="line"><span class="string">    %(funcName)s - 打印日志的当前函数</span></span><br><span class="line"><span class="string">    %(lineno)d - 打印日志的当前行号</span></span><br><span class="line"><span class="string">    %(thread)d - 打印线程ID</span></span><br><span class="line"><span class="string">    %(process)d - 打印进程ID</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h1 id="设置随机种子"><a href="#设置随机种子" class="headerlink" title="设置随机种子"></a>设置随机种子</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">seed = <span class="number">2020</span></span><br><span class="line">random.seed(seed)</span><br><span class="line">np.random.seed(seed)</span><br><span class="line">torch.manual_seed(seed)</span><br></pre></td></tr></table></figure>
+<h1 id="十折交叉验证"><a href="#十折交叉验证" class="headerlink" title="十折交叉验证"></a>十折交叉验证</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fold_num = <span class="number">10</span></span><br><span class="line">data_file = <span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\data\train_set.csv&#x27;</span></span><br></pre></td></tr></table></figure>
+<h1 id="定义分折函数"><a href="#定义分折函数" class="headerlink" title="定义分折函数"></a>定义分折函数</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">all_data2fold</span>(<span class="params">fold_num, num=<span class="number">10000</span></span>):</span></span><br><span class="line">    fold_data = []</span><br><span class="line">    f = pd.read_csv(data_file, sep=<span class="string">&#x27;\t&#x27;</span>, encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line">    <span class="comment"># tolist()函数用于将数组或矩阵转化成列表，这里我只取10000个样本</span></span><br><span class="line">    texts = f[<span class="string">&#x27;text&#x27;</span>].tolist()[:num]</span><br><span class="line">    labels = f[<span class="string">&#x27;label&#x27;</span>].tolist()[:num]</span><br><span class="line">    <span class="comment"># 统计有标签的样本树，理应为10000个</span></span><br><span class="line">    total = <span class="built_in">len</span>(labels)</span><br><span class="line">    <span class="comment"># 创建一个索引列表，包含10000个索引，从0到9999</span></span><br><span class="line">    index = <span class="built_in">list</span>(<span class="built_in">range</span>(total))</span><br><span class="line">    <span class="comment"># 将索引列表随机打乱</span></span><br><span class="line">    np.random.shuffle(index)</span><br><span class="line">    all_texts = []</span><br><span class="line">    all_labels = []</span><br><span class="line">    <span class="comment"># 按打乱后的索引列表顺序，重组texts和labels</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> index:</span><br><span class="line">        all_texts.append(texts[i])</span><br><span class="line">        all_labels.append(labels[i])</span><br><span class="line"></span><br><span class="line">    label2id = &#123;&#125;</span><br><span class="line">    <span class="comment"># range(total) - 0到9999</span></span><br><span class="line">    <span class="comment"># 这一步将每类标签整合到一个字典中</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(total):</span><br><span class="line">        label = <span class="built_in">str</span>(all_labels[i])</span><br><span class="line">        <span class="keyword">if</span> label <span class="keyword">not</span> <span class="keyword">in</span> label2id:</span><br><span class="line">            label2id[label] = [i]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            label2id[label].append(i)</span><br><span class="line">    <span class="comment"># 创建fold_num个空列表，用于存放索引</span></span><br><span class="line">    all_index = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(fold_num)]</span><br><span class="line">    <span class="keyword">for</span> label, data <span class="keyword">in</span> label2id.items():</span><br><span class="line">        <span class="comment"># 可以发现这10000个样本中每个类别分布不均</span></span><br><span class="line">        <span class="built_in">print</span>(label, <span class="built_in">len</span>(data))</span><br><span class="line">        <span class="comment"># 把每一类分成fold_num份,取整</span></span><br><span class="line">        batch_size = <span class="built_in">int</span>(<span class="built_in">len</span>(data) / fold_num)</span><br><span class="line">        <span class="comment"># other是没有分完的</span></span><br><span class="line">        other = <span class="built_in">len</span>(data) - batch_size * fold_num</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(fold_num):</span><br><span class="line">            <span class="comment"># cur_batch_size是每折按batch_size+1分配的数量，当余数不够分配的时候，给batch_size，即整数部分</span></span><br><span class="line">            cur_batch_size = batch_size + <span class="number">1</span> <span class="keyword">if</span> i &lt; other <span class="keyword">else</span> batch_size</span><br><span class="line">            <span class="built_in">print</span>(cur_batch_size)</span><br><span class="line">            batch_data = [data[i * batch_size + b] <span class="keyword">for</span> b <span class="keyword">in</span> <span class="built_in">range</span>(cur_batch_size)]</span><br><span class="line">            all_index[i].extend(batch_data)</span><br><span class="line">    batch_size = <span class="built_in">int</span>(total / fold_num)</span><br><span class="line">    other_texts = []</span><br><span class="line">    other_labels = []</span><br><span class="line">    other_num = <span class="number">0</span></span><br><span class="line">    start = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> fold <span class="keyword">in</span> <span class="built_in">range</span>(fold_num):</span><br><span class="line">        num = <span class="built_in">len</span>(all_index[fold])</span><br><span class="line">        <span class="comment"># 将数据和标签分为fold份</span></span><br><span class="line">        texts = [all_texts[i] <span class="keyword">for</span> i <span class="keyword">in</span> all_index[fold]]</span><br><span class="line">        labels = [all_labels[i] <span class="keyword">for</span> i <span class="keyword">in</span> all_index[fold]]</span><br><span class="line">        <span class="keyword">if</span> num &gt; batch_size:</span><br><span class="line">            <span class="comment"># 取一份当验证集，剩下的训练集</span></span><br><span class="line">            fold_texts = texts[:batch_size]</span><br><span class="line">            other_texts.extend(texts[batch_size:])</span><br><span class="line">            fold_labels = labels[:batch_size]</span><br><span class="line">            other_labels.extend(labels[batch_size:])</span><br><span class="line">            other_num += num - batch_size</span><br><span class="line">        <span class="keyword">elif</span> num &lt; batch_size:</span><br><span class="line">            end = start + batch_size - num</span><br><span class="line">            fold_texts = texts + other_texts[start: end]</span><br><span class="line">            fold_labels = labels + other_labels[start: end]</span><br><span class="line">            start = end</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            fold_texts = texts</span><br><span class="line">            fold_labels = labels</span><br><span class="line">        <span class="keyword">assert</span> batch_size == <span class="built_in">len</span>(fold_labels)</span><br><span class="line">        <span class="comment"># shuffle - 打乱分好的每一折</span></span><br><span class="line">        index = <span class="built_in">list</span>(<span class="built_in">range</span>(batch_size))</span><br><span class="line">        np.random.shuffle(index)</span><br><span class="line">        shuffle_fold_texts = []</span><br><span class="line">        shuffle_fold_labels = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> index:</span><br><span class="line">            shuffle_fold_texts.append(fold_texts[i])</span><br><span class="line">            shuffle_fold_labels.append(fold_labels[i])</span><br><span class="line">        data = &#123;<span class="string">&#x27;label&#x27;</span>: shuffle_fold_labels, <span class="string">&#x27;text&#x27;</span>: shuffle_fold_texts&#125;</span><br><span class="line">        fold_data.append(data)</span><br><span class="line">    logging.info(<span class="string">&#x27;Fold lens %s&#x27;</span>, <span class="built_in">str</span>([<span class="built_in">len</span>(data[<span class="string">&#x27;label&#x27;</span>]) <span class="keyword">for</span> data <span class="keyword">in</span> fold_data]))</span><br><span class="line">    <span class="keyword">return</span> fold_data</span><br></pre></td></tr></table></figure>
+<h1 id="拆分数据集为10份"><a href="#拆分数据集为10份" class="headerlink" title="拆分数据集为10份"></a>拆分数据集为10份</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fold_data = all_data2fold(fold_num=<span class="number">10</span>, num=<span class="number">200000</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="为Word2Vec创建训练集"><a href="#为Word2Vec创建训练集" class="headerlink" title="为Word2Vec创建训练集"></a>为Word2Vec创建训练集</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fold_id = <span class="number">9</span></span><br><span class="line">train_texts = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, fold_id):</span><br><span class="line">    data = fold_data[i]</span><br><span class="line">    train_texts.extend(data[<span class="string">&#x27;text&#x27;</span>])</span><br><span class="line">logging.info(<span class="string">&#x27;Total %d docs.&#x27;</span> % <span class="built_in">len</span>(train_texts))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">47</span>:<span class="number">16</span>,<span class="number">645</span> INFO: Fold lens [<span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>, <span class="number">20000</span>]</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">48</span>:<span class="number">19</span>,<span class="number">883</span> INFO: Total <span class="number">180000</span> docs.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，训练集有18000个词汇。</p>
+<h1 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">logging.info(<span class="string">&#x27;Starting training...&#x27;</span>)</span><br><span class="line"></span><br><span class="line">num_features = <span class="number">100</span>  <span class="comment"># 词向量维数</span></span><br><span class="line">num_works = <span class="number">8</span>   <span class="comment"># 并发线程数</span></span><br><span class="line"></span><br><span class="line">train_texts = <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: <span class="built_in">list</span>(x.split()), train_texts))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">split()函数默认分割所有空字符，包括空格符，换行符，制表符</span></span><br><span class="line"><span class="string">map()函数搭配lambda函数使用，把函数运用到传入可迭代对象的每一个元素中，并把结果作为新的可迭代对向返回</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">49</span>:01,006 INFO: Starting training...</span><br></pre></td></tr></table></figure>
+<h1 id="创建模型实例"><a href="#创建模型实例" class="headerlink" title="创建模型实例"></a>创建模型实例</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">model = Word2Vec(train_texts, workers=num_works, size=num_features)</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">54</span>:<span class="number">54</span>,<span class="number">262</span> INFO: collecting <span class="built_in">all</span> words <span class="keyword">and</span> their counts</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">54</span>:<span class="number">54</span>,<span class="number">270</span> INFO: PROGRESS: at sentence <span class="comment">#0, processed 0 words, keeping 0 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">54</span>:<span class="number">59</span>,<span class="number">512</span> INFO: PROGRESS: at sentence <span class="comment">#10000, processed 9148165 words, keeping 5311 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:04,<span class="number">945</span> INFO: PROGRESS: at sentence <span class="comment">#20000, processed 18193591 words, keeping 5704 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">10</span>,<span class="number">346</span> INFO: PROGRESS: at sentence <span class="comment">#30000, processed 27309645 words, keeping 5908 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">15</span>,<span class="number">596</span> INFO: PROGRESS: at sentence <span class="comment">#40000, processed 36283313 words, keeping 6087 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">20</span>,<span class="number">184</span> INFO: PROGRESS: at sentence <span class="comment">#50000, processed 45410969 words, keeping 6225 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">26</span>,<span class="number">618</span> INFO: PROGRESS: at sentence <span class="comment">#60000, processed 54548917 words, keeping 6324 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">33</span>,<span class="number">732</span> INFO: PROGRESS: at sentence <span class="comment">#70000, processed 63656832 words, keeping 6391 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">39</span>,<span class="number">213</span> INFO: PROGRESS: at sentence <span class="comment">#80000, processed 72844840 words, keeping 6435 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">45</span>,<span class="number">167</span> INFO: PROGRESS: at sentence <span class="comment">#90000, processed 81847771 words, keeping 6481 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">50</span>,<span class="number">762</span> INFO: PROGRESS: at sentence <span class="comment">#100000, processed 91001853 words, keeping 6541 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">55</span>:<span class="number">55</span>,067 INFO: PROGRESS: at sentence <span class="comment">#110000, processed 100092931 words, keeping 6586 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">00</span>,<span class="number">453</span> INFO: PROGRESS: at sentence <span class="comment">#120000, processed 109101979 words, keeping 6621 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:04,<span class="number">678</span> INFO: PROGRESS: at sentence <span class="comment">#130000, processed 118112658 words, keeping 6672 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">10</span>,<span class="number">503</span> INFO: PROGRESS: at sentence <span class="comment">#140000, processed 126928025 words, keeping 6689 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">15</span>,<span class="number">953</span> INFO: PROGRESS: at sentence <span class="comment">#150000, processed 136177978 words, keeping 6718 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">20</span>,<span class="number">138</span> INFO: PROGRESS: at sentence <span class="comment">#160000, processed 145204090 words, keeping 6759 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">25</span>,<span class="number">443</span> INFO: PROGRESS: at sentence <span class="comment">#170000, processed 154259340 words, keeping 6788 word types</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">140</span> INFO: collected <span class="number">6826</span> word types <span class="keyword">from</span> a corpus of <span class="number">163331797</span> raw words <span class="keyword">and</span> <span class="number">180000</span> sentences</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">148</span> INFO: Loading a fresh vocabulary</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">588</span> INFO: effective_min_count=<span class="number">5</span> retains <span class="number">5978</span> unique words (<span class="number">87</span>% of original <span class="number">6826</span>, drops <span class="number">848</span>)</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">588</span> INFO: effective_min_count=<span class="number">5</span> leaves <span class="number">163330134</span> word corpus (<span class="number">99</span>% of original <span class="number">163331797</span>, drops <span class="number">1663</span>)</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">644</span> INFO: deleting the raw counts dictionary of <span class="number">6826</span> items</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">700</span> INFO: sample=<span class="number">0.001</span> downsamples <span class="number">61</span> most-common words</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">700</span> INFO: downsampling leaves estimated <span class="number">140986777</span> word corpus (<span class="number">86.3</span>% of prior <span class="number">163330134</span>)</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">740</span> INFO: estimated required memory <span class="keyword">for</span> <span class="number">5978</span> words <span class="keyword">and</span> <span class="number">100</span> dimensions: <span class="number">7771400</span> <span class="built_in">bytes</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">30</span>,<span class="number">740</span> INFO: resetting layer weights</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">32</span>,<span class="number">372</span> INFO: training model <span class="keyword">with</span> <span class="number">8</span> workers on <span class="number">5978</span> vocabulary <span class="keyword">and</span> <span class="number">100</span> features, using sg=<span class="number">0</span> hs=<span class="number">0</span> sample=<span class="number">0.001</span> negative=<span class="number">5</span> window=<span class="number">5</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">33</span>,<span class="number">476</span> INFO: EPOCH <span class="number">1</span> - PROGRESS: at <span class="number">0.71</span>% examples, <span class="number">965562</span> words/s, in_qsize <span class="number">14</span>, out_qsize <span class="number">1</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">34</span>,<span class="number">493</span> INFO: EPOCH <span class="number">1</span> - PROGRESS: at <span class="number">1.35</span>% examples, <span class="number">908630</span> words/s, in_qsize <span class="number">13</span>, out_qsize <span class="number">2</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">35</span>,<span class="number">501</span> INFO: EPOCH <span class="number">1</span> - PROGRESS: at <span class="number">2.03</span>% examples, <span class="number">927393</span> words/s, in_qsize <span class="number">14</span>, out_qsize <span class="number">2</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">22</span>:<span class="number">56</span>:<span class="number">36</span>,<span class="number">513</span> INFO: EPOCH <span class="number">1</span> - PROGRESS: at <span class="number">2.66</span>% examples, <span class="number">923767</span> words/s, in_qsize <span class="number">14</span>, out_qsize <span class="number">1</span></span><br><span class="line">......</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h1 id="这个设定代表当前训练好的词向量为最终版，也可以加快模型的训练速度"><a href="#这个设定代表当前训练好的词向量为最终版，也可以加快模型的训练速度" class="headerlink" title="这个设定代表当前训练好的词向量为最终版，也可以加快模型的训练速度"></a>这个设定代表当前训练好的词向量为最终版，也可以加快模型的训练速度</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model.init_sims(replace=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">13</span>:<span class="number">39</span>,065 INFO: precomputing L2-norms of word weight vectors</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="保存模型"><a href="#保存模型" class="headerlink" title="保存模型"></a>保存模型</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">save保存的模型，载入之后可以继续在此基础上接着训练</span></span><br><span class="line"><span class="string">而format_save保存的模型不能，但有个好处就是如果设置binary=False则保存后的结果可以直接打开查看</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">model.save(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.bin&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">14</span>:08,<span class="number">564</span> INFO: saving Word2Vec <span class="built_in">object</span> under D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span>, separately <span class="literal">None</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">14</span>:08,<span class="number">588</span> INFO: <span class="keyword">not</span> storing attribute vectors_norm</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">14</span>:08,<span class="number">588</span> INFO: <span class="keyword">not</span> storing attribute cum_table</span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">14</span>:08,<span class="number">733</span> INFO: saved D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span></span><br></pre></td></tr></table></figure>
+<h1 id="加载模型"><a href="#加载模型" class="headerlink" title="加载模型"></a>加载模型</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">model = Word2Vec.load(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.bin&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">610</span> INFO: loading Word2Vec <span class="built_in">object</span> <span class="keyword">from</span> D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">682</span> INFO: loading wv recursively <span class="keyword">from</span> D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span>.wv.* <span class="keyword">with</span> mmap=<span class="literal">None</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">682</span> INFO: setting ignored attribute vectors_norm to <span class="literal">None</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">682</span> INFO: loading vocabulary recursively <span class="keyword">from</span> D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span>.vocabulary.* <span class="keyword">with</span> mmap=<span class="literal">None</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">682</span> INFO: loading trainables recursively <span class="keyword">from</span> D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span>.trainables.* <span class="keyword">with</span> mmap=<span class="literal">None</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">682</span> INFO: setting ignored attribute cum_table to <span class="literal">None</span></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:06,<span class="number">682</span> INFO: loaded D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.<span class="built_in">bin</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="转化格式"><a href="#转化格式" class="headerlink" title="转化格式"></a>转化格式</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">通过该方式保存的模型，能通过文本格式打开，也能通过设置binary是否保存为二进制文件</span></span><br><span class="line"><span class="string">但该模型在保存时丢弃了树的保存形式（详情参加word2vec构建过程，以类似哈夫曼树的形式保存词）</span></span><br><span class="line"><span class="string">所以在后续不能对模型进行追加训练</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">model.wv.save_word2vec_format(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.txt&#x27;</span>, binary=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-07-<span class="number">31</span> <span class="number">23</span>:<span class="number">17</span>:<span class="number">44</span>,<span class="number">648</span> INFO: storing 5978x100 projection weights into D:\Users\Felixteng\Documents\Pycharm Files\Nlp\word2vec.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>下一个任务会涉及到Bert的使用，包括pretrain和finetune.</p>
+
+    </div>
+
+    
+    
+    
+
+    
+    <div>
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+    </div>
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="小书包 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="小书包 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://felixtree.tech/2021/07/13/part-5-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-Word2Vec%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/" title="part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理">https://felixtree.tech/2021/07/13/part-5-NLP之新闻文本分类-Word2Vec的使用和基础原理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-4-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A1%A8%E7%A4%BA%E5%88%86%E8%AF%8D%E5%90%91%E9%87%8F/" rel="prev" title="part-4-NLP之新闻文本分类-深度学习表示分词向量">
+      <i class="fa fa-chevron-left"></i> part-4-NLP之新闻文本分类-深度学习表示分词向量
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/13/part-6-NLP%E4%B9%8B%E6%96%B0%E9%97%BB%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB-Transformer%E5%92%8CBert%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="part-6-NLP之新闻文本分类-Transformer和Bert的使用">
+      part-6-NLP之新闻文本分类-Transformer和Bert的使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzYxMy8zMDA4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Word2Vec%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">Word2Vec的使用和基础原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A8%A1%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text">导入第三方模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Word2Vec%E7%9A%84%E4%B8%BB%E8%A6%81%E6%80%9D%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">Word2Vec的主要思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Skip-grams-SG-%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">Skip-grams(SG)过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Skip-grams%E8%AE%AD%E7%BB%83"><span class="nav-number">5.</span> <span class="nav-text">Skip-grams训练</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E9%80%9A%E8%BF%87Word2Vec%E8%AE%AD%E7%BB%83%E8%AF%8D%E5%90%91%E9%87%8F"><span class="nav-number">6.</span> <span class="nav-text">尝试通过Word2Vec训练词向量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E8%BE%93%E5%87%BA%E6%97%A5%E5%BF%97%E5%8F%82%E6%95%B0"><span class="nav-number">7.</span> <span class="nav-text">定义输出日志参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%9A%8F%E6%9C%BA%E7%A7%8D%E5%AD%90"><span class="nav-number">8.</span> <span class="nav-text">设置随机种子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E6%8A%98%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">9.</span> <span class="nav-text">十折交叉验证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%88%86%E6%8A%98%E5%87%BD%E6%95%B0"><span class="nav-number">10.</span> <span class="nav-text">定义分折函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%86%E5%88%86%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%BA10%E4%BB%BD"><span class="nav-number">11.</span> <span class="nav-text">拆分数据集为10份</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BAWord2Vec%E5%88%9B%E5%BB%BA%E8%AE%AD%E7%BB%83%E9%9B%86"><span class="nav-number">12.</span> <span class="nav-text">为Word2Vec创建训练集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">13.</span> <span class="nav-text">开始训练</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B%E5%AE%9E%E4%BE%8B"><span class="nav-number">14.</span> <span class="nav-text">创建模型实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E8%AE%BE%E5%AE%9A%E4%BB%A3%E8%A1%A8%E5%BD%93%E5%89%8D%E8%AE%AD%E7%BB%83%E5%A5%BD%E7%9A%84%E8%AF%8D%E5%90%91%E9%87%8F%E4%B8%BA%E6%9C%80%E7%BB%88%E7%89%88%EF%BC%8C%E4%B9%9F%E5%8F%AF%E4%BB%A5%E5%8A%A0%E5%BF%AB%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%AD%E7%BB%83%E9%80%9F%E5%BA%A6"><span class="nav-number">15.</span> <span class="nav-text">这个设定代表当前训练好的词向量为最终版，也可以加快模型的训练速度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">16.</span> <span class="nav-text">保存模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="nav-number">17.</span> <span class="nav-text">加载模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E5%8C%96%E6%A0%BC%E5%BC%8F"><span class="nav-number">18.</span> <span class="nav-text">转化格式</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小书包"
+      src="/uploads/touxiang.png">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/teng-fei-41-43" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;teng-fei-41-43" rel="noopener" target="_blank"><i class="gratipay fa-fw"></i>知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/Baby1601tree?spm=1000.2115.3001.5343" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;Baby1601tree?spm&#x3D;1000.2115.3001.5343" rel="noopener" target="_blank"><i class="codiepie fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 202107 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.5k字</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset);
+            clearInterval(int);
+        }
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据
+            clearInterval(int); // 停止检测
+        }
+    }
+
+});
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
