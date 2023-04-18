@@ -22,30 +22,49 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="种一棵树最好的时间是十年前，其次是现在">
-<meta property="og:type" content="website">
+  <meta name="description" content="EDA - 数据探索性分析_代码示例部分代码示例1.载入各种数据科学以及可视化库1234567891011import warnings     # 利用过滤器实现忽略警告语句import pandas as pdimport numpy as npimport scipy.stats as stimport pandas_profilingimport seaborn as snsimport">
+<meta property="og:type" content="article">
 <meta property="og:title" content="大宝的树屋">
-<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:url" content="http://example.com/2023/04/18/%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B_Task2_EDA%20-%20%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E6%80%A7%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="大宝的树屋">
-<meta property="og:description" content="种一棵树最好的时间是十年前，其次是现在">
+<meta property="og:description" content="EDA - 数据探索性分析_代码示例部分代码示例1.载入各种数据科学以及可视化库1234567891011import warnings     # 利用过滤器实现忽略警告语句import pandas as pdimport numpy as npimport scipy.stats as stimport pandas_profilingimport seaborn as snsimport">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020032415402229.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154141745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154515241.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154600444.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154655402.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154857313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324154933259.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155040891.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155108941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155406320.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324155611622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324160155922.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324160741429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020032416101646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324161144416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200324161301579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2023-04-18T09:04:03.256Z">
+<meta property="article:modified_time" content="2023-04-18T09:03:40.079Z">
 <meta property="article:author" content="小书包">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2020032415402229.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2023/04/18/%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B_Task2_EDA%20-%20%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E6%80%A7%E5%88%86%E6%9E%90/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>大宝的树屋</title>
+  <title> | 大宝的树屋</title>
   
 
 
@@ -163,9 +182,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -181,10 +201,9 @@
       <meta itemprop="name" content="大宝的树屋">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
+        <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2023/04/18/%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B_Task2_EDA%20-%20%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E6%80%A7%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">未命名</a>
-        </h2>
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -198,6 +217,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -220,7 +246,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="EDA-数据探索性分析-代码示例部分"><a href="#EDA-数据探索性分析-代码示例部分" class="headerlink" title="EDA - 数据探索性分析_代码示例部分"></a>EDA - 数据探索性分析_代码示例部分</h1><h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="1-载入各种数据科学以及可视化库"><a href="#1-载入各种数据科学以及可视化库" class="headerlink" title="1.载入各种数据科学以及可视化库"></a>1.载入各种数据科学以及可视化库</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> warnings     <span class="comment"># 利用过滤器实现忽略警告语句</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> scipy.stats <span class="keyword">as</span> st</span><br><span class="line"><span class="keyword">import</span> pandas_profiling</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> missingno <span class="keyword">as</span> msno    <span class="comment"># 缺失值可视化的库</span></span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl</span><br><span class="line">mpl.use(<span class="string">&#x27;TkAgg&#x27;</span>)</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">warnings.filterwarnings(<span class="string">&#x27;ignore&#x27;</span>)</span><br></pre></td></tr></table></figure>
+        <h1 id="EDA-数据探索性分析-代码示例部分"><a href="#EDA-数据探索性分析-代码示例部分" class="headerlink" title="EDA - 数据探索性分析_代码示例部分"></a>EDA - 数据探索性分析_代码示例部分</h1><h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="1-载入各种数据科学以及可视化库"><a href="#1-载入各种数据科学以及可视化库" class="headerlink" title="1.载入各种数据科学以及可视化库"></a>1.载入各种数据科学以及可视化库</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> warnings     <span class="comment"># 利用过滤器实现忽略警告语句</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> scipy.stats <span class="keyword">as</span> st</span><br><span class="line"><span class="keyword">import</span> pandas_profiling</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> missingno <span class="keyword">as</span> msno    <span class="comment"># 缺失值可视化的库</span></span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl</span><br><span class="line">mpl.use(<span class="string">&#x27;TkAgg&#x27;</span>)</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">warnings.filterwarnings(<span class="string">&#x27;ignore&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="2-载入数据"><a href="#2-载入数据" class="headerlink" title="2.载入数据"></a>2.载入数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Train_data = pd.read_csv(<span class="string">r&#x27;F:\Users\TreeFei\文档\PyC\used_car\data\used_car_train_20200313.csv&#x27;</span>, sep=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">Test_data = pd.read_csv(<span class="string">r&#x27;F:\Users\TreeFei\文档\PyC\used_car\data\used_car_testA_20200313.csv&#x27;</span>, sep=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line"><span class="comment"># #在kaggle上看一下已知特征的解释</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">SaleID - 交易ID,唯一编码</span></span><br><span class="line"><span class="string">name - 汽车交易名称,已脱敏</span></span><br><span class="line"><span class="string">regDate - 汽车注册日期,例如20160101,2016年01月01日</span></span><br><span class="line"><span class="string">model - 车型编码,已脱敏</span></span><br><span class="line"><span class="string">brand - 汽车品牌,已脱敏</span></span><br><span class="line"><span class="string">bodyType - 车身类型-豪华轿车:0; 微型车:1;  厢型车:2;  大巴车:3;  敞篷车:4;  双门汽车:5; 商务车:6;  搅拌车:7</span></span><br><span class="line"><span class="string">fuelType - 燃油类型-汽油:0;   柴油:1;   液化石油气:2;   天然气:3;   混合动力:4;   其他:5;   电动:6</span></span><br><span class="line"><span class="string">gearbox - 变速箱-手动:0;   自动:1</span></span><br><span class="line"><span class="string">power - 发动机功率:范围 [ 0, 600 ]</span></span><br><span class="line"><span class="string">kilometer - 汽车已行驶公里,单位万km</span></span><br><span class="line"><span class="string">notRepairedDamage - 汽车有尚未修复的损坏-是:0; 否:1</span></span><br><span class="line"><span class="string">regionCode - 地区编码,已脱敏</span></span><br><span class="line"><span class="string">seller - 销售方-个体:0;  非个体:1</span></span><br><span class="line"><span class="string">offerType - 报价类型-提供:0;  请求:1</span></span><br><span class="line"><span class="string">creatDate - 汽车上线时间-即开始售卖时间</span></span><br><span class="line"><span class="string">price - 二手车交易价格(预测目标)</span></span><br><span class="line"><span class="string">v系列特征 - 匿名特征:包含v0-14在内15个匿名特征(根据汽车的评论,标签等大量信息得到的embedding向量)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 <h3 id="3-简略观察数据"><a href="#3-简略观察数据" class="headerlink" title="3.简略观察数据"></a>3.简略观察数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Train_data.head().append(Train_data.tail())     <span class="comment"># 显示开头5行和最后5行</span></span><br><span class="line">Train_data.shape</span><br><span class="line"></span><br><span class="line">Test_data.head().append(Test_data.tail())</span><br><span class="line">Test_data.shape</span><br></pre></td></tr></table></figure>
 <h3 id="4-数据总览概况"><a href="#4-数据总览概况" class="headerlink" title="4.数据总览概况"></a>4.数据总览概况</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">describe - 包括每列的统计量,个数count,平均值mean,方差std,最小值min,中位数25% 50% 75%及最大值</span></span><br><span class="line"><span class="string">            看这个信息可以瞬间掌握数据的大概范围以及每个值的异常值得判断</span></span><br><span class="line"><span class="string">            有时会发现999, 9999, -1等值,这些其实可能都是nan得另一种表达方式</span></span><br><span class="line"><span class="string">            </span></span><br><span class="line"><span class="string">info - 了解每列数据得type,有助于了解是否存在除了nan以外得特殊符号异常</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">Train_data.describe()</span><br><span class="line">Test_data.describe()</span><br><span class="line"></span><br><span class="line">Train_data.info()   <span class="comment"># 发现model, bodyType, fuelType-缺失的最多, gearbox 这四个特征有缺失值</span></span><br><span class="line">Test_data.info()    <span class="comment"># 发现bodyType, fuelType, gearbox 这三个特征有缺失值</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们看下每列存在nan的情况</span></span><br><span class="line">Train_data.isnull().<span class="built_in">sum</span>()</span><br><span class="line">Test_data.isnull().<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
@@ -267,22 +293,49 @@
 <h3 id="17-类别特征的柱形图可视化"><a href="#17-类别特征的柱形图可视化" class="headerlink" title="17.类别特征的柱形图可视化"></a>17.类别特征的柱形图可视化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bar_plot</span>(<span class="params">x, y, **kwargs</span>):</span><br><span class="line">    sns.barplot(x=x, y=y)</span><br><span class="line">    x = plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">f = pd.melt(Train_data, id_vars=[<span class="string">&#x27;price&#x27;</span>], value_vars=categorical_features_box)</span><br><span class="line">g = sns.FacetGrid(f, col=<span class="string">&#x27;variable&#x27;</span>, col_wrap=<span class="number">2</span>, sharey=<span class="literal">False</span>, sharex=<span class="literal">False</span>, size=<span class="number">5</span>)</span><br><span class="line">g = g.<span class="built_in">map</span>(bar_plot, <span class="string">&#x27;value&#x27;</span>, <span class="string">&#x27;price&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="https://img-blog.csdnimg.cn/20200324161301579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 
-      
     </div>
 
     
     
     
 	
+	  <div>
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  </div>
+	
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/04/18/%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B_Task2_EDA%20-%20%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E6%80%A7%E5%88%86%E6%9E%90/" title="">http://example.com/2023/04/18/二手车交易价格预测_Task2_EDA - 数据探索性分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+
+
+        
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -335,6 +388,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EDA-%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2%E6%80%A7%E5%88%86%E6%9E%90-%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">EDA - 数据探索性分析_代码示例部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">代码示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BD%BD%E5%85%A5%E5%90%84%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E4%BB%A5%E5%8F%8A%E5%8F%AF%E8%A7%86%E5%8C%96%E5%BA%93"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.载入各种数据科学以及可视化库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BD%BD%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.载入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AE%80%E7%95%A5%E8%A7%82%E5%AF%9F%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.3.</span> <span class="nav-text">3.简略观察数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%95%B0%E6%8D%AE%E6%80%BB%E8%A7%88%E6%A6%82%E5%86%B5"><span class="nav-number">1.1.4.</span> <span class="nav-text">4.数据总览概况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%88%91%E4%BB%AC%E5%B0%86%E8%AE%AD%E7%BB%83%E9%9B%86%E7%9A%84%E7%BC%BA%E5%A4%B1%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.5.</span> <span class="nav-text">5.我们将训练集的缺失数据可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%BC%82%E5%B8%B8%E5%80%BC%E6%A3%80%E6%B5%8B"><span class="nav-number">1.1.6.</span> <span class="nav-text">6.异常值检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E4%BA%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E5%80%BC%E7%9A%84%E5%88%86%E5%B8%83"><span class="nav-number">1.1.7.</span> <span class="nav-text">7.了解预测值的分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%9F%A5%E7%9C%8Bskewness%E5%92%8Ckurtosis"><span class="nav-number">1.1.8.</span> <span class="nav-text">8.查看skewness和kurtosis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E6%9F%A5%E7%9C%8B%E9%A2%84%E6%B5%8B%E5%80%BC%E7%9A%84%E9%A2%91%E6%95%B0"><span class="nav-number">1.1.9.</span> <span class="nav-text">9.查看预测值的频数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E5%B0%86%E7%89%B9%E5%BE%81%E5%88%86%E4%B8%BA%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E5%92%8C%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81-%E5%B9%B6%E5%AF%B9%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E6%9F%A5%E7%9C%8Bunique%E5%88%86%E5%B8%83"><span class="nav-number">1.1.10.</span> <span class="nav-text">10.将特征分为类别特征和数字特征,并对类别特征查看unique分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E7%9C%8B%E4%B8%80%E4%B8%8B%E8%AE%AD%E7%BB%83%E9%9B%86%E7%B1%BB%E5%9E%8B%E7%89%B9%E5%BE%81%E7%9A%84%E7%89%B9%E5%BE%81%E5%88%86%E5%B8%83"><span class="nav-number">1.1.11.</span> <span class="nav-text">11.看一下训练集类型特征的特征分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90"><span class="nav-number">1.1.12.</span> <span class="nav-text">12.数字特征分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81%E7%9B%B8%E4%BA%92%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.13.</span> <span class="nav-text">13.数字特征相互之间的关系可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-%E5%A4%9A%E5%8F%98%E9%87%8F%E4%BA%92%E7%9B%B8%E5%85%B3%E7%B3%BB%E5%9B%9E%E5%BD%92%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.14.</span> <span class="nav-text">14.多变量互相关系回归可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90"><span class="nav-number">1.1.15.</span> <span class="nav-text">15.类别特征分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E7%9A%84%E5%B0%8F%E6%8F%90%E7%90%B4%E5%9B%BE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.16.</span> <span class="nav-text">16.类别特征的小提琴图可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-%E7%B1%BB%E5%88%AB%E7%89%B9%E5%BE%81%E7%9A%84%E6%9F%B1%E5%BD%A2%E5%9B%BE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.1.17.</span> <span class="nav-text">17.类别特征的柱形图可视化</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
