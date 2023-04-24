@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0 序这一章主要讲解了子图种类和子图上的方法。对于数据分析来说，针对某一类数据往往需要给出不同维度的图表分析，以形成可视化看板，所以子图的排版以及操作方法的熟练掌握就显的尤为重要了。章节内容不多，但是同样重要，上代码～ 1 导入三方模块123456789import numpy as npimport pandas as pdimport matplotlib.pyplot as plt# 解决中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matplotlib_布局格式定方圆">
+<meta property="og:url" content="http://example.com/2023/04/24/DataWhale_Matplotlib_%E5%B8%83%E5%B1%80%E6%A0%BC%E5%BC%8F%E5%AE%9A%E6%96%B9%E5%9C%86/index.html">
+<meta property="og:site_name" content="大宝的树屋">
+<meta property="og:description" content="0 序这一章主要讲解了子图种类和子图上的方法。对于数据分析来说，针对某一类数据往往需要给出不同维度的图表分析，以形成可视化看板，所以子图的排版以及操作方法的熟练掌握就显的尤为重要了。章节内容不多，但是同样重要，上代码～ 1 导入三方模块123456789import numpy as npimport pandas as pdimport matplotlib.pyplot as plt# 解决中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220204052268.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020122020425560.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220204902360.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220204939784.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205037155.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205103725.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205152202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205339510.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205407667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205501832.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205536203.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205632434.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205734104.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220205858302.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220210334976.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220210436172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201220210756237.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2023-04-24T08:04:53.355Z">
+<meta property="article:modified_time" content="2023-04-24T08:10:56.268Z">
+<meta property="article:author" content="小书包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20201220204052268.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2023/04/24/DataWhale_Matplotlib_%E5%B8%83%E5%B1%80%E6%A0%BC%E5%BC%8F%E5%AE%9A%E6%96%B9%E5%9C%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Matplotlib_布局格式定方圆 | 大宝的树屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">大宝的树屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/24/DataWhale_Matplotlib_%E5%B8%83%E5%B1%80%E6%A0%BC%E5%BC%8F%E5%AE%9A%E6%96%B9%E5%9C%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大宝的树屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Matplotlib_布局格式定方圆
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-04-24 16:04:53 / 修改时间：16:10:56" itemprop="dateCreated datePublished" datetime="2023-04-24T16:04:53+08:00">2023-04-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Matplotlib%E5%85%A5%E9%97%A8/" itemprop="url" rel="index"><span itemprop="name">Matplotlib入门</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>8.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="0-序"><a href="#0-序" class="headerlink" title="0 序"></a>0 序</h1><p>这一章主要讲解了子图种类和子图上的方法。对于数据分析来说，针对某一类数据往往需要给出不同维度的图表分析，以形成可视化看板，所以子图的排版以及操作方法的熟练掌握就显的尤为重要了。<br>章节内容不多，但是同样重要，上代码～</p>
+<h1 id="1-导入三方模块"><a href="#1-导入三方模块" class="headerlink" title="1 导入三方模块"></a>1 导入三方模块</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决中文乱码的问题</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决负号异常显示问题</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p>这里的plt.rcParams可以解决大多数中文乱码的问题了。因为时间问题，我还没有细细研究mac上的字体解决方案（尝试了几个都还是乱码，所以暂时先用英文啦～）</p>
+<h1 id="2-子图"><a href="#2-子图" class="headerlink" title="2 子图"></a>2 子图</h1><h2 id="2-1-使用plt-subplots绘制均匀状态下的子图"><a href="#2-1-使用plt-subplots绘制均匀状态下的子图" class="headerlink" title="2.1 使用plt.subplots绘制均匀状态下的子图"></a>2.1 使用plt.subplots绘制均匀状态下的子图</h2><p>返回元素分别是画布和子图构成的列表，第一个数字为行，第二个为列<br>    figsize参数可以指定整个画布的大小<br>    sharex和sharey分别表示是否共享横轴和纵轴刻度<br>    tight_layout函数可以调整子图的相对大小使字符不会重叠</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">fig, axs = plt.subplots(<span class="number">2</span>, <span class="number">5</span>, figsize=(<span class="number">10</span>, <span class="number">4</span>), sharex=<span class="literal">True</span>, sharey=<span class="literal">True</span>)</span><br><span class="line">fig.suptitle(<span class="string">&#x27;sample1&#x27;</span>,size=<span class="number">20</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;整个画布的标题&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        axs[i][j].scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line">        axs[i][j].set_title(<span class="string">&#x27;row%d, column%d&#x27;</span>%(i+<span class="number">1</span>, j+<span class="number">1</span>))</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;设置每个子图的子标题&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">        axs[i][j].set_xlim(-<span class="number">5</span>, <span class="number">5</span>)</span><br><span class="line">        axs[i][j].set_ylim(-<span class="number">5</span>, <span class="number">5</span>)</span><br><span class="line">        <span class="keyword">if</span> i==<span class="number">1</span>: axs[i][j].set_xlabel(<span class="string">&#x27;xlabel&#x27;</span>)</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;xlabel只在最底部显示&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> j==<span class="number">0</span>: axs[i][j].set_ylabel(<span class="string">&#x27;ylabel&#x27;</span>)</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;ylabel只在最左侧显示&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">fig.tight_layout()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;调整子图的相对大小使字符不会重叠&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220204052268.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2-2-使用GridSpec绘制非均匀子图"><a href="#2-2-使用GridSpec绘制非均匀子图" class="headerlink" title="2.2 使用GridSpec绘制非均匀子图"></a>2.2 使用GridSpec绘制非均匀子图</h2><p>所谓非均匀包含两层含义:<br>    第一是指图的比例大小不同但没有跨行或跨列<br>    第二是指图为跨列或跨行状态</p>
+<p>利用 add_gridspec 可以指定相对宽度比例 width_ratios 和相对高度比例参数 height_ratios</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">fig = plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">spec = fig.add_gridspec(nrows=<span class="number">2</span>, ncols=<span class="number">5</span>, width_ratios=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], height_ratios=[<span class="number">1</span>, <span class="number">3</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;width_ratios和height_ratios都是比例&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;下面的代码和上一段代码意思相近&#x27;&#x27;&#x27;</span></span><br><span class="line">fig.suptitle(<span class="string">&#x27;sample2&#x27;</span>, size=<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        ax = fig.add_subplot(spec[i, j])</span><br><span class="line">        ax.scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line">        ax.set_title(<span class="string">&#x27;row%d, column%d&#x27;</span>%(i+<span class="number">1</span>, j+<span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> i==<span class="number">1</span>: ax.set_xlabel(<span class="string">&#x27;xlabel&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> j==<span class="number">0</span>: ax.set_ylabel(<span class="string">&#x27;ylabel&#x27;</span>)</span><br><span class="line">fig.tight_layout()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2020122020425560.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在上面的例子中出现了 spec[i, j] 的用法，事实上通过切片就可以实现子图的合并而达到跨图的功能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">fig = plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">spec = fig.add_gridspec(nrows=<span class="number">2</span>, ncols=<span class="number">6</span>, </span><br><span class="line">                        width_ratios=[<span class="number">2</span>, <span class="number">2.5</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">1.5</span>, <span class="number">2</span>], height_ratios=[<span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># sub1</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">0</span>, :<span class="number">3</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;sub1占用的大小为第一行，宽度为第零块到第二块&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># sub2</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">0</span>, <span class="number">3</span>: <span class="number">5</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;sub占用的大小为第一行，宽度为第三块到第四块&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># sub3</span></span><br><span class="line">ax = fig.add_subplot(spec[:, <span class="number">5</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;整列（1行+2行），第五块&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;下同，类似切片，画画图就能理解了&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment"># sub4</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">1</span>, <span class="number">0</span>])</span><br><span class="line">ax.scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># sub5</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">1</span>, <span class="number">1</span>:<span class="number">5</span>])</span><br><span class="line">ax.scatter(np.random.randn(<span class="number">10</span>), np.random.randn(<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line">fig.tight_layout()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220204902360.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="3-子图上的方法"><a href="#3-子图上的方法" class="headerlink" title="3 子图上的方法"></a>3 子图上的方法</h1><p>在 ax 对象上定义了和 plt 类似的图形绘制函数，常用的有： plot, hist, scatter, bar, barh, pie</p>
+<h2 id="绘制直线"><a href="#绘制直线" class="headerlink" title="绘制直线"></a>绘制直线</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="number">4</span>, <span class="number">3</span>))</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">2</span>], [<span class="number">2</span>, <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220204939784.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="绘制直方图"><a href="#绘制直方图" class="headerlink" title="绘制直方图"></a>绘制直方图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="number">4</span>, <span class="number">3</span>))</span><br><span class="line">ax.hist(np.random.randn(<span class="number">1000</span>))</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205037155.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>常用直线的画法为： axhline, axvline, axline （水平、垂直、任意方向）</p>
+<h3 id="添加水平-x2F-垂直辅助线"><a href="#添加水平-x2F-垂直辅助线" class="headerlink" title="添加水平&#x2F;垂直辅助线"></a>添加水平&#x2F;垂直辅助线</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="number">4</span>, <span class="number">3</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里的0.2和0.8不知道设置什么</span></span><br><span class="line">ax.axhline(<span class="number">0.5</span>, <span class="number">0.2</span>, <span class="number">0.8</span>)</span><br><span class="line">ax.axvline(<span class="number">0.5</span>, <span class="number">0.2</span>, <span class="number">0.8</span>)</span><br><span class="line">ax.axline([<span class="number">0.3</span>, <span class="number">0.3</span>], [<span class="number">0.7</span>, <span class="number">0.7</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205103725.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="使用grid加灰色网格"><a href="#使用grid加灰色网格" class="headerlink" title="使用grid加灰色网格"></a>使用grid加灰色网格</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="number">4</span>, <span class="number">3</span>))</span><br><span class="line">ax.grid(<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205152202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>使用 set_xscale, set_title, set_xlabel 分别可以设置坐标轴的规度（指对数坐标等）、标题、轴名</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fig, axs = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">fig.suptitle(<span class="string">&#x27;sample3&#x27;</span>, size=<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">    axs[j].plot(<span class="built_in">list</span>(<span class="string">&#x27;abcd&#x27;</span>), [<span class="number">10</span> ** i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>)])</span><br><span class="line">    <span class="keyword">if</span> j==<span class="number">0</span>:</span><br><span class="line">        axs[j].set_yscale(<span class="string">&#x27;log&#x27;</span>)</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;y轴刻度为log坐标&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">        axs[j].set_title(<span class="string">&#x27;sub_title1&#x27;</span>)</span><br><span class="line">        axs[j].set_ylabel(<span class="string">&#x27;log_label&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        axs[j].set_title(<span class="string">&#x27;sub_title1&#x27;</span>)</span><br><span class="line">        axs[j].set_ylabel(<span class="string">&#x27;normal_label&#x27;</span>)</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;y轴刻度为普通坐标&#x27;&#x27;&#x27;</span></span><br><span class="line">fig.tight_layout()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205339510.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>与一般的 plt 方法类似， legend, annotate, arrow, text 对象也可以进行相应的绘制</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots()</span><br><span class="line"></span><br><span class="line">ax.arrow(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, head_width=<span class="number">0.03</span>, head_length=<span class="number">0.05</span>, facecolor=<span class="string">&#x27;red&#x27;</span>, edgecolor=<span class="string">&#x27;blue&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">绘制箭头</span></span><br><span class="line"><span class="string">0，0 - 箭头起点坐标</span></span><br><span class="line"><span class="string">1，1 - 箭头终点坐标</span></span><br><span class="line"><span class="string">head_width - 箭头头部的宽</span></span><br><span class="line"><span class="string">head_length - 箭头头部的高</span></span><br><span class="line"><span class="string">facecolor - 箭头填充色</span></span><br><span class="line"><span class="string">edgecolor - 箭头的轮廓色</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.text(x=<span class="number">0</span>, y=<span class="number">0</span>, s=<span class="string">&#x27;this is a graph&#x27;</span>, fontsize=<span class="number">16</span>, rotation=<span class="number">70</span>, </span><br><span class="line">        rotation_mode=<span class="string">&#x27;anchor&#x27;</span>, color=<span class="string">&#x27;green&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">x,y - 文字的坐标</span></span><br><span class="line"><span class="string">s - 文字内容</span></span><br><span class="line"><span class="string">fontsize - 字体大小</span></span><br><span class="line"><span class="string">rotation - 旋转的角度</span></span><br><span class="line"><span class="string">rotation_mode - 对齐方式</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.annotate(<span class="string">&#x27;this is mid point&#x27;</span>, xy=(<span class="number">0.5</span>, <span class="number">0.5</span>), </span><br><span class="line">            xytext=(<span class="number">0.8</span>, <span class="number">0.2</span>), arrowprops=<span class="built_in">dict</span>(facecolor=<span class="string">&#x27;yellow&#x27;</span>, edgecolor=<span class="string">&#x27;black&#x27;</span>), </span><br><span class="line">            fontsize=<span class="number">16</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">xy - 箭头坐标</span></span><br><span class="line"><span class="string">xytext - 文字起始坐标</span></span><br><span class="line"><span class="string">arrowprops - 箭头的参数字典：填充颜色和边缘色</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205407667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这里有点丑，可以把画布调整大点或把箭头的注释字体弄小点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots()</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">2</span>], [<span class="number">2</span>, <span class="number">1</span>], label=<span class="string">&#x27;line1&#x27;</span>)</span><br><span class="line">ax.plot([<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">2</span>], label=<span class="string">&#x27;line1&#x27;</span>)</span><br><span class="line">ax.legend(loc=<span class="number">1</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;loc=1 - 图例在右上方&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205501832.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>为了方便，我网上找了一个图例参数-代码的对照表，po给大家：<br><img src="https://img-blog.csdnimg.cn/20201220205536203.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="4-作业"><a href="#4-作业" class="headerlink" title="4 作业"></a>4 作业</h1><h2 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h2><p>数据为墨尔本1981年至1990年的每月温度情况，请利用数据，画出如下的图：<br><img src="https://img-blog.csdnimg.cn/20201220205632434.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>先看一下数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">&#x27;./data/layout_ex1.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205734104.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>我看每个子图的x轴是月份刻度，但是数据里面是yyyy-mm，所以我选择做一下提取。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data[<span class="string">&#x27;Time_month&#x27;</span>] = data[<span class="string">&#x27;Time&#x27;</span>].apply(<span class="keyword">lambda</span> x: <span class="built_in">int</span>(<span class="built_in">str</span>(x)[-<span class="number">2</span>:]))</span><br><span class="line">data.head(<span class="number">15</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220205858302.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>然后准备每个子图的x轴和y轴的数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">x1 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">0</span>: <span class="number">12</span>])</span><br><span class="line">x2 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">12</span>: <span class="number">24</span>])</span><br><span class="line">x3 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">24</span>: <span class="number">36</span>])</span><br><span class="line">x4 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">36</span>: <span class="number">48</span>])</span><br><span class="line">x5 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">48</span>: <span class="number">60</span>])</span><br><span class="line">x6 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">60</span>: <span class="number">72</span>])</span><br><span class="line">x7 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">72</span>: <span class="number">84</span>])</span><br><span class="line">x8 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">84</span>: <span class="number">96</span>])</span><br><span class="line">x9 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">96</span>: <span class="number">108</span>])</span><br><span class="line">x10 = <span class="built_in">list</span>(data[<span class="string">&#x27;Time_month&#x27;</span>][<span class="number">108</span>: <span class="number">120</span>])</span><br><span class="line"></span><br><span class="line">x_list = [x1, x2, x3, x4, x5, x6, x7, x8, x9, x10]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">y1 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">0</span>: <span class="number">12</span>])</span><br><span class="line">y2 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">12</span>: <span class="number">24</span>])</span><br><span class="line">y3 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">24</span>: <span class="number">36</span>])</span><br><span class="line">y4 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">36</span>: <span class="number">48</span>])</span><br><span class="line">y5 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">48</span>: <span class="number">60</span>])</span><br><span class="line">y6 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">60</span>: <span class="number">72</span>])</span><br><span class="line">y7 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">72</span>: <span class="number">84</span>])</span><br><span class="line">y8 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">84</span>: <span class="number">96</span>])</span><br><span class="line">y9 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">96</span>: <span class="number">108</span>])</span><br><span class="line">y10 = <span class="built_in">list</span>(data[<span class="string">&#x27;Temperature&#x27;</span>][<span class="number">108</span>: <span class="number">120</span>])</span><br><span class="line"></span><br><span class="line">y_list = [y1, y2, y3, y4, y5, y6, y7, y8, y9, y10]</span><br></pre></td></tr></table></figure>
+<p>开始画图！！！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">fig, axs = plt.subplots(<span class="number">2</span>, <span class="number">5</span>, figsize=(<span class="number">20</span>, <span class="number">5</span>), sharex=<span class="literal">True</span>, sharey=<span class="literal">True</span>)</span><br><span class="line">fig.suptitle(<span class="string">&#x27;Temperature curve of Melbourne from 1981 to 1990&#x27;</span>, size=<span class="number">25</span>)</span><br><span class="line">subtitle = [<span class="string">&#x27;1981&#x27;</span>, <span class="string">&#x27;1982&#x27;</span>, <span class="string">&#x27;1983&#x27;</span>, <span class="string">&#x27;1984&#x27;</span>, <span class="string">&#x27;1985&#x27;</span>, <span class="string">&#x27;1986&#x27;</span>, <span class="string">&#x27;1987&#x27;</span>, </span><br><span class="line">            <span class="string">&#x27;1988&#x27;</span>, <span class="string">&#x27;1989&#x27;</span>, <span class="string">&#x27;1990&#x27;</span>]</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;搞了一个子标题的列表，方便循环的时候直接用&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">k = <span class="number">0</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;这个k用于数子标题以及数据的选择&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        axs[i][j].plot(x_list[k], y_list[k], marker=<span class="string">&#x27;p&#x27;</span>)</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;marker=&#x27;p&#x27; - 标记点为五角星～～～&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">        axs[i][j].set_title(subtitle[k])</span><br><span class="line">        axs[i][j].set_yticks([<span class="number">0</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>,<span class="number">20</span>])</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">1</span>: axs[i][j].set_xticks([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>])</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;只在第二行的子图显示x轴刻度&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">0</span>: axs[i][j].set_ylabel(<span class="string">&#x27;Temperature&#x27;</span>)</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;在第一列的子图显示y轴刻度&#x27;&#x27;&#x27;</span></span><br><span class="line">        </span><br><span class="line">        k += <span class="number">1</span></span><br><span class="line">fig.tight_layout（）</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220210334976.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h2><p>画出数据的散点图和边际分布</p>
+<p>用 np.random.randn(2, 150) 生成一组二维数据，使用两种非均匀子图的分割方法，做出该数据对应的散点图和边际分布图，如下图：<br><img src="https://img-blog.csdnimg.cn/20201220210436172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">fig = plt.figure(figsize=(<span class="number">10</span>, <span class="number">10</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;正方形&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">spec = fig.add_gridspec(nrows=<span class="number">2</span>, ncols=<span class="number">2</span>, width_ratios=[<span class="number">5</span>, <span class="number">1</span>], height_ratios=[<span class="number">1</span>, <span class="number">6</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;划分块块，方便分区&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sub1</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">1</span>, <span class="number">0</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;这里还是比较抽象，画个图就能理解&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.scatter(np.random.randn(<span class="number">2</span>, <span class="number">150</span>)[<span class="number">0</span>], np.random.randn(<span class="number">2</span>, <span class="number">150</span>)[<span class="number">1</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;二维数据，我第一行用来当x，第一行用来当y&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">&#x27;my_data_x&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;my_data_y&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># sub2</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">ax.hist(np.random.randn(<span class="number">2</span>, <span class="number">150</span>)[<span class="number">0</span>], bins=<span class="number">10</span>)</span><br><span class="line">ax.set_xticks([])</span><br><span class="line">ax.set_yticks([])</span><br><span class="line"></span><br><span class="line"><span class="comment"># sub3</span></span><br><span class="line">ax = fig.add_subplot(spec[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">ax.hist(np.random.randn(<span class="number">2</span>, <span class="number">150</span>)[<span class="number">1</span>], bins=<span class="number">10</span>, orientation=<span class="string">&#x27;horizontal&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;orientation=&#x27;horizontal&#x27;表示条形为水平方向&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">ax.set_xticks([])</span><br><span class="line">ax.set_yticks([])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.subplots_adjust(wspace=<span class="number">0</span>, hspace=<span class="number">0</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;冬天了，让图靠得紧一点&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20201220210756237.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>画出来丑丑的，边界的色块也不知道该怎么调，不过肯定有方法，后面学会了再完善呀～</p>
+<h1 id="5-结"><a href="#5-结" class="headerlink" title="5 结"></a>5 结</h1><p>这一期内容并不多，但是axes在matplotlib中的地位十分重要，希望通过这一篇文章可以提高大家的认识和基础功，下篇我们再会～</p>
+
+    </div>
+
+    
+    
+    
+	
+	  <div>
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  </div>
+	
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/04/24/DataWhale_Matplotlib_%E5%B8%83%E5%B1%80%E6%A0%BC%E5%BC%8F%E5%AE%9A%E6%96%B9%E5%9C%86/" title="Matplotlib_布局格式定方圆">http://example.com/2023/04/24/DataWhale_Matplotlib_布局格式定方圆/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/04/24/DataWhale_Matplotlib_Matplotlib%E5%88%9D%E7%9B%B8%E8%AF%86/" rel="prev" title="Matplotlib初相识">
+      <i class="fa fa-chevron-left"></i> Matplotlib初相识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/24/DataWhale_Matplotlib_%E8%89%BA%E6%9C%AF%E7%94%BB%E7%AC%94%E8%A7%81%E4%B9%BE%E5%9D%A4/" rel="next" title="Matplotlib_艺术画笔见乾坤">
+      Matplotlib_艺术画笔见乾坤 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">0 序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AF%BC%E5%85%A5%E4%B8%89%E6%96%B9%E6%A8%A1%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text">1 导入三方模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%AD%90%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">2 子图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E4%BD%BF%E7%94%A8plt-subplots%E7%BB%98%E5%88%B6%E5%9D%87%E5%8C%80%E7%8A%B6%E6%80%81%E4%B8%8B%E7%9A%84%E5%AD%90%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 使用plt.subplots绘制均匀状态下的子图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8GridSpec%E7%BB%98%E5%88%B6%E9%9D%9E%E5%9D%87%E5%8C%80%E5%AD%90%E5%9B%BE"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 使用GridSpec绘制非均匀子图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%AD%90%E5%9B%BE%E4%B8%8A%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">3 子图上的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E7%9B%B4%E7%BA%BF"><span class="nav-number">4.1.</span> <span class="nav-text">绘制直线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E7%9B%B4%E6%96%B9%E5%9B%BE"><span class="nav-number">4.2.</span> <span class="nav-text">绘制直方图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B0%B4%E5%B9%B3-x2F-%E5%9E%82%E7%9B%B4%E8%BE%85%E5%8A%A9%E7%BA%BF"><span class="nav-number">4.2.1.</span> <span class="nav-text">添加水平&#x2F;垂直辅助线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8grid%E5%8A%A0%E7%81%B0%E8%89%B2%E7%BD%91%E6%A0%BC"><span class="nav-number">4.2.2.</span> <span class="nav-text">使用grid加灰色网格</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E4%BD%9C%E4%B8%9A"><span class="nav-number">5.</span> <span class="nav-text">4 作业</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%A2%98"><span class="nav-number">5.1.</span> <span class="nav-text">第一题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%A2%98"><span class="nav-number">5.2.</span> <span class="nav-text">第二题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">5 结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-04 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">198k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:01</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

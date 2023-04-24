@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习训练_金融风控_Task1_赛题理解">
+<meta property="og:url" content="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task1_%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="大宝的树屋">
+<meta property="og:description" content="12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-24T08:03:45.121Z">
+<meta property="article:modified_time" content="2023-04-24T08:08:00.798Z">
+<meta property="article:author" content="小书包">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task1_%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>机器学习训练_金融风控_Task1_赛题理解 | 大宝的树屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">大宝的树屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task1_%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大宝的树屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习训练_金融风控_Task1_赛题理解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-04-24 16:03:45 / 修改时间：16:08:00" itemprop="dateCreated datePublished" datetime="2023-04-24T16:03:45+08:00">2023-04-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">金融风控</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>4.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, \</span><br><span class="line">    precision_recall_curve, roc_curve, roc_auc_score</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">train = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\loanDefaultForecast\data\train.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">testA = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\loanDefaultForecast\data\testA.csv&#x27;</span>)</span><br><span class="line"><span class="keyword">del</span> testA[<span class="string">&#x27;n2.2&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> testA[<span class="string">&#x27;n2.3&#x27;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 分类指标评价</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # 混淆矩阵</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">若一个实例是正类，并且被预测为正类，即为真正类TP(True Positive )</span></span><br><span class="line"><span class="string">若一个实例是正类，但是被预测为负类，即为假负类FN(False Negative )</span></span><br><span class="line"><span class="string">若一个实例是负类，但是被预测为正类，即为假正类FP(False Positive )</span></span><br><span class="line"><span class="string">若一个实例是负类，并且被预测为负类，即为真负类TN(True Negative )</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ## 给出一组预测值和真实值</span></span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># ## 输出混淆矩阵</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;混淆矩阵:\n&#x27;</span>, confusion_matrix(y_true, y_pred))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">混淆矩阵:</span></span><br><span class="line"><span class="string"> [[1 1]</span></span><br><span class="line"><span class="string"> [1 1]]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">行代表真实，列代表预测</span></span><br><span class="line"><span class="string">第一行第一列的1，代表真实为第一类且预测成第一类的有1个</span></span><br><span class="line"><span class="string">第二行第一列的1，代表真实为第二类且预测成第一类的有1个</span></span><br><span class="line"><span class="string">第一行第二列的1，代表真实为第一类且预测成第二类的有1个</span></span><br><span class="line"><span class="string">第二行第二列的1，代表真实为第二类且预测成第二类的有1个</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # 准确率 accuracy</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">准确率是常用的一个评价指标，但是不适合样本不均衡的情况。 </span></span><br><span class="line"><span class="string">Accuracy = (TP+TN) / (P+N)，即样本中预测正确的百分比，通常来说，正确率越高，分类器越好</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ACC:&#x27;</span>, accuracy_score(y_true, y_pred))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;ACC: 0.5&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # 精确率/查准率 precision</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">precision = TP / (TP + FP)，即样本中判断为正例的样本有多少是真的正例，正确预测为正样本占预测为正样本的百分比</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Precision:&#x27;</span>, precision_score(y_true, y_pred))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;Precision: 0.5&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # 召回率/查全率 recall</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">recall = TP / (TP + FN)，即正样本中有多少判断正确，正确预测为正样本占正样本的百分比</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Recall:&#x27;</span>, recall_score(y_true, y_pred))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;Recall: 0.5&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # F1-score 精确率 precision 和召回率 recall 的一种调和平均</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">f1-score = 2 * (precision * recall) / (precision + recall)，f1分数认为召回率和精准率同等重要</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">f2-score = (1 + 4) * (precision * recall) / (4 * precision + recall)，f2分数认为召回率的重要程度是精准率的2倍</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">f0.5-score = (1 + 0.25) * (precision * recall) / (0.25 * precision + recall)，f0.5分数认为召回率的重要程度是精准率的一半</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">fβ-score = (1 + β²) * (precision * recall) / (β² * precision + recall)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;F1-score:&#x27;</span>, f1_score(y_true, y_pred))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;F1-score: 0.5&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # P-R曲线</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">P-R曲线是描述精确率和召回率变化的曲线</span></span><br><span class="line"><span class="string">横轴为召回率recall，纵轴为精确率precision</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">通过置信度对样本进行排序，再逐个样本选择阈值，可以得出每个置信度下的混淆矩阵，再通过计算P和R得到P-R曲线</span></span><br><span class="line"><span class="string">当一个模型a的P-R曲线完全包住另一个模型b的P-R曲线时，即可认为a优于b。其他情况下，可以使用平衡点，也即F1值，或者曲线下的面积来评估模型的好坏</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">当召回率不等于0时，P-R曲线的点和ROC曲线的点都能一一对应，因为两条曲线的点都能对应一个置信度阈值确认的混淆矩阵</span></span><br><span class="line"><span class="string">当一个模型a在P-R上优于b时，a在ROC曲线上也同样会优于b，反过来也同样成立</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">当正样本个数严重小于负样本个数，数据严重倾斜时，P-R曲线相比较于ROC曲线更加适合</span></span><br><span class="line"><span class="string">因为当正样本比例减小时，ROC曲线变化不明显，但是P-R曲线的纵坐标，即准确率会出现明显的衰减</span></span><br><span class="line"><span class="string">因为当样本严重倾斜时，我们假定召回率不变，那么表现较差的模型必然会召回更多的负样本，那么FP(假正例)就会迅速增加，准确率就会大幅衰减</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">结论：</span></span><br><span class="line"><span class="string">    一般情况下，模型评估选择P-R或者ROC没啥区别</span></span><br><span class="line"><span class="string">    但是当正样本的个数严重少于负样本个数时，P-R曲线相比较于ROC曲线能够更加直观的表现模型之间的差异，更加合适</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">precision, recall, thresholds = precision_recall_curve(y_true, y_pred)</span><br><span class="line">plt.plot(recall, precision)</span><br><span class="line"></span><br><span class="line"><span class="comment"># # 反观ROC曲线</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">真正类率(True Positive Rate)TPR: TP / (TP + FN),代表分类器预测的正类中实际正实例占所有正实例的比例</span></span><br><span class="line"><span class="string">纵轴TPR：TPR越大，预测正类中实际正类越多</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">负正类率(False Positive Rate)FPR: FP / (FP + TN)，代表分类器预测的正类中实际负实例占所有负实例的比例</span></span><br><span class="line"><span class="string">横轴FPR:FPR越大，预测正类中实际负类越多</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">理想目标：TPR=1，FPR=0,即roc图中的(0,1)点，故ROC曲线越靠拢(0,1)点，越偏离45度对角线越好，Sensitivity、Specificity越大效果越好</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">FPR, TPR, thresholds_roc = roc_curve(y_true, y_pred)</span><br><span class="line">plt.plot(FPR, TPR, <span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># # AUC</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">ROC曲线下的面积，越大越好</span></span><br><span class="line"><span class="string">首先AUC值是一个概率值，随机挑选一个正样本以及负样本，当前的分类算法根据计算得到的Score值将这个正样本排在负样本前面的概率就是AUC值</span></span><br><span class="line"><span class="string">AUC值越大，当前分类算法越有可能将正样本排在负样本前面，从而能够更好地分类。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">y_true = np.array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">y_scores = np.array([<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.35</span>, <span class="number">0.8</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;AUC score:&#x27;</span>, roc_auc_score(y_true, y_scores))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;AUC score: 0.75&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # KS（Kolmogorov-Smirnov）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">通过衡量好坏样本累计分布之间的差值，来评估模型的风险区分能力</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ks和AUC一样，都是利用TPR、FPR两个指标来评价模型的整体训练效果</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">不同之处在于，ks取的是TPR和FPR差值的最大值，能够找到一个最优的阈值；AUC只评价了模型的整体训练效果，</span></span><br><span class="line"><span class="string">并没有指出如何划分类别让预估的效果达到最好，就是没有找到好的切分阈值</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">与PR曲线相比，AUC和KS受样本不均衡的影响较小，而PR受其影响较大</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    ks值&lt;0.2,一般认为模型没有区分能力。</span></span><br><span class="line"><span class="string">    ks值[0.2,0.3],模型具有一定区分能力，勉强可以接受</span></span><br><span class="line"><span class="string">    ks值[0.3,0.5],模型具有较强的区分能力。</span></span><br><span class="line"><span class="string">    ks值大于0.75，往往表示模型有异常。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">FPR, TPR, thresholds_ks = roc_curve(y_true, y_pred)</span><br><span class="line">KS = <span class="built_in">abs</span>(FPR - TPR).<span class="built_in">max</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;KS值：&#x27;</span>, KS)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;KS值： 0.5238095238095237&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 简单扫一眼数据</span></span><br><span class="line">train.info()</span><br><span class="line">train.groupby(<span class="string">&#x27;isDefault&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">可知训练样本数据有80W条，45个特征，大多数特征类型为数值型</span></span><br><span class="line"><span class="string">标签为字段 &#x27;isDefault&#x27;</span></span><br><span class="line"><span class="string">赛题是个二分类问题，同时正负样本比例不均衡，正：负约1：4</span></span><br><span class="line"><span class="string">有缺失数据需要处理</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+	
+	  <div>
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  </div>
+	
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task1_%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3/" title="机器学习训练_金融风控_Task1_赛题理解">http://example.com/2023/04/24/机器学习训练_金融风控_Task1_赛题理解/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/04/24/%E4%BA%8C%E6%89%8B%E8%BD%A6%E4%BA%A4%E6%98%93%E4%BB%B7%E6%A0%BC%E9%A2%84%E6%B5%8B_Task5_%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88/" rel="prev" title="二手车交易价格预测_Task5_模型融合">
+      <i class="fa fa-chevron-left"></i> 二手车交易价格预测_Task5_模型融合
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task2_EDA/" rel="next" title="机器学习训练_金融风控_Task2_EDA">
+      机器学习训练_金融风控_Task2_EDA <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-04 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">198k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:01</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

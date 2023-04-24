@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="此部分为零基础入门金融风控的 Task2 数据分析部分，带你来了解数据，熟悉数据，为后续的特征工程做准备，欢迎大家后续多多交流。 赛题：零基础入门数据挖掘 - 零基础入门金融风控之贷款违约 目的： 1.EDA价值主要在于熟悉了解整个数据集的基本情况（缺失值，异常值），对数据集进行验证是否可以进行接下来的机器学习或者深度学习建模. 2.了解变量间的相互关系、变量与预测值之间的存在关系。 3.为特征工">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习训练_金融风控_Task2_EDA">
+<meta property="og:url" content="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task2_EDA/index.html">
+<meta property="og:site_name" content="大宝的树屋">
+<meta property="og:description" content="此部分为零基础入门金融风控的 Task2 数据分析部分，带你来了解数据，熟悉数据，为后续的特征工程做准备，欢迎大家后续多多交流。 赛题：零基础入门数据挖掘 - 零基础入门金融风控之贷款违约 目的： 1.EDA价值主要在于熟悉了解整个数据集的基本情况（缺失值，异常值），对数据集进行验证是否可以进行接下来的机器学习或者深度学习建模. 2.了解变量间的相互关系、变量与预测值之间的存在关系。 3.为特征工">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200918223837584.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200918224456639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200918224725571.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200918225145816.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200918225227330.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="article:published_time" content="2023-04-24T08:03:55.571Z">
+<meta property="article:modified_time" content="2023-04-24T08:08:36.920Z">
+<meta property="article:author" content="小书包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200918223837584.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center">
+
+<link rel="canonical" href="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task2_EDA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>机器学习训练_金融风控_Task2_EDA | 大宝的树屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">大宝的树屋</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task2_EDA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="小书包">
+      <meta itemprop="description" content="种一棵树最好的时间是十年前，其次是现在">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大宝的树屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习训练_金融风控_Task2_EDA
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-04-24 16:03:55 / 修改时间：16:08:36" itemprop="dateCreated datePublished" datetime="2023-04-24T16:03:55+08:00">2023-04-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">金融风控</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>14 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>此部分为零基础入门金融风控的 Task2 数据分析部分，带你来了解数据，熟悉数据，为后续的特征工程做准备，欢迎大家后续多多交流。</p>
+<p>赛题：零基础入门数据挖掘 - 零基础入门金融风控之贷款违约</p>
+<p>目的：</p>
+<p>1.EDA价值主要在于熟悉了解整个数据集的基本情况（缺失值，异常值），对数据集进行验证是否可以进行接下来的机器学习或者深度学习建模.</p>
+<p>2.了解变量间的相互关系、变量与预测值之间的存在关系。</p>
+<p>3.为特征工程做准备</p>
+<p><strong>这里主要记录了代码部分</strong></p>
+<h1 id="一、导入第三方模块"><a href="#一、导入第三方模块" class="headerlink" title="一、导入第三方模块"></a>一、导入第三方模块</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">&#x27;ignore&#x27;</span>)</span><br><span class="line">pd.options.display.max_columns = <span class="literal">None</span></span><br><span class="line">pd.set_option(<span class="string">&#x27;display.float_format&#x27;</span>, <span class="keyword">lambda</span> x: <span class="string">&#x27;%.2f&#x27;</span> % x)</span><br></pre></td></tr></table></figure>
+<h1 id="二、数据读取"><a href="#二、数据读取" class="headerlink" title="二、数据读取"></a>二、数据读取</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train = pd.read_csv(<span class="string">r&#x27;D:\Users\Felixteng\Documents\Pycharm Files\loanDefaultForecast\data\train.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>由于数据量有 80w 左右，做一个数据的压缩处理，方便计算和训练，这里创建一个reduce_mem_usage函数,通过调整数据类型,减少数据在内存中占用的空间</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">reduce_mem_usage</span>(<span class="params">df</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    遍历DataFrame的所有列并修改它们的数据类型以减少内存使用</span></span><br><span class="line"><span class="string">    :param df: 需要处理的数据集</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    start_mem = df.memory_usage().<span class="built_in">sum</span>() / <span class="number">1024</span> ** <span class="number">2</span>  <span class="comment"># 记录原数据的内存大小</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Memory usage of dataframe is &#123;:.2f&#125; MB&#x27;</span>.<span class="built_in">format</span>(start_mem))</span><br><span class="line">    <span class="keyword">for</span> col <span class="keyword">in</span> df.columns:</span><br><span class="line">        col_type = df[col].dtypes</span><br><span class="line">        <span class="keyword">if</span> col_type != <span class="built_in">object</span>:  <span class="comment"># 这里只过滤了object格式，如果代码中还包含其他类型，要一并过滤</span></span><br><span class="line">            c_min = df[col].<span class="built_in">min</span>()</span><br><span class="line">            c_max = df[col].<span class="built_in">max</span>()</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">str</span>(col_type)[:<span class="number">3</span>] == <span class="string">&#x27;int&#x27;</span>:  <span class="comment"># 如果是int类型的话,不管是int64还是int32,都加入判断</span></span><br><span class="line">                <span class="comment"># 依次尝试转化成in8,in16,in32,in64类型,如果数据大小没溢出,那么转化</span></span><br><span class="line">                <span class="keyword">if</span> c_min &gt; np.iinfo(np.int8).<span class="built_in">min</span> <span class="keyword">and</span> c_max &lt; np.iinfo(np.int8).<span class="built_in">max</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.int8)</span><br><span class="line">                <span class="keyword">elif</span> c_min &gt; np.iinfo(np.int16).<span class="built_in">min</span> <span class="keyword">and</span> c_max &lt; np.iinfo(np.int16).<span class="built_in">max</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.int16)</span><br><span class="line">                <span class="keyword">elif</span> c_min &gt; np.iinfo(np.int32).<span class="built_in">min</span> <span class="keyword">and</span> c_max &lt; np.iinfo(np.int32).<span class="built_in">max</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.int32)</span><br><span class="line">                <span class="keyword">elif</span> c_min &gt; np.iinfo(np.int64).<span class="built_in">min</span> <span class="keyword">and</span> c_max &lt; np.iinfo(np.int64).<span class="built_in">max</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.int64)</span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 不是整形的话,那就是浮点型</span></span><br><span class="line">                <span class="keyword">if</span> c_min &gt; np.finfo(np.float16).<span class="built_in">min</span> <span class="keyword">and</span> c_max &lt; np.finfo(np.float16).<span class="built_in">max</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.float16)</span><br><span class="line">                <span class="keyword">elif</span> c_min &gt; np.finfo(np.float32).<span class="built_in">min</span> <span class="keyword">and</span> c_max &lt; np.finfo(np.float32).<span class="built_in">max</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.float32)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    df[col] = df[col].astype(np.float64)</span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># 如果不是数值型的话,转化成category类型</span></span><br><span class="line">            df[col] = df[col].astype(<span class="string">&#x27;category&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    end_mem = df.memory_usage().<span class="built_in">sum</span>() / <span class="number">1024</span> ** <span class="number">2</span>    <span class="comment"># 看一下转化后的数据的内存大小</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Memory usage after optimization is &#123;:.2f&#125; MB&#x27;</span>.<span class="built_in">format</span>(end_mem))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Decreased by &#123;:.1f&#125;%&#x27;</span>.<span class="built_in">format</span>(<span class="number">100</span> * (start_mem - end_mem) / start_mem))  <span class="comment"># 看一下压缩比例</span></span><br><span class="line">    <span class="keyword">return</span> df</span><br></pre></td></tr></table></figure>
+<p>压缩数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">train = reduce_mem_usage(train)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">Memory usage of dataframe is 286.87 MB</span></span><br><span class="line"><span class="string">Memory usage after optimization is 69.46 MB</span></span><br><span class="line"><span class="string">Decreased by 75.8%</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出，压缩率不低。</p>
+<h1 id="三、仔细看看特征"><a href="#三、仔细看看特征" class="headerlink" title="三、仔细看看特征"></a>三、仔细看看特征</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">train.info()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">loanAmnt - 贷款金额</span></span><br><span class="line"><span class="string">term - 贷款期限（年）</span></span><br><span class="line"><span class="string">interestRate - 贷款利率</span></span><br><span class="line"><span class="string">installment - 分期付款金额</span></span><br><span class="line"><span class="string">grade - 贷款等级</span></span><br><span class="line"><span class="string">subGrade - 贷款等级之子集</span></span><br><span class="line"><span class="string">employmentTitle - 就业职称</span></span><br><span class="line"><span class="string">employmentLength - 就业年限（年）</span></span><br><span class="line"><span class="string">homeOwnership - 借款人在登记时提供的房屋所有权状况 --- int型，建议检查是否转化为类别型</span></span><br><span class="line"><span class="string">annualIncome - 年收入</span></span><br><span class="line"><span class="string">verificationStatus - 验证状态 --- int型，建议检查是否转化为类别型</span></span><br><span class="line"><span class="string">issueDate - 贷款发放的月份 --- category型，建议检查是否转化为日期格式</span></span><br><span class="line"><span class="string">purpose - 借款人在贷款申请时的贷款用途类别 --- int型，建议检查是否转化为类别型</span></span><br><span class="line"><span class="string">postCode - 借款人在贷款申请中提供的邮政编码的前3位数字 --- float型，建议检查是否转化为类别型/category</span></span><br><span class="line"><span class="string">regionCode - 地区编码 --- int型，建议检查是否转化为类别型/category</span></span><br><span class="line"><span class="string">dti - 债务收入比</span></span><br><span class="line"><span class="string">delinquency_2years - 借款人过去2年信用档案中逾期30天以上的违约事件数 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">ficoRangeLow - 借款人在贷款发放时的fico所属的下限范围</span></span><br><span class="line"><span class="string">ficoRangeHigh - 借款人在贷款发放时的fico所属的上限范围</span></span><br><span class="line"><span class="string">openAcc - 借款人信用档案中未结信用额度的数量 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">pubRec - 贬损公共记录的数量 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">pubRecBankruptcies - 公开记录清除的数量 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">revolBal - 信贷周转余额合计</span></span><br><span class="line"><span class="string">revolUtil - 循环额度利用率，或借款人使用的相对于所有可用循环信贷的信贷金额</span></span><br><span class="line"><span class="string">totalAcc - 借款人信用档案中当前的信用额度总数</span></span><br><span class="line"><span class="string">initialListStatus - 贷款的初始列表状态 --- int型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">applicationType - 表明贷款是个人申请还是与两个共同借款人的联合申请 --- int型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">earliesCreditLine 借款人最早报告的信用额度开立的月份 --- category型，建议检查是否转化为日期格式</span></span><br><span class="line"><span class="string">title - 借款人提供的贷款名称 --- float型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">policyCode - 公开可用的策略_代码 = 1 / 新产品不公开可用的策略_代码 = 2 --- float型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">n0-n14 - 匿名特征</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>分析可疑待调整数据类型的特征</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">homeOwnership - 借款人在登记时提供的房屋所有权状况 --- int型，建议检查是否转化为类别型</span></span><br><span class="line"><span class="string">verificationStatus - 验证状态 --- int型，建议检查是否转化为类别型</span></span><br><span class="line"><span class="string">issueDate - 贷款发放的月份 --- category型，建议检查是否转化为日期格式</span></span><br><span class="line"><span class="string">purpose - 借款人在贷款申请时的贷款用途类别 --- int型，建议检查是否转化为类别型</span></span><br><span class="line"><span class="string">postCode - 借款人在贷款申请中提供的邮政编码的前3位数字 --- float型，建议检查是否转化为类别型/category</span></span><br><span class="line"><span class="string">regionCode - 地区编码 --- int型，建议检查是否转化为类别型/category</span></span><br><span class="line"><span class="string">delinquency_2years - 借款人过去2年信用档案中逾期30天以上的违约事件数 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">openAcc - 借款人信用档案中未结信用额度的数量 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">pubRec - 贬损公共记录的数量 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">pubRecBankruptcies - 公开记录清除的数量 --- float型，建议检查是否转化为int型</span></span><br><span class="line"><span class="string">initialListStatus - 贷款的初始列表状态 --- int型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">applicationType - 表明贷款是个人申请还是与两个共同借款人的联合申请 --- int型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">earliesCreditLine 借款人最早报告的信用额度开立的月份 --- category型，建议检查是否转化为日期格式</span></span><br><span class="line"><span class="string">title - 借款人提供的贷款名称 --- float型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">policyCode - 公开可用的策略_代码 = 1 / 新产品不公开可用的策略_代码 = 2 --- float型，建议检查是否转化成类别型/category</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="homeOwnership-借款人在登记时提供的房屋所有权状况-—-int型，建议检查是否转化为类别型"><a href="#homeOwnership-借款人在登记时提供的房屋所有权状况-—-int型，建议检查是否转化为类别型" class="headerlink" title="homeOwnership - 借款人在登记时提供的房屋所有权状况 — int型，建议检查是否转化为类别型"></a>homeOwnership - 借款人在登记时提供的房屋所有权状况 — int型，建议检查是否转化为类别型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;homeOwnership&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">这个字段大概率为借款人的房屋拥有量，无需转化为类别型</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">homeOwnership</span></span><br><span class="line"><span class="string">0    395732</span></span><br><span class="line"><span class="string">1    317660</span></span><br><span class="line"><span class="string">2     86309</span></span><br><span class="line"><span class="string">3       185</span></span><br><span class="line"><span class="string">4        33</span></span><br><span class="line"><span class="string">5        81</span></span><br><span class="line"><span class="string">Name: id, dtype: int64</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="verificationStatus-验证状态-—-int型，建议检查是否转化为类别型"><a href="#verificationStatus-验证状态-—-int型，建议检查是否转化为类别型" class="headerlink" title="verificationStatus - 验证状态 — int型，建议检查是否转化为类别型"></a>verificationStatus - 验证状态 — int型，建议检查是否转化为类别型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;verificationStatus&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成类别型&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;verificationStatus&#x27;</span>] = train[<span class="string">&#x27;verificationStatus&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="issueDate-贷款发放的月份-—-category型，建议检查是否转化为日期格式"><a href="#issueDate-贷款发放的月份-—-category型，建议检查是否转化为日期格式" class="headerlink" title="issueDate - 贷款发放的月份 — category型，建议检查是否转化为日期格式"></a>issueDate - 贷款发放的月份 — category型，建议检查是否转化为日期格式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;issueDate&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成时间类型&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;issueDate&#x27;</span>] = train[<span class="string">&#x27;issueDate&#x27;</span>].astype(<span class="string">&#x27;datetime64&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="purpose-借款人在贷款申请时的贷款用途类别-—-int型，建议检查是否转化为类别型"><a href="#purpose-借款人在贷款申请时的贷款用途类别-—-int型，建议检查是否转化为类别型" class="headerlink" title="purpose - 借款人在贷款申请时的贷款用途类别 — int型，建议检查是否转化为类别型"></a>purpose - 借款人在贷款申请时的贷款用途类别 — int型，建议检查是否转化为类别型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;purpose&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成类别型&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;purpose&#x27;</span>] = train[<span class="string">&#x27;purpose&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="postCode-借款人在贷款申请中提供的邮政编码的前3位数字-—-float型，建议检查是否转化为类别型-x2F-category"><a href="#postCode-借款人在贷款申请中提供的邮政编码的前3位数字-—-float型，建议检查是否转化为类别型-x2F-category" class="headerlink" title="postCode - 借款人在贷款申请中提供的邮政编码的前3位数字 — float型，建议检查是否转化为类别型&#x2F;category"></a>postCode - 借款人在贷款申请中提供的邮政编码的前3位数字 — float型，建议检查是否转化为类别型&#x2F;category</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;postCode&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成类别型,并去掉后三位字符&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;postCode&#x27;</span>] = train[<span class="string">&#x27;postCode&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br><span class="line">train[<span class="string">&#x27;postCode&#x27;</span>] = train[<span class="string">&#x27;postCode&#x27;</span>].apply(<span class="keyword">lambda</span> x: <span class="built_in">str</span>(x)[:-<span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="regionCode-地区编码-—-int型，建议检查是否转化为类别型-x2F-category"><a href="#regionCode-地区编码-—-int型，建议检查是否转化为类别型-x2F-category" class="headerlink" title="regionCode - 地区编码 — int型，建议检查是否转化为类别型&#x2F;category"></a>regionCode - 地区编码 — int型，建议检查是否转化为类别型&#x2F;category</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;regionCode&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成类别型&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;regionCode&#x27;</span>] = train[<span class="string">&#x27;regionCode&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="delinquency-2years-借款人过去2年信用档案中逾期30天以上的违约事件数-—-float型，建议检查是否转化为int型"><a href="#delinquency-2years-借款人过去2年信用档案中逾期30天以上的违约事件数-—-float型，建议检查是否转化为int型" class="headerlink" title="delinquency_2years - 借款人过去2年信用档案中逾期30天以上的违约事件数 — float型，建议检查是否转化为int型"></a>delinquency_2years - 借款人过去2年信用档案中逾期30天以上的违约事件数 — float型，建议检查是否转化为int型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;delinquency_2years&#x27;</span>].head(<span class="number">50</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成整形&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;delinquency_2years&#x27;</span>] = train[<span class="string">&#x27;delinquency_2years&#x27;</span>].astype(<span class="string">&#x27;int8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="openAcc-借款人信用档案中未结信用额度的数量-—-float型，建议检查是否转化为int型"><a href="#openAcc-借款人信用档案中未结信用额度的数量-—-float型，建议检查是否转化为int型" class="headerlink" title="openAcc - 借款人信用档案中未结信用额度的数量 — float型，建议检查是否转化为int型"></a>openAcc - 借款人信用档案中未结信用额度的数量 — float型，建议检查是否转化为int型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;openAcc&#x27;</span>].head(<span class="number">50</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成整形&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;openAcc&#x27;</span>] = train[<span class="string">&#x27;openAcc&#x27;</span>].astype(<span class="string">&#x27;int8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="pubRec-贬损公共记录的数量-—-float型，建议检查是否转化为int型"><a href="#pubRec-贬损公共记录的数量-—-float型，建议检查是否转化为int型" class="headerlink" title="pubRec - 贬损公共记录的数量 — float型，建议检查是否转化为int型"></a>pubRec - 贬损公共记录的数量 — float型，建议检查是否转化为int型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;pubRec&#x27;</span>].head(<span class="number">50</span>)</span><br><span class="line">train.groupby(<span class="string">&#x27;pubRec&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成整形&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;pubRec&#x27;</span>] = train[<span class="string">&#x27;pubRec&#x27;</span>].astype(<span class="string">&#x27;int8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="pubRecBankruptcies-公开记录清除的数量-—-float型，建议检查是否转化为int型"><a href="#pubRecBankruptcies-公开记录清除的数量-—-float型，建议检查是否转化为int型" class="headerlink" title="pubRecBankruptcies - 公开记录清除的数量 — float型，建议检查是否转化为int型"></a>pubRecBankruptcies - 公开记录清除的数量 — float型，建议检查是否转化为int型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;pubRecBankruptcies&#x27;</span>].head(<span class="number">50</span>)</span><br><span class="line">train.groupby(<span class="string">&#x27;pubRecBankruptcies&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;将缺失值标记为-99后，转化成整形&#x27;&#x27;&#x27;</span></span><br><span class="line">train.fillna(&#123;<span class="string">&#x27;pubRecBankruptcies&#x27;</span>: -<span class="number">99</span>&#125;, inplace=<span class="literal">True</span>)</span><br><span class="line">train[<span class="string">&#x27;pubRecBankruptcies&#x27;</span>] = train[<span class="string">&#x27;pubRecBankruptcies&#x27;</span>].astype(<span class="string">&#x27;int8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="initialListStatus-贷款的初始列表状态-—-int型，建议检查是否转化成类别型-x2F-category"><a href="#initialListStatus-贷款的初始列表状态-—-int型，建议检查是否转化成类别型-x2F-category" class="headerlink" title="initialListStatus - 贷款的初始列表状态 — int型，建议检查是否转化成类别型&#x2F;category"></a>initialListStatus - 贷款的初始列表状态 — int型，建议检查是否转化成类别型&#x2F;category</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;initialListStatus&#x27;</span>].head(<span class="number">50</span>)</span><br><span class="line">train.groupby(<span class="string">&#x27;initialListStatus&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">转化为类别型</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">initialListStatus</span></span><br><span class="line"><span class="string">0    466438</span></span><br><span class="line"><span class="string">1    333562</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;initialListStatus&#x27;</span>] = train[<span class="string">&#x27;initialListStatus&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="applicationType-表明贷款是个人申请还是与两个共同借款人的联合申请-—-int型，建议检查是否转化成类别型-x2F-category"><a href="#applicationType-表明贷款是个人申请还是与两个共同借款人的联合申请-—-int型，建议检查是否转化成类别型-x2F-category" class="headerlink" title="applicationType - 表明贷款是个人申请还是与两个共同借款人的联合申请 — int型，建议检查是否转化成类别型&#x2F;category"></a>applicationType - 表明贷款是个人申请还是与两个共同借款人的联合申请 — int型，建议检查是否转化成类别型&#x2F;category</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;applicationType&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">转化为类别型</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">applicationType</span></span><br><span class="line"><span class="string">0    784586</span></span><br><span class="line"><span class="string">1     15414</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;applicationType&#x27;</span>] = train[<span class="string">&#x27;applicationType&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="earliesCreditLine-借款人最早报告的信用额度开立的月份-—-category型，建议检查是否转化为日期格式"><a href="#earliesCreditLine-借款人最早报告的信用额度开立的月份-—-category型，建议检查是否转化为日期格式" class="headerlink" title="earliesCreditLine 借款人最早报告的信用额度开立的月份 — category型，建议检查是否转化为日期格式"></a>earliesCreditLine 借款人最早报告的信用额度开立的月份 — category型，建议检查是否转化为日期格式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;earliesCreditLine&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line">train[<span class="string">&#x27;earliesCreditLine&#x27;</span>].head()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;转化成时间类型&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建辅助列"><a href="#创建辅助列" class="headerlink" title="创建辅助列"></a>创建辅助列</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;earliesCreditLine_year&#x27;</span>] = train[<span class="string">&#x27;earliesCreditLine&#x27;</span>].apply(<span class="keyword">lambda</span> x: x[-<span class="number">4</span>:])</span><br><span class="line">train[<span class="string">&#x27;earliesCreditLine_month&#x27;</span>] = train[<span class="string">&#x27;earliesCreditLine&#x27;</span>].apply(<span class="keyword">lambda</span> x: x[<span class="number">0</span>:<span class="number">3</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">month_re</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> x == <span class="string">&#x27;Jan&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;01&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Feb&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;02&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Mar&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;03&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Apr&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;04&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;May&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;05&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Jun&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;06&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Jul&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;07&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Aug&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;08&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Sep&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;09&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Oct&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;10&#x27;</span></span><br><span class="line">    <span class="keyword">elif</span> x == <span class="string">&#x27;Nov&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;11&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;12&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">train[<span class="string">&#x27;earliesCreditLine_month_2&#x27;</span>] = train[<span class="string">&#x27;earliesCreditLine_month&#x27;</span>].apply(<span class="keyword">lambda</span> x: month_re(x))</span><br><span class="line">train[<span class="string">&#x27;earliesCreditLine_date&#x27;</span>] = train[<span class="string">&#x27;earliesCreditLine_year&#x27;</span>] + <span class="string">&#x27;-&#x27;</span> + train[<span class="string">&#x27;earliesCreditLine_month_2&#x27;</span>]</span><br><span class="line"></span><br><span class="line">train[<span class="string">&#x27;earliesCreditLine&#x27;</span>] = train[<span class="string">&#x27;earliesCreditLine_date&#x27;</span>].astype(<span class="string">&#x27;datetime64&#x27;</span>)</span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;earliesCreditLine_date&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;earliesCreditLine_year&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;earliesCreditLine_month&#x27;</span>]</span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;earliesCreditLine_month_2&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="title-借款人提供的贷款名称-—-float型，建议检查是否转化成类别型-x2F-category"><a href="#title-借款人提供的贷款名称-—-float型，建议检查是否转化成类别型-x2F-category" class="headerlink" title="title - 借款人提供的贷款名称 — float型，建议检查是否转化成类别型&#x2F;category"></a>title - 借款人提供的贷款名称 — float型，建议检查是否转化成类别型&#x2F;category</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;title&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;类别很多，不适合转化为category，转化成object&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;title&#x27;</span>] = train[<span class="string">&#x27;title&#x27;</span>].astype(<span class="string">&#x27;str&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="policyCode-公开可用的策略-代码-x3D-1-x2F-新产品不公开可用的策略-代码-x3D-2-—-float型，建议检查是否转化成类别型-x2F-category"><a href="#policyCode-公开可用的策略-代码-x3D-1-x2F-新产品不公开可用的策略-代码-x3D-2-—-float型，建议检查是否转化成类别型-x2F-category" class="headerlink" title="policyCode - 公开可用的策略_代码 &#x3D; 1 &#x2F; 新产品不公开可用的策略_代码 &#x3D; 2 — float型，建议检查是否转化成类别型&#x2F;category"></a>policyCode - 公开可用的策略_代码 &#x3D; 1 &#x2F; 新产品不公开可用的策略_代码 &#x3D; 2 — float型，建议检查是否转化成类别型&#x2F;category</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;policyCode&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;全是类别1，这个字段没用，可以删了&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;policyCode&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="四、看一下各个特征的缺失情况"><a href="#四、看一下各个特征的缺失情况" class="headerlink" title="四、看一下各个特征的缺失情况"></a>四、看一下各个特征的缺失情况</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;There are <span class="subst">&#123;train.isnull().<span class="built_in">any</span>().<span class="built_in">sum</span>()&#125;</span> columns in train dataset with miss values.&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;There are 20 columns in train dataset with miss values.&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="进一步查看特征缺失率"><a href="#进一步查看特征缺失率" class="headerlink" title="进一步查看特征缺失率"></a>进一步查看特征缺失率</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">have_null_fea_dict = (train.isnull().<span class="built_in">sum</span>() / <span class="built_in">len</span>(train)).to_dict()</span><br><span class="line"><span class="keyword">for</span> key, value <span class="keyword">in</span> have_null_fea_dict.items():</span><br><span class="line">    <span class="built_in">print</span>(key, value)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">整体上没有缺失比例很高的特征</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">id 0.0</span></span><br><span class="line"><span class="string">loanAmnt 0.0</span></span><br><span class="line"><span class="string">term 0.0</span></span><br><span class="line"><span class="string">interestRate 0.0</span></span><br><span class="line"><span class="string">installment 0.0</span></span><br><span class="line"><span class="string">grade 0.0</span></span><br><span class="line"><span class="string">subGrade 0.0</span></span><br><span class="line"><span class="string">employmentTitle 1.25e-06</span></span><br><span class="line"><span class="string">employmentLength 0.05849875</span></span><br><span class="line"><span class="string">homeOwnership 0.0</span></span><br><span class="line"><span class="string">annualIncome 0.0</span></span><br><span class="line"><span class="string">verificationStatus 0.0</span></span><br><span class="line"><span class="string">issueDate 0.0</span></span><br><span class="line"><span class="string">isDefault 0.0</span></span><br><span class="line"><span class="string">purpose 0.0</span></span><br><span class="line"><span class="string">postCode 1.25e-06</span></span><br><span class="line"><span class="string">regionCode 0.0</span></span><br><span class="line"><span class="string">dti 0.00029875</span></span><br><span class="line"><span class="string">delinquency_2years 0.0</span></span><br><span class="line"><span class="string">ficoRangeLow 0.0</span></span><br><span class="line"><span class="string">ficoRangeHigh 0.0</span></span><br><span class="line"><span class="string">openAcc 0.0</span></span><br><span class="line"><span class="string">pubRec 0.0</span></span><br><span class="line"><span class="string">pubRecBankruptcies 0.0</span></span><br><span class="line"><span class="string">revolBal 0.0</span></span><br><span class="line"><span class="string">revolUtil 0.00066375</span></span><br><span class="line"><span class="string">totalAcc 0.0</span></span><br><span class="line"><span class="string">initialListStatus 0.0</span></span><br><span class="line"><span class="string">applicationType 0.0</span></span><br><span class="line"><span class="string">earliesCreditLine 0.0</span></span><br><span class="line"><span class="string">title 0.0</span></span><br><span class="line"><span class="string">n0 0.0503375</span></span><br><span class="line"><span class="string">n1 0.0503375</span></span><br><span class="line"><span class="string">n2 0.0503375</span></span><br><span class="line"><span class="string">n2.1 0.0503375</span></span><br><span class="line"><span class="string">n4 0.04154875</span></span><br><span class="line"><span class="string">n5 0.0503375</span></span><br><span class="line"><span class="string">n6 0.0503375</span></span><br><span class="line"><span class="string">n7 0.0503375</span></span><br><span class="line"><span class="string">n8 0.05033875</span></span><br><span class="line"><span class="string">n9 0.0503375</span></span><br><span class="line"><span class="string">n10 0.04154875</span></span><br><span class="line"><span class="string">n11 0.08719</span></span><br><span class="line"><span class="string">n12 0.0503375</span></span><br><span class="line"><span class="string">n13 0.0503375</span></span><br><span class="line"><span class="string">n14 0.0503375</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="绘图看下"><a href="#绘图看下" class="headerlink" title="绘图看下"></a>绘图看下</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">missing = train.isnull().<span class="built_in">sum</span>() / <span class="built_in">len</span>(train)</span><br><span class="line">missing = missing[missing &gt; <span class="number">0</span>]</span><br><span class="line">missing.sort_values(inplace=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># missing.plot.bar()</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200918223837584.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h2 id="查看特征的数值类型有哪些，对象类型有哪些，将数值型的特征挑出"><a href="#查看特征的数值类型有哪些，对象类型有哪些，将数值型的特征挑出" class="headerlink" title="查看特征的数值类型有哪些，对象类型有哪些，将数值型的特征挑出"></a>查看特征的数值类型有哪些，对象类型有哪些，将数值型的特征挑出</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">数值型特征本是可以直接入模的，但往往风控人员要对其做分箱，转化为WOE编码进而做标准评分卡等操作。</span></span><br><span class="line"><span class="string">从模型效果上来看，特征分箱主要是为了降低变量的复杂性，减少变量噪音对模型的影响，提高自变量和因变量的相关度，从而使模型更加稳定</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">numerical_fea = <span class="built_in">list</span>(train.select_dtypes(exclude=[<span class="string">&#x27;category&#x27;</span>, <span class="string">&#x27;object&#x27;</span>]).columns)</span><br><span class="line">category_fea = <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x <span class="keyword">not</span> <span class="keyword">in</span> numerical_fea, <span class="built_in">list</span>(train.columns)))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">select_dtypes()函数能够根据数据类型选择特征</span></span><br><span class="line"><span class="string">filter(f, list)</span></span><br><span class="line"><span class="string">    filter()接收一个函数 f 和一个list，这个函数 f 的作用是对每个元素进行判断，返回 True或 False</span></span><br><span class="line"><span class="string">    filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="数值型变量分析，数值型包括连续型变量和离散型变量的"><a href="#数值型变量分析，数值型包括连续型变量和离散型变量的" class="headerlink" title="数值型变量分析，数值型包括连续型变量和离散型变量的"></a>数值型变量分析，数值型包括连续型变量和离散型变量的</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_numerical_serial_fea</span>(<span class="params">data, feas</span>):</span><br><span class="line">    numerical_serial_fea = []</span><br><span class="line">    numerical_noserial_fea = []</span><br><span class="line">    <span class="keyword">for</span> fea <span class="keyword">in</span> feas:</span><br><span class="line">        temp = data[fea].nunique()</span><br><span class="line">        <span class="comment"># 如果特征的数值数据不超过10中，那么纳入离散特征范畴，反之纳入连续性数值范畴</span></span><br><span class="line">        <span class="keyword">if</span> temp &lt;= <span class="number">10</span>:</span><br><span class="line">            numerical_noserial_fea.append(fea)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        numerical_serial_fea.append(fea)</span><br><span class="line">    <span class="keyword">return</span> numerical_serial_fea, numerical_noserial_fea</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">numerical_serial_fea, numerical_noserial_fea = get_numerical_serial_fea(train, numerical_fea)</span><br><span class="line"></span><br><span class="line">numerical_serial_fea.remove(<span class="string">&#x27;earliesCreditLine&#x27;</span>)</span><br><span class="line">numerical_serial_fea.remove(<span class="string">&#x27;issueDate&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="看看还有有哪些离散型的数值变量"><a href="#看看还有有哪些离散型的数值变量" class="headerlink" title="看看还有有哪些离散型的数值变量"></a>看看还有有哪些离散型的数值变量</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(numerical_noserial_fea)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;[&#x27;term&#x27;, &#x27;homeOwnership&#x27;, &#x27;isDefault&#x27;, &#x27;n11&#x27;, &#x27;n12&#x27;]&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="term-贷款期限（年）"><a href="#term-贷款期限（年）" class="headerlink" title="term - 贷款期限（年）"></a>term - 贷款期限（年）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;term&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;只有3年和5年两种，可以考虑转换成类别型数据&#x27;&#x27;&#x27;</span></span><br><span class="line">train[<span class="string">&#x27;term&#x27;</span>] = train[<span class="string">&#x27;term&#x27;</span>].astype(<span class="string">&#x27;category&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="‘homeOwnership’已经分析过，-‘isDefault’是标签，不动"><a href="#‘homeOwnership’已经分析过，-‘isDefault’是标签，不动" class="headerlink" title="‘homeOwnership’已经分析过， ‘isDefault’是标签，不动"></a>‘homeOwnership’已经分析过， ‘isDefault’是标签，不动</h2><h2 id="‘n11’-匿名变量"><a href="#‘n11’-匿名变量" class="headerlink" title="‘n11’ 匿名变量"></a>‘n11’ 匿名变量</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;n11&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;分类相差悬殊，几乎都是0.00，无分析价值直接剔除&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;n11&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="‘n12’-匿名变量"><a href="#‘n12’-匿名变量" class="headerlink" title="‘n12’ 匿名变量"></a>‘n12’ 匿名变量</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">train.groupby(<span class="string">&#x27;n12&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;同n11一样，分类相差悬殊，几乎都是0.00，无分析价值直接剔除&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">del</span> train[<span class="string">&#x27;n12&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="五、数值连续型变量分析"><a href="#五、数值连续型变量分析" class="headerlink" title="五、数值连续型变量分析"></a>五、数值连续型变量分析</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">f = pd.melt(train, value_vars=numerical_serial_fea)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;melt() - 行列自定义转化&#x27;&#x27;&#x27;</span></span><br><span class="line">g = sns.FacetGrid(f, col=<span class="string">&#x27;variable&#x27;</span>, col_wrap=<span class="number">2</span>, sharex=<span class="literal">False</span>, sharey=<span class="literal">False</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">sns.FaceGrid()</span></span><br><span class="line"><span class="string">一个FacetGrid可以与多达三个维度可以得出：row，col，和hue。前两个与得到的轴阵列有明显的对应关系; </span></span><br><span class="line"><span class="string">将色调变量视为沿深度轴的第三个维度，其中不同的级别用不同的颜色绘制。</span></span><br><span class="line"><span class="string">通过使用FacetGrid数据框初始化对象以及将形成网格的行，列或色调维度的变量名称来使用该类。</span></span><br><span class="line"><span class="string">这些变量应该是分类的或离散的，然后变量的每个级别的数据将用于沿该轴的小平面。</span></span><br><span class="line"><span class="string">    data - 处理后的（“长格式”）dataframe数据，其中每一列都是一个变量（特征），每一行都是一个样本</span></span><br><span class="line"><span class="string">    col - 定义数据子集的变量，这些变量将在网格的不同方面绘制</span></span><br><span class="line"><span class="string">    col_wrap - 图网格列维度限制，比如col_wrap =3，那么在这个画布里最多只能画3列，行不限制，这样就限制了列的个数</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">g = g.<span class="built_in">map</span>(sns.distplot, <span class="string">&#x27;value&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200918224456639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h2 id="查看某一个数值型变量的分布，查看变量是否符合正态分布，如果不符合正太分布的变量可以log化后再观察下是否符合正态分布"><a href="#查看某一个数值型变量的分布，查看变量是否符合正态分布，如果不符合正太分布的变量可以log化后再观察下是否符合正态分布" class="headerlink" title="查看某一个数值型变量的分布，查看变量是否符合正态分布，如果不符合正太分布的变量可以log化后再观察下是否符合正态分布"></a>查看某一个数值型变量的分布，查看变量是否符合正态分布，如果不符合正太分布的变量可以log化后再观察下是否符合正态分布</h2><h1 id="六、变量分布可视化"><a href="#六、变量分布可视化" class="headerlink" title="六、变量分布可视化"></a>六、变量分布可视化</h1><h2 id="单一变量分布可视化，以employmentLength为例"><a href="#单一变量分布可视化，以employmentLength为例" class="headerlink" title="单一变量分布可视化，以employmentLength为例"></a>单一变量分布可视化，以employmentLength为例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">8</span>, <span class="number">8</span>))</span><br><span class="line">sns.barplot(train[<span class="string">&#x27;employmentLength&#x27;</span>].value_counts(dropna=<span class="literal">False</span>)[:<span class="number">20</span>],</span><br><span class="line">            train[<span class="string">&#x27;employmentLength&#x27;</span>].value_counts(dropna=<span class="literal">False</span>).keys()[:<span class="number">20</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200918224725571.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h2 id="根据标签不同可视化x某个特征的分布"><a href="#根据标签不同可视化x某个特征的分布" class="headerlink" title="根据标签不同可视化x某个特征的分布"></a>根据标签不同可视化x某个特征的分布</h2><p>首先查看类别型变量在不同标签值上的分布</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;将不同标签的数据分开&#x27;&#x27;&#x27;</span></span><br><span class="line">train_loan_fr = train.loc[train[<span class="string">&#x27;isDefault&#x27;</span>] == <span class="number">1</span>]</span><br><span class="line">train_loan_nofr = train.loc[train[<span class="string">&#x27;isDefault&#x27;</span>] == <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(<span class="number">2</span>, <span class="number">2</span>, figsize=(<span class="number">15</span>, <span class="number">8</span>))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;建立画布&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">train_loan_fr.groupby(<span class="string">&#x27;grade&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count().plot(kind=<span class="string">&#x27;barh&#x27;</span>, ax=ax1, title=<span class="string">&#x27;Count of grade fraud&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;逾期数据下，不同grade的分布情况，画在子画布1上&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">train_loan_nofr.groupby(<span class="string">&#x27;grade&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count().plot(kind=<span class="string">&#x27;barh&#x27;</span>, ax=ax2, title=<span class="string">&#x27;Count of grade non-fraud&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;非逾期数据下，不同grade的分布情况，画在子画布2上&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">train_loan_fr.groupby(<span class="string">&#x27;employmentLength&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count().plot(kind=<span class="string">&#x27;barh&#x27;</span>, ax=ax3,</span><br><span class="line">                                                             title=<span class="string">&#x27;Count of employmentLength fraud&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;逾期数据下，不同employmentLength的分布情况，画在子画布3上&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">train_loan_nofr.groupby(<span class="string">&#x27;employmentLength&#x27;</span>)[<span class="string">&#x27;id&#x27;</span>].count().plot(kind=<span class="string">&#x27;barh&#x27;</span>, ax=ax4,</span><br><span class="line">                                                               title=<span class="string">&#x27;Count of employmentLength non-fraud&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;非逾期数据下，不同employmentLength的分布情况，画在子画布4上&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200918225145816.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h2 id="再查看连续数值型变量在不同标签值上的分布，以loanAmnt为例"><a href="#再查看连续数值型变量在不同标签值上的分布，以loanAmnt为例" class="headerlink" title="再查看连续数值型变量在不同标签值上的分布，以loanAmnt为例"></a>再查看连续数值型变量在不同标签值上的分布，以loanAmnt为例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fig2, ((ax5, ax6)) = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">15</span>, <span class="number">6</span>))</span><br><span class="line">train_loan_fr[<span class="string">&#x27;loanAmnt&#x27;</span>].apply(np.log).plot(kind=<span class="string">&#x27;hist&#x27;</span>, bins=<span class="number">100</span>,</span><br><span class="line">                                             title=<span class="string">&#x27;Log Loan Amnt - Fraud&#x27;</span>, color=<span class="string">&#x27;r&#x27;</span>, xlim=(-<span class="number">3</span>, <span class="number">10</span>), ax=ax5)</span><br><span class="line"></span><br><span class="line">train_loan_nofr[<span class="string">&#x27;loanAmnt&#x27;</span>].apply(np.log).plot(kind=<span class="string">&#x27;hist&#x27;</span>, bins=<span class="number">100</span>,</span><br><span class="line">                                               title=<span class="string">&#x27;Log Loan Amnt - noFraud&#x27;</span>, color=<span class="string">&#x27;b&#x27;</span>, xlim=(-<span class="number">3</span>, <span class="number">10</span>), ax=ax6)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200918225227330.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0JhYnkxNjAxdHJlZQ==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h1 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h1><p>EDA阶段是对数据的一个探索，大致了解一下数据的类型、分布、基本质量、相关性等。详细的处理在下一章节特征工程会涉及。</p>
+
+    </div>
+
+    
+    
+    
+	
+	  <div>
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  </div>
+	
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>小书包
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task2_EDA/" title="机器学习训练_金融风控_Task2_EDA">http://example.com/2023/04/24/机器学习训练_金融风控_Task2_EDA/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task1_%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3/" rel="prev" title="机器学习训练_金融风控_Task1_赛题理解">
+      <i class="fa fa-chevron-left"></i> 机器学习训练_金融风控_Task1_赛题理解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83_%E9%87%91%E8%9E%8D%E9%A3%8E%E6%8E%A7_Task3_%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="next" title="机器学习训练_金融风控_Task3_特征工程">
+      机器学习训练_金融风控_Task3_特征工程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">一、导入第三方模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%8F%96"><span class="nav-number">2.</span> <span class="nav-text">二、数据读取</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BB%94%E7%BB%86%E7%9C%8B%E7%9C%8B%E7%89%B9%E5%BE%81"><span class="nav-number">3.</span> <span class="nav-text">三、仔细看看特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#homeOwnership-%E5%80%9F%E6%AC%BE%E4%BA%BA%E5%9C%A8%E7%99%BB%E8%AE%B0%E6%97%B6%E6%8F%90%E4%BE%9B%E7%9A%84%E6%88%BF%E5%B1%8B%E6%89%80%E6%9C%89%E6%9D%83%E7%8A%B6%E5%86%B5-%E2%80%94-int%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%B1%BB%E5%88%AB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">homeOwnership - 借款人在登记时提供的房屋所有权状况 — int型，建议检查是否转化为类别型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#verificationStatus-%E9%AA%8C%E8%AF%81%E7%8A%B6%E6%80%81-%E2%80%94-int%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%B1%BB%E5%88%AB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">verificationStatus - 验证状态 — int型，建议检查是否转化为类别型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#issueDate-%E8%B4%B7%E6%AC%BE%E5%8F%91%E6%94%BE%E7%9A%84%E6%9C%88%E4%BB%BD-%E2%80%94-category%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">issueDate - 贷款发放的月份 — category型，建议检查是否转化为日期格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#purpose-%E5%80%9F%E6%AC%BE%E4%BA%BA%E5%9C%A8%E8%B4%B7%E6%AC%BE%E7%94%B3%E8%AF%B7%E6%97%B6%E7%9A%84%E8%B4%B7%E6%AC%BE%E7%94%A8%E9%80%94%E7%B1%BB%E5%88%AB-%E2%80%94-int%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%B1%BB%E5%88%AB%E5%9E%8B"><span class="nav-number">3.4.</span> <span class="nav-text">purpose - 借款人在贷款申请时的贷款用途类别 — int型，建议检查是否转化为类别型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#postCode-%E5%80%9F%E6%AC%BE%E4%BA%BA%E5%9C%A8%E8%B4%B7%E6%AC%BE%E7%94%B3%E8%AF%B7%E4%B8%AD%E6%8F%90%E4%BE%9B%E7%9A%84%E9%82%AE%E6%94%BF%E7%BC%96%E7%A0%81%E7%9A%84%E5%89%8D3%E4%BD%8D%E6%95%B0%E5%AD%97-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%B1%BB%E5%88%AB%E5%9E%8B-x2F-category"><span class="nav-number">3.5.</span> <span class="nav-text">postCode - 借款人在贷款申请中提供的邮政编码的前3位数字 — float型，建议检查是否转化为类别型&#x2F;category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regionCode-%E5%9C%B0%E5%8C%BA%E7%BC%96%E7%A0%81-%E2%80%94-int%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%B1%BB%E5%88%AB%E5%9E%8B-x2F-category"><span class="nav-number">3.6.</span> <span class="nav-text">regionCode - 地区编码 — int型，建议检查是否转化为类别型&#x2F;category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delinquency-2years-%E5%80%9F%E6%AC%BE%E4%BA%BA%E8%BF%87%E5%8E%BB2%E5%B9%B4%E4%BF%A1%E7%94%A8%E6%A1%A3%E6%A1%88%E4%B8%AD%E9%80%BE%E6%9C%9F30%E5%A4%A9%E4%BB%A5%E4%B8%8A%E7%9A%84%E8%BF%9D%E7%BA%A6%E4%BA%8B%E4%BB%B6%E6%95%B0-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BAint%E5%9E%8B"><span class="nav-number">3.7.</span> <span class="nav-text">delinquency_2years - 借款人过去2年信用档案中逾期30天以上的违约事件数 — float型，建议检查是否转化为int型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#openAcc-%E5%80%9F%E6%AC%BE%E4%BA%BA%E4%BF%A1%E7%94%A8%E6%A1%A3%E6%A1%88%E4%B8%AD%E6%9C%AA%E7%BB%93%E4%BF%A1%E7%94%A8%E9%A2%9D%E5%BA%A6%E7%9A%84%E6%95%B0%E9%87%8F-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BAint%E5%9E%8B"><span class="nav-number">3.8.</span> <span class="nav-text">openAcc - 借款人信用档案中未结信用额度的数量 — float型，建议检查是否转化为int型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pubRec-%E8%B4%AC%E6%8D%9F%E5%85%AC%E5%85%B1%E8%AE%B0%E5%BD%95%E7%9A%84%E6%95%B0%E9%87%8F-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BAint%E5%9E%8B"><span class="nav-number">3.9.</span> <span class="nav-text">pubRec - 贬损公共记录的数量 — float型，建议检查是否转化为int型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pubRecBankruptcies-%E5%85%AC%E5%BC%80%E8%AE%B0%E5%BD%95%E6%B8%85%E9%99%A4%E7%9A%84%E6%95%B0%E9%87%8F-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BAint%E5%9E%8B"><span class="nav-number">3.10.</span> <span class="nav-text">pubRecBankruptcies - 公开记录清除的数量 — float型，建议检查是否转化为int型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initialListStatus-%E8%B4%B7%E6%AC%BE%E7%9A%84%E5%88%9D%E5%A7%8B%E5%88%97%E8%A1%A8%E7%8A%B6%E6%80%81-%E2%80%94-int%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E6%88%90%E7%B1%BB%E5%88%AB%E5%9E%8B-x2F-category"><span class="nav-number">3.11.</span> <span class="nav-text">initialListStatus - 贷款的初始列表状态 — int型，建议检查是否转化成类别型&#x2F;category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#applicationType-%E8%A1%A8%E6%98%8E%E8%B4%B7%E6%AC%BE%E6%98%AF%E4%B8%AA%E4%BA%BA%E7%94%B3%E8%AF%B7%E8%BF%98%E6%98%AF%E4%B8%8E%E4%B8%A4%E4%B8%AA%E5%85%B1%E5%90%8C%E5%80%9F%E6%AC%BE%E4%BA%BA%E7%9A%84%E8%81%94%E5%90%88%E7%94%B3%E8%AF%B7-%E2%80%94-int%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E6%88%90%E7%B1%BB%E5%88%AB%E5%9E%8B-x2F-category"><span class="nav-number">3.12.</span> <span class="nav-text">applicationType - 表明贷款是个人申请还是与两个共同借款人的联合申请 — int型，建议检查是否转化成类别型&#x2F;category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#earliesCreditLine-%E5%80%9F%E6%AC%BE%E4%BA%BA%E6%9C%80%E6%97%A9%E6%8A%A5%E5%91%8A%E7%9A%84%E4%BF%A1%E7%94%A8%E9%A2%9D%E5%BA%A6%E5%BC%80%E7%AB%8B%E7%9A%84%E6%9C%88%E4%BB%BD-%E2%80%94-category%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.13.</span> <span class="nav-text">earliesCreditLine 借款人最早报告的信用额度开立的月份 — category型，建议检查是否转化为日期格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%BE%85%E5%8A%A9%E5%88%97"><span class="nav-number">3.14.</span> <span class="nav-text">创建辅助列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#title-%E5%80%9F%E6%AC%BE%E4%BA%BA%E6%8F%90%E4%BE%9B%E7%9A%84%E8%B4%B7%E6%AC%BE%E5%90%8D%E7%A7%B0-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E6%88%90%E7%B1%BB%E5%88%AB%E5%9E%8B-x2F-category"><span class="nav-number">3.15.</span> <span class="nav-text">title - 借款人提供的贷款名称 — float型，建议检查是否转化成类别型&#x2F;category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#policyCode-%E5%85%AC%E5%BC%80%E5%8F%AF%E7%94%A8%E7%9A%84%E7%AD%96%E7%95%A5-%E4%BB%A3%E7%A0%81-x3D-1-x2F-%E6%96%B0%E4%BA%A7%E5%93%81%E4%B8%8D%E5%85%AC%E5%BC%80%E5%8F%AF%E7%94%A8%E7%9A%84%E7%AD%96%E7%95%A5-%E4%BB%A3%E7%A0%81-x3D-2-%E2%80%94-float%E5%9E%8B%EF%BC%8C%E5%BB%BA%E8%AE%AE%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E8%BD%AC%E5%8C%96%E6%88%90%E7%B1%BB%E5%88%AB%E5%9E%8B-x2F-category"><span class="nav-number">3.16.</span> <span class="nav-text">policyCode - 公开可用的策略_代码 &#x3D; 1 &#x2F; 新产品不公开可用的策略_代码 &#x3D; 2 — float型，建议检查是否转化成类别型&#x2F;category</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%9C%8B%E4%B8%80%E4%B8%8B%E5%90%84%E4%B8%AA%E7%89%B9%E5%BE%81%E7%9A%84%E7%BC%BA%E5%A4%B1%E6%83%85%E5%86%B5"><span class="nav-number">4.</span> <span class="nav-text">四、看一下各个特征的缺失情况</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%9F%A5%E7%9C%8B%E7%89%B9%E5%BE%81%E7%BC%BA%E5%A4%B1%E7%8E%87"><span class="nav-number">4.1.</span> <span class="nav-text">进一步查看特征缺失率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%9B%BE%E7%9C%8B%E4%B8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">绘图看下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%89%B9%E5%BE%81%E7%9A%84%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%8C%E5%AF%B9%E8%B1%A1%E7%B1%BB%E5%9E%8B%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%8C%E5%B0%86%E6%95%B0%E5%80%BC%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E6%8C%91%E5%87%BA"><span class="nav-number">4.3.</span> <span class="nav-text">查看特征的数值类型有哪些，对象类型有哪些，将数值型的特征挑出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E5%9E%8B%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90%EF%BC%8C%E6%95%B0%E5%80%BC%E5%9E%8B%E5%8C%85%E6%8B%AC%E8%BF%9E%E7%BB%AD%E5%9E%8B%E5%8F%98%E9%87%8F%E5%92%8C%E7%A6%BB%E6%95%A3%E5%9E%8B%E5%8F%98%E9%87%8F%E7%9A%84"><span class="nav-number">4.4.</span> <span class="nav-text">数值型变量分析，数值型包括连续型变量和离散型变量的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B%E7%9C%8B%E8%BF%98%E6%9C%89%E6%9C%89%E5%93%AA%E4%BA%9B%E7%A6%BB%E6%95%A3%E5%9E%8B%E7%9A%84%E6%95%B0%E5%80%BC%E5%8F%98%E9%87%8F"><span class="nav-number">4.5.</span> <span class="nav-text">看看还有有哪些离散型的数值变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#term-%E8%B4%B7%E6%AC%BE%E6%9C%9F%E9%99%90%EF%BC%88%E5%B9%B4%EF%BC%89"><span class="nav-number">4.6.</span> <span class="nav-text">term - 贷款期限（年）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%98homeOwnership%E2%80%99%E5%B7%B2%E7%BB%8F%E5%88%86%E6%9E%90%E8%BF%87%EF%BC%8C-%E2%80%98isDefault%E2%80%99%E6%98%AF%E6%A0%87%E7%AD%BE%EF%BC%8C%E4%B8%8D%E5%8A%A8"><span class="nav-number">4.7.</span> <span class="nav-text">‘homeOwnership’已经分析过， ‘isDefault’是标签，不动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%98n11%E2%80%99-%E5%8C%BF%E5%90%8D%E5%8F%98%E9%87%8F"><span class="nav-number">4.8.</span> <span class="nav-text">‘n11’ 匿名变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%98n12%E2%80%99-%E5%8C%BF%E5%90%8D%E5%8F%98%E9%87%8F"><span class="nav-number">4.9.</span> <span class="nav-text">‘n12’ 匿名变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%95%B0%E5%80%BC%E8%BF%9E%E7%BB%AD%E5%9E%8B%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">五、数值连续型变量分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9F%90%E4%B8%80%E4%B8%AA%E6%95%B0%E5%80%BC%E5%9E%8B%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%86%E5%B8%83%EF%BC%8C%E6%9F%A5%E7%9C%8B%E5%8F%98%E9%87%8F%E6%98%AF%E5%90%A6%E7%AC%A6%E5%90%88%E6%AD%A3%E6%80%81%E5%88%86%E5%B8%83%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%B8%8D%E7%AC%A6%E5%90%88%E6%AD%A3%E5%A4%AA%E5%88%86%E5%B8%83%E7%9A%84%E5%8F%98%E9%87%8F%E5%8F%AF%E4%BB%A5log%E5%8C%96%E5%90%8E%E5%86%8D%E8%A7%82%E5%AF%9F%E4%B8%8B%E6%98%AF%E5%90%A6%E7%AC%A6%E5%90%88%E6%AD%A3%E6%80%81%E5%88%86%E5%B8%83"><span class="nav-number">5.1.</span> <span class="nav-text">查看某一个数值型变量的分布，查看变量是否符合正态分布，如果不符合正太分布的变量可以log化后再观察下是否符合正态分布</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%8F%98%E9%87%8F%E5%88%86%E5%B8%83%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">6.</span> <span class="nav-text">六、变量分布可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80%E5%8F%98%E9%87%8F%E5%88%86%E5%B8%83%E5%8F%AF%E8%A7%86%E5%8C%96%EF%BC%8C%E4%BB%A5employmentLength%E4%B8%BA%E4%BE%8B"><span class="nav-number">6.1.</span> <span class="nav-text">单一变量分布可视化，以employmentLength为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E6%A0%87%E7%AD%BE%E4%B8%8D%E5%90%8C%E5%8F%AF%E8%A7%86%E5%8C%96x%E6%9F%90%E4%B8%AA%E7%89%B9%E5%BE%81%E7%9A%84%E5%88%86%E5%B8%83"><span class="nav-number">6.2.</span> <span class="nav-text">根据标签不同可视化x某个特征的分布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%8D%E6%9F%A5%E7%9C%8B%E8%BF%9E%E7%BB%AD%E6%95%B0%E5%80%BC%E5%9E%8B%E5%8F%98%E9%87%8F%E5%9C%A8%E4%B8%8D%E5%90%8C%E6%A0%87%E7%AD%BE%E5%80%BC%E4%B8%8A%E7%9A%84%E5%88%86%E5%B8%83%EF%BC%8C%E4%BB%A5loanAmnt%E4%B8%BA%E4%BE%8B"><span class="nav-number">6.3.</span> <span class="nav-text">再查看连续数值型变量在不同标签值上的分布，以loanAmnt为例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">七、总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">小书包</p>
+  <div class="site-description" itemprop="description">种一棵树最好的时间是十年前，其次是现在</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/FelixBigTree" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FelixBigTree" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/598376210@qq.com" title="E-Mail → 598376210@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-04 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小书包</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">198k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:01</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
